@@ -1,0 +1,8 @@
+Bundle-ActivationPolicy: lazy
+Bundle-ClassPath: .
+Manifest-Version: 1.0
+Bundle-Vendor: org.nuxeo.test
+Bundle-Version: 1.0.0
+Bundle-Name: empty-bundle-core
+Bundle-ManifestVersion: 2
+Bundle-SymbolicName: org.nuxeo.test.empty-bundle-core;singleton=true

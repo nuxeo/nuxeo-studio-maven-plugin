@@ -1,0 +1,9 @@
+Bundle-ActivationPolicy: lazy
+Bundle-ClassPath: .
+Manifest-Version: 1.0
+Bundle-Vendor: org.nuxeo.sample
+Bundle-Version: 1.0.0
+Bundle-Name: multi-bundle-core
+Bundle-ManifestVersion: 2
+Bundle-SymbolicName: org.nuxeo.sample.multi-bundle-core;singleton=true
+Nuxeo-Component: OSGI-INF/myoperation-operation-contrib.xml

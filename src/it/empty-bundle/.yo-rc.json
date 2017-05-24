@@ -1,0 +1,8 @@
+{
+  "generator-nuxeo": {
+    "lastRemote": "/Users/arnaud/.cache/node-yeoman-remote-cache/nuxeo/generator-nuxeo-meta/stable",
+    "promptValues": {
+      "package": "org.nuxeo.test"
+    }
+  }
+}
