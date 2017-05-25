@@ -1,8 +1,6 @@
 package org.nuxeo.maven;
 
-import java.io.File;
 import java.io.IOException;
-import java.io.PrintStream;
 
 import org.apache.maven.plugin.AbstractMojo;
 import org.apache.maven.plugin.MojoExecutionException;
@@ -14,6 +12,7 @@ import org.apache.maven.plugins.annotations.ResolutionScope;
 import org.apache.maven.project.MavenProject;
 import org.nuxeo.maven.bundle.BundleWalker;
 import org.nuxeo.maven.bundle.ContributionsHolder;
+import org.nuxeo.maven.publisher.Publisher;
 import org.nuxeo.maven.serializer.StudioSerializer;
 
 /**
@@ -71,15 +70,15 @@ public class ExtractorMojo extends AbstractMojo {
     @Parameter(defaultValue = "https://connect.nuxeo.com/nuxeo/site", property = "connectUrl")
     protected String connectUrl;
 
-    private StudioSerializer serializer;
+    protected StudioSerializer serializer;
 
-    private ContributionsHolder holder;
+    protected ContributionsHolder holder;
 
-    private void initialize() throws MojoExecutionException {
+    protected void initialize() throws MojoExecutionException {
         holder = new ContributionsHolder();
         serializer = new StudioSerializer(holder);
 
-        MojoRuntime.initProjectClassLoader(project);
+        MojoRuntime.initCustomClassLoader(project);
     }
 
     @Override
@@ -92,18 +91,51 @@ public class ExtractorMojo extends AbstractMojo {
             for (MavenProject child : project.getCollectedProjects()) {
                 loadContributions(child);
             }
-
-            // Output Studio JSON in the output file
-            try (PrintStream printStream = new PrintStream(new File(project.getBuild().getDirectory(), output))) {
-                serializer.serializeInto(printStream, extract.split(",\\s*"));
-            }
         } catch (IOException e) {
-            throw new MojoExecutionException("Unable to read a file", e);
+            throw new MojoExecutionException("Unable to read bundle contributions", e);
+        }
+
+        try {
+            Publisher.instance(this).publish(extract.split(",\\s*"));
+        } catch (IOException e) {
+            throw new MojoExecutionException("Unable to publish extractions", e);
         }
     }
 
     protected void loadContributions(MavenProject project) throws IOException {
         BundleWalker walker = new BundleWalker(project.getBasedir());
         walker.getRegistrationInfos().forEach(holder::load);
+    }
+
+    public MavenProject getProject() {
+        return project;
+    }
+
+    public String getExtract() {
+        return extract;
+    }
+
+    public String getOutput() {
+        return output;
+    }
+
+    public String getToken() {
+        return token;
+    }
+
+    public String getSymbolicName() {
+        return symbolicName;
+    }
+
+    public String getConnectUrl() {
+        return connectUrl;
+    }
+
+    public StudioSerializer getSerializer() {
+        return serializer;
+    }
+
+    public ContributionsHolder getHolder() {
+        return holder;
     }
 }

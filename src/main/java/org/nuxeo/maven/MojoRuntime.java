@@ -20,10 +20,15 @@ import org.nuxeo.runtime.model.StreamRef;
 import org.osgi.framework.Bundle;
 
 /**
- * Simple Fake {@link RuntimeContext} that load all current {@link MavenProject} childs compile class path elements to a
- * custom {@link ClassLoader}. It is required, in order to be able to resolve external Type from plugin.
+ * Simple Fake {@link RuntimeContext} that load all {@link MavenProject} child's class path (Maven compile resolution
+ * scope) elements to a custom {@link ClassLoader}. It is required, in order to be able to resolve external Type from
+ * plugin. For instance, it is needed by {@link org.nuxeo.ecm.automation.core.OperationContribution}.
  * </p>
- * For instance, it is needed by {@link org.nuxeo.ecm.automation.core.OperationContribution}.
+ * The only implemented method is {@link MojoRuntime#loadClass(java.lang.String)}, otherwise an
+ * {@link UnsupportedOperationException} is thrown.
+ * </p>
+ * Runtime will load types from current class loader if
+ * {@link MojoRuntime#initCustomClassLoader(org.apache.maven.project.MavenProject)} has never been called.
  */
 public class MojoRuntime implements RuntimeContext {
 
@@ -34,7 +39,14 @@ public class MojoRuntime implements RuntimeContext {
     private MojoRuntime() {
     }
 
-    public static void initProjectClassLoader(MavenProject project) throws MojoExecutionException {
+    /**
+     * Add a custom class loader based on {@code project} parameter. It loads current classes and project child's
+     * classes.
+     *
+     * @param project Current Project as target class loader
+     * @throws MojoExecutionException
+     */
+    public static void initCustomClassLoader(MavenProject project) throws MojoExecutionException {
         try {
             Set<String> compileClasspathElements = new HashSet<>();
             compileClasspathElements.addAll(project.getCompileClasspathElements());
