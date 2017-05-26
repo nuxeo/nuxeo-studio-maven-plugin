@@ -19,6 +19,12 @@ import com.sun.jersey.api.client.ClientResponse;
 
 public abstract class Publisher {
 
+    protected StudioSerializer serializer;
+
+    protected Publisher(StudioSerializer serializer) {
+        this.serializer = serializer;
+    }
+
     public static Publisher instance(ExtractorMojo mojo) {
         Publisher publisher = null;
         if (isNotBlank(mojo.getToken()) && isNotBlank(mojo.getSymbolicName())) {
@@ -31,12 +37,6 @@ public abstract class Publisher {
                     new File(mojo.getProject().getBuild().getDirectory(), mojo.getOutput()));
         }
         return publisher;
-    }
-
-    protected StudioSerializer serializer;
-
-    protected Publisher(StudioSerializer serializer) {
-        this.serializer = serializer;
     }
 
     public abstract void publish(String[] targets) throws IOException;

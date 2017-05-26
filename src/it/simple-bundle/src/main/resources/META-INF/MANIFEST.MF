@@ -8,4 +8,4 @@ Bundle-ManifestVersion: 2
 Bundle-SymbolicName: org.nuxeo.sample.docmodel-bundle-core;singleton=true
 Nuxeo-Component: OSGI-INF/doctype-contrib.xml,
   OSGI-INF/schema-contrib.xml,
- OSGI-INF/plugindeclaredoperation-operation-contrib.xml
+ OSGI-INF/operation-contrib.xml

@@ -2,20 +2,51 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
   <modelVersion>4.0.0</modelVersion>
 
-  <groupId>org.nuxeo.build</groupId>
-  <artifactId>nuxeo-maven-plugin</artifactId>
+  <groupId>org.nuxeo.tools</groupId>
+  <artifactId>nuxeo-studio-maven-plugin</artifactId>
   <version>1.0-SNAPSHOT</version>
   <packaging>maven-plugin</packaging>
 
-  <name>nuxeo-maven-plugin Maven Plugin</name>
-  <url>https://www.nuxeo.com/</url>
+  <name>Nuxeo Studio Maven Plugin</name>
+  <description>Nuxeo Studio Maven Integration Tool</description>
+  <url>http://www.nuxeo.com</url>
+  <organization>
+    <name>Nuxeo SAS</name>
+    <url>http://www.nuxeo.com</url>
+  </organization>
+  <licenses>
+    <license>
+      <name>Apache License, Version 2.0</name>
+      <url>http://www.apache.org/licenses/LICENSE-2.0.html</url>
+    </license>
+  </licenses>
+  <issueManagement>
+    <system>jira</system>
+    <url>https://jira.nuxeo.com/browse/NXBT</url>
+  </issueManagement>
+  <ciManagement>
+    <system>Jenkins</system>
+    <url>https://qa.nuxeo.org/jenkins/</url>
+    <notifiers>
+      <notifier>
+        <type>mail</type>
+        <configuration>
+          <address>ecm-qa@lists.nuxeo.com</address>
+        </configuration>
+      </notifier>
+    </notifiers>
+  </ciManagement>
 
   <properties>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     <jackson.version>2.7.4</jackson.version>
-    <maven.version>3.3.9</maven.version>
+    <maven.version>3.5.0</maven.version>
+    <maven.tools.version>3.5</maven.tools.version>
     <nuxeo.version>9.1</nuxeo.version>
     <surefire.version>2.19.1</surefire.version>
+    <mockito.version>1.9.5</mockito.version>
+    <junit.version>4.12</junit.version>
+    <jersey.version>1.18.3</jersey.version>
   </properties>
 
   <dependencies>
@@ -27,12 +58,17 @@
     </dependency>
     <dependency>
       <groupId>org.nuxeo.ecm.core</groupId>
+      <artifactId>nuxeo-core</artifactId>
+      <version>${nuxeo.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>org.nuxeo.ecm.core</groupId>
       <artifactId>nuxeo-core-schema</artifactId>
       <version>${nuxeo.version}</version>
     </dependency>
     <dependency>
-      <groupId>org.nuxeo.ecm.platform</groupId>
-      <artifactId>nuxeo-platform-contentview-jsf</artifactId>
+      <groupId>org.nuxeo.ecm.core</groupId>
+      <artifactId>nuxeo-core-api</artifactId>
       <version>${nuxeo.version}</version>
     </dependency>
     <dependency>
@@ -41,19 +77,7 @@
       <version>${nuxeo.version}</version>
     </dependency>
 
-    <!-- Others -->
-    <dependency>
-      <groupId>junit</groupId>
-      <artifactId>junit</artifactId>
-      <version>4.12</version>
-      <scope>test</scope>
-    </dependency>
-    <dependency>
-      <groupId>org.mockito</groupId>
-      <artifactId>mockito-all</artifactId>
-      <version>1.9.5</version>
-      <scope>test</scope>
-    </dependency>
+    <!-- Third libs dependencies -->
     <dependency>
       <groupId>com.fasterxml.jackson.core</groupId>
       <artifactId>jackson-core</artifactId>
@@ -64,6 +88,21 @@
       <artifactId>jackson-databind</artifactId>
       <version>${jackson.version}</version>
     </dependency>
+    <dependency>
+      <groupId>com.fasterxml.jackson.core</groupId>
+      <artifactId>jackson-annotations</artifactId>
+      <version>${jackson.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>com.sun.jersey</groupId>
+      <artifactId>jersey-core</artifactId>
+      <version>${jersey.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>com.sun.jersey</groupId>
+      <artifactId>jersey-client</artifactId>
+      <version>${jersey.version}</version>
+    </dependency>
 
     <!-- default maven-plugin dependencies -->
     <dependency>
@@ -73,23 +112,8 @@
     </dependency>
     <dependency>
       <groupId>org.apache.maven</groupId>
-      <artifactId>maven-compat</artifactId>
-      <version>${maven.version}</version>
-    </dependency>
-    <dependency>
-      <groupId>org.apache.maven</groupId>
-      <artifactId>maven-artifact</artifactId>
-      <version>${maven.version}</version>
-    </dependency>
-    <dependency>
-      <groupId>org.apache.maven</groupId>
       <artifactId>maven-core</artifactId>
       <version>${maven.version}</version>
-    </dependency>
-    <dependency>
-      <groupId>org.apache.maven.surefire</groupId>
-      <artifactId>surefire-junit47</artifactId>
-      <version>${surefire.version}</version>
     </dependency>
     <dependency>
       <groupId>org.apache.maven</groupId>
@@ -97,35 +121,24 @@
       <version>${maven.version}</version>
     </dependency>
     <dependency>
-      <groupId>org.apache.maven.reporting</groupId>
-      <artifactId>maven-reporting-api</artifactId>
-      <version>3.0</version>
-    </dependency>
-    <dependency>
-      <groupId>org.apache.maven.plugins</groupId>
-      <artifactId>maven-failsafe-plugin</artifactId>
-      <version>${surefire.version}</version>
-    </dependency>
-    <dependency>
-      <groupId>org.apache.maven.surefire</groupId>
-      <artifactId>surefire-api</artifactId>
-      <version>${surefire.version}</version>
-    </dependency>
-    <dependency>
-      <groupId>org.apache.maven.surefire</groupId>
-      <artifactId>maven-surefire-common</artifactId>
-      <version>${surefire.version}</version>
-    </dependency>
-    <dependency>
       <groupId>org.apache.maven.plugin-tools</groupId>
       <artifactId>maven-plugin-annotations</artifactId>
-      <version>3.5</version>
+      <version>${maven.tools.version}</version>
       <scope>provided</scope>
     </dependency>
+
+    <!-- Tests Dependencies -->
     <dependency>
-      <groupId>org.codehaus.plexus</groupId>
-      <artifactId>plexus-utils</artifactId>
-      <version>3.0.8</version>
+      <groupId>junit</groupId>
+      <artifactId>junit</artifactId>
+      <version>${junit.version}</version>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.mockito</groupId>
+      <artifactId>mockito-all</artifactId>
+      <version>${mockito.version}</version>
+      <scope>test</scope>
     </dependency>
   </dependencies>
 
@@ -145,7 +158,7 @@
         <artifactId>maven-plugin-plugin</artifactId>
         <version>3.5</version>
         <configuration>
-          <goalPrefix>nuxeo</goalPrefix>
+          <goalPrefix>nuxeo-studio</goalPrefix>
           <skipErrorNoDescriptorsFound>true</skipErrorNoDescriptorsFound>
         </configuration>
         <executions>

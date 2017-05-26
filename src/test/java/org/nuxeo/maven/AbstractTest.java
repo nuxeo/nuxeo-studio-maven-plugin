@@ -16,7 +16,7 @@ public class AbstractTest {
     @Before
     public void beforeEach() {
         walker = new BundleWalker();
-        walker.setBasePath(new File("src/it/docmodel-bundle/src/main/resources"));
+        walker.setBasePath(new File("src/it/simple-bundle/src/main/resources"));
         walker.setPrefix("");
     }
 

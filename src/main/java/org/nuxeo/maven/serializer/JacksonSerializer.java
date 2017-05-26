@@ -9,12 +9,12 @@ import org.nuxeo.ecm.automation.OperationDocumentation;
 import org.nuxeo.ecm.automation.core.OperationContribution;
 import org.nuxeo.ecm.core.schema.FacetDescriptor;
 import org.nuxeo.ecm.core.security.PermissionDescriptor;
-import org.nuxeo.maven.serializer.mixin.FacetMixin;
-import org.nuxeo.maven.serializer.mixin.OperationDocumentationMixin;
-import org.nuxeo.maven.serializer.mixin.PermissionMixin;
 import org.nuxeo.maven.serializer.adapter.DefaultAdapter;
 import org.nuxeo.maven.serializer.adapter.OperationAdapter;
 import org.nuxeo.maven.serializer.adapter.SerializerAdapter;
+import org.nuxeo.maven.serializer.mixin.FacetMixin;
+import org.nuxeo.maven.serializer.mixin.OperationDocumentationMixin;
+import org.nuxeo.maven.serializer.mixin.PermissionMixin;
 
 import com.fasterxml.jackson.core.JsonEncoding;
 import com.fasterxml.jackson.core.JsonFactory;
