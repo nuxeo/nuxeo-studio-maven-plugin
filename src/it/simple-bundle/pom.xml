@@ -32,10 +32,7 @@
         <configuration>
           <rules>
             <requirePluginVersions>
-              <message>
-                Set plugin versions in pluginManagement section.
-              </message>
-              <banSnapshots>false</banSnapshots>
+              <unCheckedPluginList>@project.groupId@:@project.artifactId@</unCheckedPluginList>
             </requirePluginVersions>
           </rules>
         </configuration>
