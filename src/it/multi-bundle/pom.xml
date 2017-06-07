@@ -55,9 +55,8 @@
         <executions>
           <execution>
             <id>extract</id>
-            <phase>package</phase>
             <goals>
-              <goal>nuxeo-extractor</goal>
+              <goal>extract</goal>
             </goals>
             <inherited>false</inherited>
           </execution>

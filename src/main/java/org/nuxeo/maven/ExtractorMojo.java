@@ -16,16 +16,14 @@ import org.nuxeo.maven.publisher.Publisher;
 import org.nuxeo.maven.serializer.StudioSerializer;
 
 /**
- * Nuxeo Extractor Mojo
- * </p>
- * Goal of the Mojo is to parse each project to load contributions' descriptors from the MANIFEST.MF and map them to
- * Studio format. Then, depending of the {@link token} parameter, JSON output is written in the {@link output} file or
- * pushed to Nuxeo Studio.
+ * Parse each project to load contributions' descriptors from the MANIFEST.MF and map them to Studio format. Then,
+ * depending of the {@link #token} parameter, JSON output is written in the {@link #output} file or pushed to Nuxeo
+ * Studio.
  */
-@Mojo(name = "nuxeo-extractor", defaultPhase = LifecyclePhase.PREPARE_PACKAGE, requiresDependencyCollection = ResolutionScope.COMPILE, inheritByDefault = false, aggregator = true)
+@Mojo(name = "extract", defaultPhase = LifecyclePhase.PREPARE_PACKAGE, requiresDependencyCollection = ResolutionScope.COMPILE, inheritByDefault = false, aggregator = true, threadSafe = true)
 public class ExtractorMojo extends AbstractMojo {
 
-    @Parameter(defaultValue = "${project}", readonly = true)
+    @Parameter(defaultValue = "${project}", readonly = true, property = "nsmp.project")
     protected MavenProject project;
 
     /**
