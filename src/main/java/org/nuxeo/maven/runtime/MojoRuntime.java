@@ -1,4 +1,4 @@
-package org.nuxeo.maven;
+package org.nuxeo.maven.runtime;
 
 import java.io.File;
 import java.io.IOException;

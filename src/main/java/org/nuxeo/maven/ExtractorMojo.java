@@ -13,10 +13,12 @@ import org.apache.maven.project.MavenProject;
 import org.nuxeo.maven.bundle.BundleWalker;
 import org.nuxeo.maven.bundle.ContributionsHolder;
 import org.nuxeo.maven.publisher.Publisher;
+import org.nuxeo.maven.runtime.MojoRuntime;
 import org.nuxeo.maven.serializer.StudioSerializer;
 
 /**
- * Parse each project to load contributions' descriptors from the MANIFEST.MF and map them to studio contributions registry format.
+ * Parse each project to load contributions' descriptors from the MANIFEST.MF and map them to studio contributions
+ * registry format.
  * <p/>
  * Then, depending of the {@link #token} parameter, JSON output is written in the {@link #output} file or pushed to
  * Nuxeo Studio.

@@ -14,7 +14,7 @@ import java.util.stream.Stream;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.maven.plugin.logging.Log;
 import org.apache.maven.plugin.logging.SystemStreamLog;
-import org.nuxeo.maven.MojoRuntime;
+import org.nuxeo.maven.runtime.MojoRuntime;
 import org.nuxeo.runtime.model.RegistrationInfo;
 import org.nuxeo.runtime.model.impl.ComponentDescriptorReader;
 

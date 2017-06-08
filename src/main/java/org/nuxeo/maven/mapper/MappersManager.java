@@ -4,7 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
-import org.nuxeo.maven.MojoRuntime;
+import org.nuxeo.maven.runtime.MojoRuntime;
 import org.nuxeo.runtime.model.Extension;
 
 /**
