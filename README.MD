@@ -1,3 +1,5 @@
+[![Build Status](https://qa.nuxeo.org/jenkins/buildStatus/icon?job=Misc/tools_nuxeo-studio-maven-plugin-master)](https://qa.nuxeo.org/jenkins/job/Misc/job/tools_nuxeo-studio-maven-plugin-master)
+
 # Introduction
 
 This plugin allows you to extract contributions from any Nuxeo Project.
