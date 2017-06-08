@@ -42,6 +42,8 @@
     <debugITs>false</debugITs>
     <skipITs>false</skipITs>
     <jackson.version>2.7.4</jackson.version>
+    <apache.lang3.version>3.3.2</apache.lang3.version>
+    <commons.io.version>2.4</commons.io.version>
     <maven.version>3.5.0</maven.version>
     <maven.tools.version>3.5</maven.tools.version>
     <nuxeo.version>9.1</nuxeo.version>
@@ -80,6 +82,16 @@
     </dependency>
 
     <!-- Third libs dependencies -->
+    <dependency>
+      <groupId>commons-io</groupId>
+      <artifactId>commons-io</artifactId>
+      <version>${commons.io.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.commons</groupId>
+      <artifactId>commons-lang3</artifactId>
+      <version>${apache.lang3.version}</version>
+    </dependency>
     <dependency>
       <groupId>com.fasterxml.jackson.core</groupId>
       <artifactId>jackson-core</artifactId>
