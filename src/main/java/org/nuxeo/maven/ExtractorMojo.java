@@ -16,9 +16,10 @@ import org.nuxeo.maven.publisher.Publisher;
 import org.nuxeo.maven.serializer.StudioSerializer;
 
 /**
- * Parse each project to load contributions' descriptors from the MANIFEST.MF and map them to Studio format. Then,
- * depending of the {@link #token} parameter, JSON output is written in the {@link #output} file or pushed to Nuxeo
- * Studio.
+ * Parse each project to load contributions' descriptors from the MANIFEST.MF and map them to studio contributions registry format.
+ * <p/>
+ * Then, depending of the {@link #token} parameter, JSON output is written in the {@link #output} file or pushed to
+ * Nuxeo Studio.
  */
 @Mojo(name = "extract", defaultPhase = LifecyclePhase.PREPARE_PACKAGE, requiresDependencyCollection = ResolutionScope.COMPILE, inheritByDefault = false, aggregator = true, threadSafe = true)
 public class ExtractorMojo extends AbstractMojo {
@@ -27,7 +28,7 @@ public class ExtractorMojo extends AbstractMojo {
     protected MavenProject project;
 
     /**
-     * List of Studio registries exported. Multiple values must be separate using a coma.
+     * List of contributions registries exported. Multiple values must be separate using a coma.
      * </p>
      * Possible Values:
      * <ul>
@@ -39,15 +40,14 @@ public class ExtractorMojo extends AbstractMojo {
      * <li>permissions</li>
      * <li>lifecycles</li>
      * </ul>
-     * Default: "operations"
      */
-    @Parameter(defaultValue = "operations", property = "extract")
+    @Parameter(defaultValue = "operations", property = "nsmp.extract")
     protected String extract;
 
     /**
      * File output name. JSON Registries will be written in this file in the "output" directory.
      */
-    @Parameter(defaultValue = "nuxeo-studio-registries.json", property = "output")
+    @Parameter(defaultValue = "nuxeo-studio-registries.json", property = "nsmp.output")
     protected String output;
 
     /**
@@ -65,7 +65,7 @@ public class ExtractorMojo extends AbstractMojo {
     /**
      * Nuxeo Connect URL
      */
-    @Parameter(defaultValue = "https://connect.nuxeo.com/nuxeo/site", property = "connectUrl")
+    @Parameter(defaultValue = "https://connect.nuxeo.com/nuxeo/site", property = "nsmp.connectUrl")
     protected String connectUrl;
 
     protected StudioSerializer serializer;

@@ -90,7 +90,6 @@ public abstract class Publisher {
 
         @Override
         public void publish(String[] targets) throws IOException {
-            // https://nos-test-connect.nos.nuxeo.com/nuxeo/site/studio/api/projects/${symbolicName}/operations
             URI operationsUrl = UriBuilder.fromUri(connectUrl).path(REGISTRY_ENDPOINT).build(symbolicName);
 
             try (ByteArrayOutputStream baos = new ByteArrayOutputStream()) {
