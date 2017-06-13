@@ -35,8 +35,9 @@ import org.nuxeo.runtime.model.RegistrationInfo;
 
 /**
  * Contributions Holder is aim to map and track all visited contributions.
- * </p>
+ * <p>
  * This Holder is based on a {@link MappersManager} to map all known contributions to his Descriptor object.
+ * </p>
  */
 public class ContributionsHolder {
     protected final Map<String, List<Object>> contributions = new HashMap<>();

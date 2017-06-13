@@ -42,12 +42,14 @@ import org.osgi.framework.Bundle;
  * Simple Fake {@link RuntimeContext} that load all {@link MavenProject} child's class path (Maven compile resolution
  * scope) elements to a custom {@link ClassLoader}. It is required, in order to be able to resolve external Type from
  * plugin. For instance, it is needed by {@link org.nuxeo.ecm.automation.core.OperationContribution}.
- * </p>
+ * <p>
  * The only implemented method is {@link MojoRuntime#loadClass(java.lang.String)}, otherwise an
  * {@link UnsupportedOperationException} is thrown.
  * </p>
+ * <p>
  * Runtime will load types from current class loader if
  * {@link MojoRuntime#initCustomClassLoader(org.apache.maven.project.MavenProject)} has never been called.
+ * </p>
  */
 public class MojoRuntime implements RuntimeContext {
 
@@ -63,7 +65,7 @@ public class MojoRuntime implements RuntimeContext {
      * classes.
      *
      * @param project Current Project as target class loader
-     * @throws MojoExecutionException
+     * @throws MojoExecutionException in case of any checked exception
      */
     public static void initCustomClassLoader(MavenProject project) throws MojoExecutionException {
         try {

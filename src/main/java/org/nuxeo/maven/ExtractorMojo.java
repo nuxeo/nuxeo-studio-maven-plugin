@@ -38,9 +38,10 @@ import org.nuxeo.maven.serializer.StudioSerializer;
 /**
  * Parse each project to load contributions' descriptors from the MANIFEST.MF and map them to studio contributions
  * registry format.
- * <p/>
+ * <p>
  * Then, depending of the {@link #token} parameter, JSON output is written in the {@link #output} file or pushed to
  * Nuxeo Studio.
+ * </p>
  */
 @Mojo(name = "extract", defaultPhase = LifecyclePhase.PREPARE_PACKAGE, requiresDependencyCollection = ResolutionScope.COMPILE, inheritByDefault = false, aggregator = true, threadSafe = true)
 public class ExtractorMojo extends AbstractMojo {
@@ -50,17 +51,9 @@ public class ExtractorMojo extends AbstractMojo {
 
     /**
      * List of contributions registries exported. Multiple values must be separate using a coma.
-     * </p>
+     * <p>
      * Possible Values:
-     * <ul>
-     * <li>operations</li>
-     * <li>doctypes</li>
-     * <li>schemas</li>
-     * <li>facets</li>
-     * <li>events</li>
-     * <li>permissions</li>
-     * <li>lifecycles</li>
-     * </ul>
+     * </p>
      */
     @Parameter(defaultValue = "operations", property = "nsmp.extract")
     protected String extract;
