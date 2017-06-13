@@ -341,6 +341,18 @@
     </repository>
   </repositories>
 
+  <distributionManagement>
+    <repository>
+      <id>public-releases</id>
+      <url>http://mavenin.nuxeo.com/nexus/content/repositories/public-releases</url>
+    </repository>
+    <snapshotRepository>
+      <id>public-snapshots</id>
+      <url>http://mavenin.nuxeo.com/nexus/content/repositories/public-snapshots</url>
+      <uniqueVersion>true</uniqueVersion>
+    </snapshotRepository>
+  </distributionManagement>
+
   <pluginRepositories>
     <pluginRepository>
       <id>public</id>
