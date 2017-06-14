@@ -29,6 +29,7 @@ import java.util.Arrays;
 
 import org.junit.Test;
 import org.nuxeo.ecm.automation.core.OperationContribution;
+import org.nuxeo.ecm.core.lifecycle.extensions.LifeCycleDescriptor;
 import org.nuxeo.ecm.core.schema.FacetDescriptor;
 import org.nuxeo.ecm.core.security.PermissionDescriptor;
 import org.nuxeo.maven.bundle.ContributionsHolder;
@@ -46,6 +47,8 @@ public class TestSerializer extends AbstractTest {
 
     public static final String EXPECTED_JSON_PERMISSIONS = "{\"Browse\": \"Browse\", \"ReadProperties\": \"ReadProperties\", \"ReadChildren\": \"ReadChildren\", \"ReadLifeCycle\": \"ReadLifeCycle\"}";
 
+    public static final String EXPECTED_JSON_LIFECYCLES = "{\"default\": {\"states\": [\"project\", \"approved\", \"obsolete\", \"deleted\"],\"transitions\": [\"approve\", \"obsolete\", \"delete\", \"undelete\", \"backToProject\"]}}";
+
     @Test
     public void testDoctypeMapper() throws URISyntaxException {
         RegistrationInfo ri = getRegistrationInfo("component-contrib.xml");
@@ -56,9 +59,7 @@ public class TestSerializer extends AbstractTest {
 
     @Test
     public void testFacetSerializer() throws URISyntaxException {
-        RegistrationInfo ri = getRegistrationInfo("component-contrib.xml");
-        ContributionsHolder holder = new ContributionsHolder();
-        holder.load(ri);
+        ContributionsHolder holder = loadComponent("component-contrib.xml");
         assertEquals(1, holder.getContributions(FacetDescriptor.class).size());
 
         StudioSerializer serializer = new StudioSerializer(holder);
@@ -69,9 +70,7 @@ public class TestSerializer extends AbstractTest {
 
     @Test
     public void testPermissionSerializer() throws URISyntaxException {
-        RegistrationInfo ri = getRegistrationInfo("permission-contrib.xml");
-        ContributionsHolder holder = new ContributionsHolder();
-        holder.load(ri);
+        ContributionsHolder holder = loadComponent("permission-contrib.xml");
         assertEquals(4, holder.getContributions(PermissionDescriptor.class).size());
 
         StudioSerializer serializer = new StudioSerializer(holder);
@@ -82,14 +81,22 @@ public class TestSerializer extends AbstractTest {
 
     @Test
     public void testOperationSerializer() throws URISyntaxException {
-        RegistrationInfo ri = getRegistrationInfo("operation-contrib.xml");
-        ContributionsHolder holder = new ContributionsHolder();
-        holder.load(ri);
+        ContributionsHolder holder = loadComponent("operation-contrib.xml");
         assertEquals(1, holder.getContributions(OperationContribution.class).size());
 
         StudioSerializer serializer = new StudioSerializer(holder);
         String result = serializer.serializeAll(OperationContribution.class);
-        assertEquals(EXPECTED_JSON_OPERATIONS, result);
+        JSONAssert.assertJsonEquals(EXPECTED_JSON_OPERATIONS, result);
+    }
+
+    @Test
+    public void testLifeCycleSerializer() throws URISyntaxException {
+        ContributionsHolder holder = loadComponent("lifecycle-contrib.xml");
+        assertEquals(1, holder.getContributions(LifeCycleDescriptor.class).size());
+
+        StudioSerializer serializer = new StudioSerializer(holder);
+        String result = serializer.serializeAll(LifeCycleDescriptor.class);
+        JSONAssert.assertJsonEquals(EXPECTED_JSON_LIFECYCLES, result);
     }
 
     @Test

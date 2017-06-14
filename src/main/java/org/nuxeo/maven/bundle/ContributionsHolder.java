@@ -29,6 +29,7 @@ import java.util.Map;
 import org.nuxeo.maven.mapper.MappersManager;
 import org.nuxeo.maven.mapper.impl.AutomationMapper;
 import org.nuxeo.maven.mapper.impl.DoctypeMapper;
+import org.nuxeo.maven.mapper.impl.LifeCycleMapper;
 import org.nuxeo.maven.mapper.impl.PermissionsMapper;
 import org.nuxeo.runtime.model.RegistrationInfo;
 
@@ -51,6 +52,7 @@ public class ContributionsHolder {
         mapper.register(new DoctypeMapper());
         mapper.register(new PermissionsMapper());
         mapper.register(new AutomationMapper());
+        mapper.register(new LifeCycleMapper());
     }
 
     public MappersManager getMapper() {

@@ -1,0 +1,53 @@
+<component name="org.nuxeo.platform.audit.lifecycle.contrib">
+  <extension target="org.nuxeo.ecm.core.lifecycle.LifeCycleService"
+             point="lifecycle">
+
+    <documentation>Nuxeo core default life cycle definition.</documentation>
+
+    <lifecycle name="default" defaultInitial="project">
+      <transitions>
+        <transition name="approve" destinationState="approved">
+          <description>Approve the content</description>
+        </transition>
+        <transition name="obsolete" destinationState="obsolete">
+          <description>Content becomes obsolete</description>
+        </transition>
+        <transition name="delete" destinationState="deleted">
+          <description>Move document to trash (temporary delete)</description>
+        </transition>
+        <transition name="undelete" destinationState="project">
+          <description>Recover the document from trash</description>
+        </transition>
+        <transition name="backToProject" destinationState="project">
+          <description>Recover the document from trash</description>
+        </transition>
+      </transitions>
+      <states>
+        <state name="project" description="Default state" initial="true">
+          <transitions>
+            <transition>approve</transition>
+            <transition>obsolete</transition>
+            <transition>delete</transition>
+          </transitions>
+        </state>
+        <state name="approved" description="Content has been validated">
+          <transitions>
+            <transition>delete</transition>
+            <transition>backToProject</transition>
+          </transitions>
+        </state>
+        <state name="obsolete" description="Content is obsolete">
+          <transitions>
+            <transition>delete</transition>
+            <transition>backToProject</transition>
+          </transitions>
+        </state>
+        <state name="deleted" description="Document is deleted">
+          <transitions>
+            <transition>undelete</transition>
+          </transitions>
+        </state>
+      </states>
+    </lifecycle>
+  </extension>
+</component>

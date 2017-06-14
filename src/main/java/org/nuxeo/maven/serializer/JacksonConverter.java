@@ -26,12 +26,14 @@ import java.util.Map;
 
 import org.nuxeo.ecm.automation.OperationDocumentation;
 import org.nuxeo.ecm.automation.core.OperationContribution;
+import org.nuxeo.ecm.core.lifecycle.extensions.LifeCycleDescriptor;
 import org.nuxeo.ecm.core.schema.FacetDescriptor;
 import org.nuxeo.ecm.core.security.PermissionDescriptor;
 import org.nuxeo.maven.serializer.adapter.DefaultAdapter;
 import org.nuxeo.maven.serializer.adapter.OperationAdapter;
 import org.nuxeo.maven.serializer.adapter.SerializerAdapter;
 import org.nuxeo.maven.serializer.mixin.FacetMixin;
+import org.nuxeo.maven.serializer.mixin.LifeCycleMixin;
 import org.nuxeo.maven.serializer.mixin.OperationDocumentationMixin;
 import org.nuxeo.maven.serializer.mixin.PermissionMixin;
 
@@ -56,6 +58,7 @@ public class JacksonConverter {
         registerMixin(FacetDescriptor.class, FacetMixin.class);
         registerMixin(PermissionDescriptor.class, PermissionMixin.class);
         registerMixin(OperationDocumentation.class, OperationDocumentationMixin.class);
+        registerMixin(LifeCycleDescriptor.class, LifeCycleMixin.class);
     }
 
     protected void registerMixin(Class<?> target, Class<?> mixin) {

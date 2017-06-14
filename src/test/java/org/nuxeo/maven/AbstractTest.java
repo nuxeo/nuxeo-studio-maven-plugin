@@ -27,6 +27,7 @@ import java.net.URL;
 
 import org.junit.Before;
 import org.nuxeo.maven.bundle.BundleWalker;
+import org.nuxeo.maven.bundle.ContributionsHolder;
 import org.nuxeo.runtime.model.RegistrationInfo;
 
 public class AbstractTest {
@@ -47,5 +48,12 @@ public class AbstractTest {
         assertNotNull(ri);
 
         return ri;
+    }
+
+    protected ContributionsHolder loadComponent(String filename) throws URISyntaxException {
+        RegistrationInfo ri = getRegistrationInfo(filename);
+        ContributionsHolder holder = new ContributionsHolder();
+        holder.load(ri);
+        return holder;
     }
 }
