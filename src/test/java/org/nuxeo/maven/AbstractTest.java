@@ -19,6 +19,7 @@
 
 package org.nuxeo.maven;
 
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 
 import java.io.File;
@@ -28,7 +29,11 @@ import java.net.URL;
 import org.junit.Before;
 import org.nuxeo.maven.bundle.BundleWalker;
 import org.nuxeo.maven.bundle.ContributionsHolder;
+import org.nuxeo.maven.serializer.StudioSerializer;
 import org.nuxeo.runtime.model.RegistrationInfo;
+
+import junit.framework.AssertionFailedError;
+import net.sf.json.test.JSONAssert;
 
 public class AbstractTest {
     protected BundleWalker walker;
@@ -55,5 +60,25 @@ public class AbstractTest {
         ContributionsHolder holder = new ContributionsHolder();
         holder.load(ri);
         return holder;
+    }
+
+    protected <T> void assertSerialization(String component, Class<T> descriptor, int size, String expectedJson)
+            throws URISyntaxException {
+        ContributionsHolder holder = loadComponent(component);
+        assertEquals(size, holder.getContributions(descriptor).size());
+
+        StudioSerializer serializer = new StudioSerializer(holder);
+        String result = serializer.serializeAll(descriptor);
+        assertJsonEquals(expectedJson, result);
+    }
+
+    protected void assertJsonEquals(String expected, String actual) {
+        try {
+            JSONAssert.assertJsonEquals(expected, actual);
+        } catch (AssertionFailedError e) {
+            System.out.println(String.format("Expected: %s", expected));
+            System.out.println(String.format("Actual: %s", actual));
+            throw e;
+        }
     }
 }

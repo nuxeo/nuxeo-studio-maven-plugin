@@ -28,24 +28,15 @@ import java.util.stream.Collectors;
 import org.nuxeo.ecm.core.lifecycle.LifeCycleState;
 import org.nuxeo.ecm.core.lifecycle.LifeCycleTransition;
 import org.nuxeo.ecm.core.lifecycle.extensions.LifeCycleDescriptor;
+import org.nuxeo.maven.serializer.JacksonConverter.StudioJacksonSerializer;
 
 import com.fasterxml.jackson.core.JsonGenerator;
 import com.fasterxml.jackson.databind.SerializerProvider;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
-import com.fasterxml.jackson.databind.ser.std.StdSerializer;
 
 @JsonSerialize(using = LifeCycleMixin.LifeCycleSerializer.class)
 public abstract class LifeCycleMixin {
-    public static class LifeCycleSerializer extends StdSerializer<LifeCycleDescriptor> {
-
-        public LifeCycleSerializer() {
-            this(null);
-        }
-
-        protected LifeCycleSerializer(Class<LifeCycleDescriptor> t) {
-            super(t);
-        }
-
+    public static class LifeCycleSerializer extends StudioJacksonSerializer<LifeCycleDescriptor> {
         @Override
         public void serialize(LifeCycleDescriptor value, JsonGenerator gen, SerializerProvider provider)
                 throws IOException {

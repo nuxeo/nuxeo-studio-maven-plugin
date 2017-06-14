@@ -26,9 +26,11 @@ import java.io.ByteArrayOutputStream;
 import java.io.UnsupportedEncodingException;
 import java.net.URISyntaxException;
 import java.util.Arrays;
+import java.util.List;
 
 import org.junit.Test;
 import org.nuxeo.ecm.automation.core.OperationContribution;
+import org.nuxeo.ecm.core.event.impl.EventListenerDescriptor;
 import org.nuxeo.ecm.core.lifecycle.extensions.LifeCycleDescriptor;
 import org.nuxeo.ecm.core.schema.FacetDescriptor;
 import org.nuxeo.ecm.core.security.PermissionDescriptor;
@@ -49,7 +51,7 @@ public class TestSerializer extends AbstractTest {
 
     public static final String EXPECTED_JSON_LIFECYCLES = "{\"default\": {\"states\": [\"project\", \"approved\", \"obsolete\", \"deleted\"],\"transitions\": [\"approve\", \"obsolete\", \"delete\", \"undelete\", \"backToProject\"]}}";
 
-    public static final String EXPECTED_JSON_EVENT = "{\"MyFirstEvent\": \"My First Event\"}";
+    public static final String EXPECTED_JSON_EVENT = "{\"MyFirstEvent\": \"My First Event\", \"MySecondEvent\": \"My Second Event\"}";
 
     @Test
     public void testDoctypeMapper() throws URISyntaxException {
@@ -61,44 +63,34 @@ public class TestSerializer extends AbstractTest {
 
     @Test
     public void testFacetSerializer() throws URISyntaxException {
-        ContributionsHolder holder = loadComponent("component-contrib.xml");
-        assertEquals(1, holder.getContributions(FacetDescriptor.class).size());
-
-        StudioSerializer serializer = new StudioSerializer(holder);
-        String result = serializer.serializeAll(FacetDescriptor.class);
-
-        JSONAssert.assertJsonEquals(EXPECTED_JSON_FACETS, result);
+        assertSerialization("component-contrib.xml", FacetDescriptor.class, 1, EXPECTED_JSON_FACETS);
     }
 
     @Test
     public void testPermissionSerializer() throws URISyntaxException {
-        ContributionsHolder holder = loadComponent("permission-contrib.xml");
-        assertEquals(5, holder.getContributions(PermissionDescriptor.class).size());
-
-        StudioSerializer serializer = new StudioSerializer(holder);
-        String result = serializer.serializeAll(PermissionDescriptor.class);
-
-        JSONAssert.assertJsonEquals(EXPECTED_JSON_PERMISSIONS, result);
+        assertSerialization("permission-contrib.xml", PermissionDescriptor.class, 5, EXPECTED_JSON_PERMISSIONS);
     }
 
     @Test
     public void testOperationSerializer() throws URISyntaxException {
-        ContributionsHolder holder = loadComponent("operation-contrib.xml");
-        assertEquals(1, holder.getContributions(OperationContribution.class).size());
-
-        StudioSerializer serializer = new StudioSerializer(holder);
-        String result = serializer.serializeAll(OperationContribution.class);
-        JSONAssert.assertJsonEquals(EXPECTED_JSON_OPERATIONS, result);
+        assertSerialization("operation-contrib.xml", OperationContribution.class, 1, EXPECTED_JSON_OPERATIONS);
     }
 
     @Test
     public void testLifeCycleSerializer() throws URISyntaxException {
-        ContributionsHolder holder = loadComponent("lifecycle-contrib.xml");
-        assertEquals(1, holder.getContributions(LifeCycleDescriptor.class).size());
+        assertSerialization("lifecycle-contrib.xml", LifeCycleDescriptor.class, 1, EXPECTED_JSON_LIFECYCLES);
+    }
+
+    @Test
+    public void testCoreEventSerializer() throws URISyntaxException {
+        ContributionsHolder holder = loadComponent("events-contrib.xml");
+        List<EventListenerDescriptor> contributions = holder.getContributions(EventListenerDescriptor.class);
+        assertEquals(1, contributions.size());
+        assertEquals(5, contributions.get(0).getEvents().size());
 
         StudioSerializer serializer = new StudioSerializer(holder);
-        String result = serializer.serializeAll(LifeCycleDescriptor.class);
-        JSONAssert.assertJsonEquals(EXPECTED_JSON_LIFECYCLES, result);
+        String result = serializer.serializeAll(EventListenerDescriptor.class);
+        assertJsonEquals(EXPECTED_JSON_EVENT, result);
     }
 
     @Test
