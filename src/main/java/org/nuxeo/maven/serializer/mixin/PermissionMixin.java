@@ -19,6 +19,8 @@
 
 package org.nuxeo.maven.serializer.mixin;
 
+import static org.nuxeo.maven.serializer.SerializerHelper.humanize;
+
 import java.io.IOException;
 
 import org.nuxeo.ecm.core.security.PermissionDescriptor;
@@ -45,7 +47,7 @@ public abstract class PermissionMixin {
                 throws IOException {
             gen.writeFieldName(value.getName());
             gen.writeRawValue(":");
-            gen.writeObject(value.getName());
+            gen.writeObject(humanize(value.getName()));
         }
     }
 }

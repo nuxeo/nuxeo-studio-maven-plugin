@@ -9,5 +9,6 @@
     </permission>
     <permission name="ReadChildren"/>
     <permission name="ReadLifeCycle"/>
+    <permission name="smallCamelCase"/>
   </extension>
 </component>

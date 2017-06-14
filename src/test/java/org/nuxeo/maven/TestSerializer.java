@@ -45,9 +45,11 @@ public class TestSerializer extends AbstractTest {
 
     public static final String EXPECTED_JSON_FACETS = "[{\"id\": \"Picture\", \"schemas\": [\"file\",\"picture\",\"image_metadata\"]}]";
 
-    public static final String EXPECTED_JSON_PERMISSIONS = "{\"Browse\": \"Browse\", \"ReadProperties\": \"ReadProperties\", \"ReadChildren\": \"ReadChildren\", \"ReadLifeCycle\": \"ReadLifeCycle\"}";
+    public static final String EXPECTED_JSON_PERMISSIONS = "{\"Browse\": \"Browse\", \"ReadProperties\": \"Read Properties\", \"ReadChildren\": \"Read Children\", \"ReadLifeCycle\": \"Read Life Cycle\", \"smallCamelCase\": \"Small Camel Case\"}";
 
     public static final String EXPECTED_JSON_LIFECYCLES = "{\"default\": {\"states\": [\"project\", \"approved\", \"obsolete\", \"deleted\"],\"transitions\": [\"approve\", \"obsolete\", \"delete\", \"undelete\", \"backToProject\"]}}";
+
+    public static final String EXPECTED_JSON_EVENT = "{\"MyFirstEvent\": \"My First Event\"}";
 
     @Test
     public void testDoctypeMapper() throws URISyntaxException {
@@ -71,7 +73,7 @@ public class TestSerializer extends AbstractTest {
     @Test
     public void testPermissionSerializer() throws URISyntaxException {
         ContributionsHolder holder = loadComponent("permission-contrib.xml");
-        assertEquals(4, holder.getContributions(PermissionDescriptor.class).size());
+        assertEquals(5, holder.getContributions(PermissionDescriptor.class).size());
 
         StudioSerializer serializer = new StudioSerializer(holder);
         String result = serializer.serializeAll(PermissionDescriptor.class);
