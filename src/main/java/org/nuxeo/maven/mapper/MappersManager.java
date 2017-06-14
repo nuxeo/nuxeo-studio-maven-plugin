@@ -45,6 +45,13 @@ public class MappersManager {
         return mappers.stream().anyMatch(s -> s.accept(ext));
     }
 
+    public boolean isSerializable(Class<?> descriptor, Object contribution) {
+        ExtensionMapper mapper = mappers.stream().filter(s -> s.contains(descriptor)).findFirst().orElseThrow(
+                RuntimeException::new);
+
+        return mapper.isEnabled(contribution) && !mapper.isPartial(contribution);
+    }
+
     public Class<?> getDescriptor(String name) {
         return mappers.stream().map(s -> s.getDescriptor(name)).filter(Objects::nonNull).findFirst().orElse(null);
     }
@@ -55,7 +62,7 @@ public class MappersManager {
         if (mapper != null) {
             return mapper.loadAll(MojoRuntime.instance, ext);
         } else {
-            return null;
+            return new Object[] {};
         }
     }
 }

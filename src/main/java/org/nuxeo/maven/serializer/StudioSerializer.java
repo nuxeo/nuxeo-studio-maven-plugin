@@ -44,7 +44,7 @@ public class StudioSerializer {
         Map<String, String> serialized = new HashMap<>();
         Arrays.stream(targets).forEach(t -> serialized.put(t, this.serializeAll(t)));
 
-        JacksonSerializer.instance.newGlobalStudioObject(os, serialized);
+        JacksonConverter.instance.newGlobalStudioObject(os, serialized);
     }
 
     public String serializeAll(String name) {
@@ -63,7 +63,7 @@ public class StudioSerializer {
     }
 
     protected String serialize(Object obj) {
-        return JacksonSerializer.instance.serialize(obj);
+        return JacksonConverter.instance.serialize(obj);
     }
 
     public String getDelimiter() {

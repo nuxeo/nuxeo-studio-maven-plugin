@@ -25,7 +25,6 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Objects;
 
 import org.nuxeo.maven.mapper.MappersManager;
 import org.nuxeo.maven.mapper.impl.AutomationMapper;
@@ -40,6 +39,9 @@ import org.nuxeo.runtime.model.RegistrationInfo;
  * </p>
  */
 public class ContributionsHolder {
+    /**
+     * Contains a map of all contributions per contributions descriptor class.
+     */
     protected final Map<String, List<Object>> contributions = new HashMap<>();
 
     protected final MappersManager mapper;
@@ -56,18 +58,24 @@ public class ContributionsHolder {
     }
 
     public void load(RegistrationInfo ri) {
-        Arrays.stream(ri.getExtensions())
-              .map(mapper::load)
-              .filter(Objects::nonNull)
-              .forEach(a -> Arrays.stream(a).forEach(c -> {
-                  List<Object> sortedContributions = contributions.computeIfAbsent(c.getClass().getName(),
-                          s -> new ArrayList<>());
-                  sortedContributions.add(c);
-              }));
+        Arrays.stream(ri.getExtensions()).map(mapper::load).forEach(a -> Arrays.stream(a).forEach(c -> {
+            List<Object> sortedContributions = contributions.computeIfAbsent(c.getClass().getName(),
+                    s -> new ArrayList<>());
+            sortedContributions.add(c);
+        }));
     }
 
+    /**
+     * Get all contributions based on this descriptor; filtering the ones that target to be deleted or partial.
+     */
     @SuppressWarnings("unchecked")
     public <T> List<T> getContributions(Class<T> descriptor) {
-        return (List<T>) contributions.getOrDefault(descriptor.getName(), Collections.emptyList());
+        List<T> list = new ArrayList<>();
+        for (Object contribution : contributions.getOrDefault(descriptor.getName(), Collections.emptyList())) {
+            if (mapper.isSerializable(descriptor, contribution)) {
+                list.add((T) contribution);
+            }
+        }
+        return list;
     }
 }

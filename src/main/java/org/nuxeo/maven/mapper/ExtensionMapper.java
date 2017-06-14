@@ -48,6 +48,25 @@ public abstract class ExtensionMapper {
         return accept(ext.getTargetComponent().getName(), ext.getExtensionPoint());
     }
 
+    /**
+     * Method used to be overriden in order to detect a disabled contribution
+     *
+     * @param contribution 
+     * @return false if the contribution is removing another one, true otherwise.
+     */
+    public boolean isEnabled(Object contribution) {
+        return true;
+    }
+
+    /**
+     * Method used to be overriden in order to detect a partial contribution
+     *
+     * @return true if the contribution is partial, false otherwise.
+     */
+    public boolean isPartial(Object contribution) {
+        return false;
+    }
+
     public Object[] loadAll(RuntimeContext ctx, Extension extension) {
         XMap xmap = new XMap();
         Arrays.stream(getDescriptors()).forEach(xmap::register);
@@ -60,5 +79,9 @@ public abstract class ExtensionMapper {
 
     public Class<?> getDescriptor(String name) {
         return descriptors.getOrDefault(name, null);
+    }
+
+    public boolean contains(Class<?> descriptor) {
+        return descriptors.values().contains(descriptor);
     }
 }

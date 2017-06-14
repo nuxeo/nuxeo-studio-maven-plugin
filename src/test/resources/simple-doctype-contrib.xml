@@ -13,5 +13,10 @@
       <facet name="Commentable"/>
       <facet name="HasRelatedText"/>
     </doctype>
+
+    <doctype name="Skipped" extends="Document" append="true">
+      <schema name="common"/>
+      <schema name="uid"/>
+    </doctype>
   </extension>
 </component>

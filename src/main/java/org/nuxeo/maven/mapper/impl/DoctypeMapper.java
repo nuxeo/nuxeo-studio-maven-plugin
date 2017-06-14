@@ -45,4 +45,12 @@ public class DoctypeMapper extends ExtensionMapper {
     public boolean accept(String target, String point) {
         return "org.nuxeo.ecm.core.schema.TypeService".equals(target) && extensionPoints.contains(point);
     }
+
+    @Override
+    public boolean isPartial(Object contribution) {
+        if (contribution instanceof DocumentTypeDescriptor) {
+            return ((DocumentTypeDescriptor) contribution).append;
+        }
+        return false;
+    }
 }

@@ -41,8 +41,8 @@ import com.fasterxml.jackson.core.JsonGenerator;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
-public class JacksonSerializer {
-    public static final JacksonSerializer instance = new JacksonSerializer();
+public class JacksonConverter {
+    public static final JacksonConverter instance = new JacksonConverter();
 
     protected Map<Class<?>, Class<?>> mixins = new HashMap<>();
 
@@ -50,7 +50,7 @@ public class JacksonSerializer {
 
     protected SerializerAdapter defaultAdapter = new DefaultAdapter();
 
-    private JacksonSerializer() {
+    private JacksonConverter() {
         registerAdapter(OperationContribution.class, new OperationAdapter());
 
         registerMixin(FacetDescriptor.class, FacetMixin.class);
