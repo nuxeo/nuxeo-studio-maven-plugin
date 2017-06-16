@@ -29,15 +29,20 @@ import org.nuxeo.ecm.automation.core.OperationContribution;
 import org.nuxeo.ecm.core.event.impl.EventListenerDescriptor;
 import org.nuxeo.ecm.core.lifecycle.extensions.LifeCycleDescriptor;
 import org.nuxeo.ecm.core.schema.FacetDescriptor;
+import org.nuxeo.ecm.core.schema.SchemaBindingDescriptor;
+import org.nuxeo.ecm.core.schema.types.Schema;
+import org.nuxeo.ecm.core.schema.types.SchemaImpl;
 import org.nuxeo.ecm.core.security.PermissionDescriptor;
 import org.nuxeo.maven.serializer.adapter.DefaultAdapter;
 import org.nuxeo.maven.serializer.adapter.OperationAdapter;
+import org.nuxeo.maven.serializer.adapter.SchemaAdapter;
 import org.nuxeo.maven.serializer.adapter.SerializerAdapter;
 import org.nuxeo.maven.serializer.mixin.EventListenerMixin;
 import org.nuxeo.maven.serializer.mixin.FacetMixin;
 import org.nuxeo.maven.serializer.mixin.LifeCycleMixin;
 import org.nuxeo.maven.serializer.mixin.OperationDocumentationMixin;
 import org.nuxeo.maven.serializer.mixin.PermissionMixin;
+import org.nuxeo.maven.serializer.mixin.SchemaMixin;
 
 import com.fasterxml.jackson.core.JsonEncoding;
 import com.fasterxml.jackson.core.JsonFactory;
@@ -56,21 +61,29 @@ public class JacksonConverter {
     protected SerializerAdapter defaultAdapter = new DefaultAdapter();
 
     private JacksonConverter() {
-        registerAdapter(OperationContribution.class, new OperationAdapter());
+        // Adapters aim to adapt descriptor to a more specific object
+        registerAdapter(OperationContribution.class, OperationAdapter.class);
+        registerAdapter(SchemaBindingDescriptor.class, SchemaAdapter.class);
 
+        // Mixins allow to define the way the serialization is done
         registerMixin(FacetDescriptor.class, FacetMixin.class);
         registerMixin(PermissionDescriptor.class, PermissionMixin.class);
         registerMixin(OperationDocumentation.class, OperationDocumentationMixin.class);
         registerMixin(LifeCycleDescriptor.class, LifeCycleMixin.class);
         registerMixin(EventListenerDescriptor.class, EventListenerMixin.class);
+        registerMixin(SchemaImpl.class, SchemaMixin.class);
     }
 
     protected void registerMixin(Class<?> target, Class<?> mixin) {
         mixins.put(target, mixin);
     }
 
-    protected void registerAdapter(Class<?> target, SerializerAdapter adapter) {
-        adapters.put(target, adapter);
+    protected void registerAdapter(Class<?> target, Class<? extends SerializerAdapter> serializer) {
+        try {
+            adapters.put(target, serializer.newInstance());
+        } catch (InstantiationException | IllegalAccessException e) {
+            throw new RuntimeException(e);
+        }
     }
 
     public String serialize(Object target) {

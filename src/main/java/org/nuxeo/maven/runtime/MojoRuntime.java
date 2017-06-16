@@ -32,6 +32,7 @@ import java.util.Set;
 import org.apache.maven.artifact.DependencyResolutionRequiredException;
 import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.project.MavenProject;
+import org.nuxeo.ecm.core.schema.SchemaManagerImpl;
 import org.nuxeo.runtime.RuntimeService;
 import org.nuxeo.runtime.model.RegistrationInfo;
 import org.nuxeo.runtime.model.RuntimeContext;
@@ -54,6 +55,8 @@ import org.osgi.framework.Bundle;
 public class MojoRuntime implements RuntimeContext {
 
     public static MojoRuntime instance = new MojoRuntime();
+
+    public static SchemaManagerImpl schemaManager = new SchemaManagerImpl();
 
     private static ClassLoader custom;
 
@@ -87,13 +90,17 @@ public class MojoRuntime implements RuntimeContext {
         }
     }
 
+    protected ClassLoader getClassloader() {
+        if (custom != null) {
+            return custom;
+        } else {
+            return Thread.currentThread().getContextClassLoader();
+        }
+    }
+
     @Override
     public Class<?> loadClass(String s) throws ClassNotFoundException {
-        if (custom != null) {
-            return custom.loadClass(s);
-        } else {
-            return Thread.currentThread().getContextClassLoader().loadClass(s);
-        }
+        return getClassloader().loadClass(s);
     }
 
     @Override
@@ -107,13 +114,13 @@ public class MojoRuntime implements RuntimeContext {
     }
 
     @Override
-    public URL getResource(String s) {
-        throw new UnsupportedOperationException();
+    public URL getResource(String name) {
+        return getLocalResource(name);
     }
 
     @Override
-    public URL getLocalResource(String s) {
-        throw new UnsupportedOperationException();
+    public URL getLocalResource(String name) {
+        return getClassloader().getResource(name);
     }
 
     @Override

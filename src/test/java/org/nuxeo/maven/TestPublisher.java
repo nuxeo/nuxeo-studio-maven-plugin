@@ -52,6 +52,7 @@ public class TestPublisher {
 
         when(mvnProject.getBuild()).thenReturn(mock(Build.class));
         when(mvnProject.getBuild().getDirectory()).thenReturn(FileUtils.getTempDirectoryPath());
+        when(mvnProject.getBuild().getOutputDirectory()).thenReturn(FileUtils.getTempDirectoryPath());
         mojo.project = mvnProject;
 
         mojo.initialize();

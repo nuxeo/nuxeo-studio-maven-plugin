@@ -19,6 +19,8 @@
 
 package org.nuxeo.maven;
 
+import static org.nuxeo.common.Environment.NUXEO_HOME;
+
 import java.io.IOException;
 
 import org.apache.maven.plugin.AbstractMojo;
@@ -87,6 +89,7 @@ public class ExtractorMojo extends AbstractMojo {
     protected ContributionsHolder holder;
 
     protected void initialize() throws MojoExecutionException {
+        System.setProperty(NUXEO_HOME, project.getBuild().getOutputDirectory());
         holder = new ContributionsHolder();
         serializer = new StudioSerializer(holder);
 

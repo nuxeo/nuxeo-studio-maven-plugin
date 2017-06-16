@@ -21,8 +21,10 @@ package org.nuxeo.maven;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
+import static org.nuxeo.common.Environment.NUXEO_HOME;
 
 import java.io.File;
+import java.io.IOException;
 import java.net.URISyntaxException;
 import java.net.URL;
 
@@ -32,6 +34,8 @@ import org.nuxeo.maven.bundle.ContributionsHolder;
 import org.nuxeo.maven.serializer.StudioSerializer;
 import org.nuxeo.runtime.model.RegistrationInfo;
 
+import com.google.common.io.Files;
+
 import junit.framework.AssertionFailedError;
 import net.sf.json.test.JSONAssert;
 
@@ -39,7 +43,11 @@ public class AbstractTest {
     protected BundleWalker walker;
 
     @Before
-    public void beforeEach() {
+    public void beforeEach() throws IOException {
+        // Nuxeo Environment is not well initialized without a NUXEO_HOME
+        // Required by org.nuxeo.ecm.core.schema.SchemaManagerImpl()
+        System.setProperty(NUXEO_HOME, Files.createTempDir().getAbsolutePath());
+
         walker = new BundleWalker();
         walker.setBasePath(new File("src/it/simple-bundle/src/main/resources"));
         walker.setPrefix("");

@@ -28,7 +28,7 @@ import org.nuxeo.ecm.core.schema.SchemaBindingDescriptor;
 import org.nuxeo.maven.mapper.ExtensionMapper;
 
 /**
- * Can contain: - doctype - facets
+ * Can contain: - doctype - schemas - facets
  */
 public class DoctypeMapper extends ExtensionMapper {
 
