@@ -35,7 +35,7 @@ import org.nuxeo.ecm.core.schema.DocumentTypeDescriptor;
 import org.nuxeo.ecm.core.schema.SchemaBindingDescriptor;
 import org.nuxeo.maven.bundle.ContributionsHolder;
 import org.nuxeo.maven.mapper.MappersManager;
-import org.nuxeo.maven.mapper.impl.DoctypeMapper;
+import org.nuxeo.maven.mapper.impl.TypeServiceMapper;
 import org.nuxeo.runtime.model.Extension;
 import org.nuxeo.runtime.model.RegistrationInfo;
 
@@ -56,7 +56,7 @@ public class TestWalker extends AbstractTest {
     @Test
     public void testReadExtension() throws URISyntaxException {
         MappersManager manager = new MappersManager();
-        manager.register(new DoctypeMapper());
+        manager.register(new TypeServiceMapper());
 
         assertEquals(DocumentTypeDescriptor.class, manager.getDescriptor("doctypes"));
 

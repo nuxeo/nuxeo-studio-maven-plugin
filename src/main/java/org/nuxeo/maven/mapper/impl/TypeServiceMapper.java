@@ -30,7 +30,7 @@ import org.nuxeo.maven.mapper.ExtensionMapper;
 /**
  * Can contain: - doctype - schemas - facets
  */
-public class DoctypeMapper extends ExtensionMapper {
+public class TypeServiceMapper extends ExtensionMapper {
 
     protected static final List<String> extensionPoints = Arrays.asList("doctype", "schema", "configuration");
 

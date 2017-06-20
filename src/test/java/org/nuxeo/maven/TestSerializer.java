@@ -36,7 +36,7 @@ import org.nuxeo.ecm.core.schema.FacetDescriptor;
 import org.nuxeo.ecm.core.schema.SchemaBindingDescriptor;
 import org.nuxeo.ecm.core.security.PermissionDescriptor;
 import org.nuxeo.maven.bundle.ContributionsHolder;
-import org.nuxeo.maven.mapper.impl.DoctypeMapper;
+import org.nuxeo.maven.mapper.impl.TypeServiceMapper;
 import org.nuxeo.maven.serializer.StudioSerializer;
 import org.nuxeo.runtime.model.RegistrationInfo;
 
@@ -60,7 +60,7 @@ public class TestSerializer extends AbstractTest {
     public void testDoctypeMapper() throws URISyntaxException {
         RegistrationInfo ri = getRegistrationInfo("component-contrib.xml");
 
-        DoctypeMapper dte = new DoctypeMapper();
+        TypeServiceMapper dte = new TypeServiceMapper();
         assertTrue(Arrays.stream(ri.getExtensions()).anyMatch(dte::accept));
     }
 
