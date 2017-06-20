@@ -19,14 +19,23 @@
 
 package org.nuxeo.maven;
 
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assume.assumeTrue;
+import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.when;
 
 import java.io.File;
 import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.util.Arrays;
 import java.util.Collections;
+import java.util.List;
+import java.util.stream.Stream;
 
 import org.apache.commons.io.FileUtils;
 import org.apache.maven.artifact.DependencyResolutionRequiredException;
@@ -35,7 +44,13 @@ import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.project.MavenProject;
 import org.junit.Before;
 import org.junit.Test;
+import org.nuxeo.maven.bundle.BundleWalker;
 import org.nuxeo.maven.publisher.Publisher;
+import org.nuxeo.maven.runtime.MojoRuntime;
+
+import net.sf.json.JSON;
+import net.sf.json.JSONObject;
+import net.sf.json.JSONSerializer;
 
 public class TestPublisher {
     ExtractorMojo mojo;
@@ -80,6 +95,35 @@ public class TestPublisher {
         instance.publish(new String[0]);
         File output = ((Publisher.FilePublisher) instance).getOutput();
         assertTrue(output.exists());
+    }
+
+    @Test
+    public void testPublisherWithMultipleContributions() throws IOException {
+        List<String> targets = Arrays.asList("operations", "doctypes", "schemas", "lifecycles");
+        Stream<Path> contributions = Stream.of("operation-contrib.xml", "doctype-contrib.xml", "doctype-nd-contrib.xml",
+                "schema-contrib.xml", "lifecycle-contrib.xml").map(c -> MojoRuntime.instance.getLocalResource(c)).map(
+                        c -> Paths.get(c.getPath()));
+
+        BundleWalker bundleWalker = spy(new BundleWalker());
+        doReturn(contributions).when(bundleWalker).getComponents();
+        bundleWalker.getRegistrationInfos().forEach(mojo.getHolder()::load);
+
+        Publisher instance = Publisher.instance(mojo);
+        instance.publish(targets.toArray(new String[0]));
+
+        File output = ((Publisher.FilePublisher) instance).getOutput();
+        assertTrue(output.exists());
+
+        String content = new String(Files.readAllBytes(output.toPath()));
+        JSON json = JSONSerializer.toJSON(content);
+        assertTrue(json instanceof JSONObject);
+
+        JSONObject obj = (JSONObject) json;
+        assertEquals(targets.size(), obj.keySet().size());
+        targets.forEach(t -> assertTrue("Result JSON do not contain '" + t + "' key.", obj.has(t)));
+
+        JSONObject docTypes = (JSONObject) obj.get("doctypes");
+        assertEquals(2, docTypes.keySet().size());
     }
 
     @Test

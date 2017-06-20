@@ -32,6 +32,7 @@ import org.junit.Test;
 import org.nuxeo.ecm.automation.core.OperationContribution;
 import org.nuxeo.ecm.core.event.impl.EventListenerDescriptor;
 import org.nuxeo.ecm.core.lifecycle.extensions.LifeCycleDescriptor;
+import org.nuxeo.ecm.core.schema.DocumentTypeDescriptor;
 import org.nuxeo.ecm.core.schema.FacetDescriptor;
 import org.nuxeo.ecm.core.schema.SchemaBindingDescriptor;
 import org.nuxeo.ecm.core.security.PermissionDescriptor;
@@ -55,6 +56,8 @@ public class TestSerializer extends AbstractTest {
     public static final String EXPECTED_JSON_EVENT = "{\"MyFirstEvent\": \"My First Event\", \"MySecondEvent\": \"My Second Event\"}";
 
     public static final String EXPECTED_JSON_SCHEMA = "{\"dublincore\":{\"@prefix\":\"dc\",\"description\":\"string\",\"created\":\"date\",\"coverage\":\"string\",\"title\":\"string\",\"complex\":{\"fields\":{\"mime-type\":\"string\",\"data\":\"binary\",\"name\":\"string\",\"length\":\"long\",\"digest\":\"string\",\"encoding\":\"string\"},\"type\":\"complex\"},\"modified\":\"date\",\"nature\":\"string\",\"lastContributor\":\"string\",\"content\":\"blob\",\"source\":\"string\",\"publisher\":\"string\"}}";
+
+    public static final String EXPECTED_JSON_DOCTYPE = "{\"File\": {\"parent\":\"Document\",\"schemas\":[\"common\",\"file\",\"dublincore\",\"uid\"],\"facets\":[\"Downloadable\",\"Versionable\"]}}";
 
     @Test
     public void testDoctypeMapper() throws URISyntaxException {
@@ -87,6 +90,11 @@ public class TestSerializer extends AbstractTest {
     @Test
     public void testSchemaSerializer() throws URISyntaxException {
         assertSerialization("schema-contrib.xml", SchemaBindingDescriptor.class, 1, EXPECTED_JSON_SCHEMA);
+    }
+
+    @Test
+    public void testDocTypeSerializer() throws URISyntaxException {
+        assertSerialization("doctype-contrib.xml", DocumentTypeDescriptor.class, 1, EXPECTED_JSON_DOCTYPE);
     }
 
     @Test

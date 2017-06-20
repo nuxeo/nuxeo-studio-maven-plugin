@@ -28,15 +28,16 @@ import org.nuxeo.ecm.automation.OperationDocumentation;
 import org.nuxeo.ecm.automation.core.OperationContribution;
 import org.nuxeo.ecm.core.event.impl.EventListenerDescriptor;
 import org.nuxeo.ecm.core.lifecycle.extensions.LifeCycleDescriptor;
+import org.nuxeo.ecm.core.schema.DocumentTypeDescriptor;
 import org.nuxeo.ecm.core.schema.FacetDescriptor;
 import org.nuxeo.ecm.core.schema.SchemaBindingDescriptor;
-import org.nuxeo.ecm.core.schema.types.Schema;
 import org.nuxeo.ecm.core.schema.types.SchemaImpl;
 import org.nuxeo.ecm.core.security.PermissionDescriptor;
 import org.nuxeo.maven.serializer.adapter.DefaultAdapter;
 import org.nuxeo.maven.serializer.adapter.OperationAdapter;
 import org.nuxeo.maven.serializer.adapter.SchemaAdapter;
 import org.nuxeo.maven.serializer.adapter.SerializerAdapter;
+import org.nuxeo.maven.serializer.mixin.DocTypeMixin;
 import org.nuxeo.maven.serializer.mixin.EventListenerMixin;
 import org.nuxeo.maven.serializer.mixin.FacetMixin;
 import org.nuxeo.maven.serializer.mixin.LifeCycleMixin;
@@ -72,6 +73,7 @@ public class JacksonConverter {
         registerMixin(LifeCycleDescriptor.class, LifeCycleMixin.class);
         registerMixin(EventListenerDescriptor.class, EventListenerMixin.class);
         registerMixin(SchemaImpl.class, SchemaMixin.class);
+        registerMixin(DocumentTypeDescriptor.class, DocTypeMixin.class);
     }
 
     protected void registerMixin(Class<?> target, Class<?> mixin) {
