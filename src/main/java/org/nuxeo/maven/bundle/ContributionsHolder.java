@@ -28,10 +28,10 @@ import java.util.Map;
 
 import org.nuxeo.maven.mapper.MappersManager;
 import org.nuxeo.maven.mapper.impl.AutomationMapper;
-import org.nuxeo.maven.mapper.impl.TypeServiceMapper;
 import org.nuxeo.maven.mapper.impl.EventMapper;
 import org.nuxeo.maven.mapper.impl.LifeCycleMapper;
 import org.nuxeo.maven.mapper.impl.PermissionsMapper;
+import org.nuxeo.maven.mapper.impl.TypeServiceMapper;
 import org.nuxeo.runtime.model.RegistrationInfo;
 
 /**
@@ -46,23 +46,27 @@ public class ContributionsHolder {
      */
     protected final Map<String, List<Object>> contributions = new HashMap<>();
 
-    protected final MappersManager mapper;
+    protected final MappersManager manager;
 
     public ContributionsHolder() {
-        mapper = new MappersManager();
-        mapper.register(new TypeServiceMapper());
-        mapper.register(new PermissionsMapper());
-        mapper.register(new AutomationMapper());
-        mapper.register(new LifeCycleMapper());
-        mapper.register(new EventMapper());
+        this(MappersManager.instance()
+                           .add(new TypeServiceMapper())
+                           .add(new PermissionsMapper())
+                           .add(new AutomationMapper())
+                           .add(new LifeCycleMapper())
+                           .add(new EventMapper()));
     }
 
-    public MappersManager getMapper() {
-        return mapper;
+    public ContributionsHolder(MappersManager manager) {
+        this.manager = manager;
+    }
+
+    public MappersManager getManager() {
+        return manager;
     }
 
     public void load(RegistrationInfo ri) {
-        Arrays.stream(ri.getExtensions()).map(mapper::load).forEach(a -> Arrays.stream(a).forEach(c -> {
+        Arrays.stream(ri.getExtensions()).map(manager::load).forEach(a -> Arrays.stream(a).forEach(c -> {
             List<Object> sortedContributions = contributions.computeIfAbsent(c.getClass().getName(),
                     s -> new ArrayList<>());
             sortedContributions.add(c);
@@ -76,7 +80,7 @@ public class ContributionsHolder {
     public <T> List<T> getContributions(Class<T> descriptor) {
         List<T> list = new ArrayList<>();
         for (Object contribution : contributions.getOrDefault(descriptor.getName(), Collections.emptyList())) {
-            if (mapper.isSerializable(descriptor, contribution)) {
+            if (manager.isSerializable(descriptor, contribution)) {
                 list.add((T) contribution);
             }
         }

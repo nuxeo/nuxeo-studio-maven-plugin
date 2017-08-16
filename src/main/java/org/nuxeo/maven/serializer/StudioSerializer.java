@@ -48,7 +48,7 @@ public class StudioSerializer {
     }
 
     public String serializeAll(String name) {
-        return serializeAll(holder.getMapper().getDescriptor(name));
+        return serializeAll(holder.getManager().getDescriptor(name));
     }
 
     public String serializeAll(Class<?> descriptor) {

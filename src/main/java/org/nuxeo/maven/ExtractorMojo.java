@@ -57,7 +57,7 @@ public class ExtractorMojo extends AbstractMojo {
      * Possible Values:
      * </p>
      */
-    @Parameter(defaultValue = "operations", property = "nsmp.extract")
+    @Parameter(defaultValue = "*", property = "nsmp.extract")
     protected String extract;
 
     /**
@@ -111,7 +111,9 @@ public class ExtractorMojo extends AbstractMojo {
         }
 
         try {
-            Publisher.instance(this).publish(extract.split(",\\s*"));
+            String[] targets = "*".equals(extract) ? holder.getManager().getRegisteredTargets() : extract.split(",\\s*");
+
+            Publisher.instance(this).publish(targets);
         } catch (IOException e) {
             throw new MojoExecutionException("Unable to publish extractions", e);
         }

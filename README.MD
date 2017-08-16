@@ -15,6 +15,19 @@ The available plugin goal is:
 
 # Usage
 
+Extract contributions from your project:
+
+```bash
+mvn [-o] [-DskipTests] [-DskipITs] [package] org.nuxeo.tools:nuxeo-studio-maven-plugin:extract
+cat target/nuxeo-studio-registries.json
+```
+
+Publish contributions in Studio Registries:
+
+```bash
+mvn [-o] [-DskipTests] [-DskipITs] [package] org.nuxeo.tools:nuxeo-studio-maven-plugin:extract -Dnsmp.symbolicName="MY-PROJECT" -Dnsmp.token="MY-TOKEN"
+```
+
 Online documentation:
 
 TODO
@@ -25,7 +38,7 @@ TODO
 
    User property: `nsmp.connectUrl`
 
-- **extract** (Default: `operations`): list of contributions registries exported. Multiple values must be
+- **extract** (Default: `*`): list of contributions registries exported. Multiple values must be
   separate using a coma.
 
    Possible Values:
@@ -36,6 +49,7 @@ TODO
     - events
     - permissions
     - lifecycles
+    - *
 
    User property: `nsmp.extract`
 

@@ -22,6 +22,7 @@ package org.nuxeo.maven.mapper;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Set;
 
 import org.nuxeo.common.xmap.XMap;
 import org.nuxeo.runtime.model.Extension;
@@ -51,7 +52,7 @@ public abstract class ExtensionMapper {
     /**
      * Method used to be overriden in order to detect a disabled contribution
      *
-     * @param contribution 
+     * @param contribution
      * @return false if the contribution is removing another one, true otherwise.
      */
     public boolean isEnabled(Object contribution) {
@@ -79,6 +80,10 @@ public abstract class ExtensionMapper {
 
     public Class<?> getDescriptor(String name) {
         return descriptors.getOrDefault(name, null);
+    }
+
+    public Set<String> getDescriptorNames() {
+        return descriptors.keySet();
     }
 
     public boolean contains(Class<?> descriptor) {

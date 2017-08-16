@@ -26,6 +26,9 @@ import java.net.URISyntaxException;
 import org.junit.Test;
 import org.nuxeo.ecm.core.schema.DocumentTypeDescriptor;
 import org.nuxeo.maven.AbstractTest;
+import org.nuxeo.maven.mapper.MappersManager;
+import org.nuxeo.maven.mapper.impl.AutomationMapper;
+import org.nuxeo.maven.mapper.impl.TypeServiceMapper;
 import org.nuxeo.runtime.model.RegistrationInfo;
 
 public class TestHolder extends AbstractTest {
@@ -40,5 +43,21 @@ public class TestHolder extends AbstractTest {
 
         assertEquals(2, holder.contributions.get(docTypeDesc.getName()).size());
         assertEquals(1, holder.getContributions(docTypeDesc).size());
+    }
+
+    @Test
+    public void testMapperTargets() {
+        MappersManager manager = new MappersManager();
+        assertEquals(0, manager.getRegisteredTargets().length);
+
+        // Add AutomationMapper
+        manager.add(new AutomationMapper());
+        String[] registeredTargets = manager.getRegisteredTargets();
+        assertEquals(1, registeredTargets.length);
+        assertEquals("operations", registeredTargets[0]);
+
+        // Add TypeServiceMapper with 3 available targets
+        manager.add(new TypeServiceMapper());
+        assertEquals(4, manager.getRegisteredTargets().length);
     }
 }

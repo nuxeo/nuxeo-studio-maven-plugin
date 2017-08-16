@@ -19,6 +19,7 @@
 
 package org.nuxeo.maven.publisher;
 
+import static javax.ws.rs.core.Response.Status.CREATED;
 import static javax.ws.rs.core.Response.Status.NO_CONTENT;
 import static org.apache.commons.lang3.StringUtils.isNotBlank;
 
@@ -92,7 +93,7 @@ public abstract class Publisher {
 
         protected static final String TOKEN_HEADER = "X-Authentication-Token";
 
-        protected static final String REGISTRY_ENDPOINT = "studio/api/projects/{symbolicName}/operations";
+        protected static final String REGISTRY_ENDPOINT = "studio/v2/project/{symbolicName}/workspace/ws.registries";
 
         protected String connectUrl;
 
@@ -118,7 +119,7 @@ public abstract class Publisher {
                 ClientResponse post = client.resource(operationsUrl).header(TOKEN_HEADER, token).post(
                         ClientResponse.class, baos.toString("UTF-8"));
 
-                if (post.getStatus() != NO_CONTENT.getStatusCode()) {
+                if (post.getStatus() != CREATED.getStatusCode()) {
                     throw new IOException(post.getEntity(String.class));
                 }
             }

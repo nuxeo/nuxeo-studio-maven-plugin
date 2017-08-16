@@ -56,7 +56,7 @@ public class TestWalker extends AbstractTest {
     @Test
     public void testReadExtension() throws URISyntaxException {
         MappersManager manager = new MappersManager();
-        manager.register(new TypeServiceMapper());
+        manager.add(new TypeServiceMapper());
 
         assertEquals(DocumentTypeDescriptor.class, manager.getDescriptor("doctypes"));
 

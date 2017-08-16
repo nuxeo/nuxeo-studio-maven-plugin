@@ -37,8 +37,13 @@ public class MappersManager {
         mappers = new ArrayList<>();
     }
 
-    public void register(ExtensionMapper transformer) {
+    public static MappersManager instance() {
+        return new MappersManager();
+    }
+
+    public MappersManager add(ExtensionMapper transformer) {
         mappers.add(transformer);
+        return this;
     }
 
     public boolean accept(Extension ext) {
@@ -64,5 +69,12 @@ public class MappersManager {
         } else {
             return new Object[] {};
         }
+    }
+
+    public String[] getRegisteredTargets() {
+        return mappers.stream()
+                      .map(ExtensionMapper::getDescriptorNames)
+                      .collect(ArrayList::new, ArrayList::addAll, ArrayList::addAll)
+                      .toArray(new String[0]);
     }
 }
