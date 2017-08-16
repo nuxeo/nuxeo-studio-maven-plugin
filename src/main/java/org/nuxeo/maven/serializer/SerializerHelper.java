@@ -19,7 +19,7 @@
 
 package org.nuxeo.maven.serializer;
 
-import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang3.StringUtils;
 
 public class SerializerHelper {
     private SerializerHelper() {

@@ -45,7 +45,7 @@ import org.nuxeo.maven.serializer.StudioSerializer;
  * Nuxeo Studio.
  * </p>
  */
-@Mojo(name = "extract", defaultPhase = LifecyclePhase.PREPARE_PACKAGE, requiresDependencyCollection = ResolutionScope.COMPILE, inheritByDefault = false, aggregator = true, threadSafe = true)
+@Mojo(name = "extract", requiresProject = false, defaultPhase = LifecyclePhase.PREPARE_PACKAGE, requiresDependencyCollection = ResolutionScope.COMPILE, inheritByDefault = false, aggregator = true, threadSafe = true)
 public class ExtractorMojo extends AbstractMojo {
 
     @Parameter(defaultValue = "${project}", readonly = true, property = "nsmp.project")
@@ -111,7 +111,8 @@ public class ExtractorMojo extends AbstractMojo {
         }
 
         try {
-            String[] targets = "*".equals(extract) ? holder.getManager().getRegisteredTargets() : extract.split(",\\s*");
+            String[] targets = "*".equals(extract) ? holder.getManager().getRegisteredTargets()
+                    : extract.split(",\\s*");
 
             Publisher.instance(this).publish(targets);
         } catch (IOException e) {
