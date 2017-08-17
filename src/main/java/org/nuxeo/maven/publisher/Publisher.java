@@ -20,7 +20,6 @@
 package org.nuxeo.maven.publisher;
 
 import static javax.ws.rs.core.Response.Status.CREATED;
-import static javax.ws.rs.core.Response.Status.NO_CONTENT;
 import static org.apache.commons.lang3.StringUtils.isNotBlank;
 
 import java.io.ByteArrayOutputStream;
@@ -54,7 +53,7 @@ public abstract class Publisher {
 
         if (publisher == null) {
             publisher = new Publisher.FilePublisher(mojo.getSerializer(),
-                    new File(mojo.getProject().getBuild().getDirectory(), mojo.getOutput()));
+                    new File(mojo.getBuildDirectory(), mojo.getOutput()));
         }
         return publisher;
     }

@@ -50,7 +50,6 @@ public class AbstractTest {
 
         walker = new BundleWalker();
         walker.setBasePath(new File("src/it/simple-bundle/src/main/resources"));
-        walker.setPrefix("");
     }
 
     protected RegistrationInfo getRegistrationInfo(String resourcePath) throws URISyntaxException {

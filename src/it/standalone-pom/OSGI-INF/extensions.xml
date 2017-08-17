@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<component name="studio.extensions.standalone" version="1.0.0">
+  <require>org.nuxeo.runtime.started</require>
+  <extension target="org.nuxeo.ecm.core.schema.TypeService" point="schema">
+    <schema name="newdocmodel" prefix="newdocmodel" override="true" src="data/schemas/newdocmodel.xsd"/>
+  </extension>
+  <extension target="org.nuxeo.ecm.core.schema.TypeService" point="doctype">
+    <doctype name="NewDocModel" extends="File">
+      <schema name="newdocmodel"/>
+    </doctype>
+    <doctype name="Folder" append="true">
+      <subtypes>
+        <type>NewDocModel</type>
+      </subtypes>
+    </doctype>
+    <doctype name="Workspace" append="true">
+      <subtypes>
+        <type>NewDocModel</type>
+      </subtypes>
+    </doctype>
+  </extension>
+  <extension target="org.nuxeo.ecm.core.lifecycle.LifeCycleService" point="types">
+    <types>
+      <type name="NewDocModel">lifeCycle</type>
+    </types>
+  </extension>
+  <extension target="org.nuxeo.ecm.platform.types.TypeService" point="types">
+    <type id="NewDocModel">
+      <label>Bla</label>
+      <description></description>
+    </type>
+  </extension>
+  <extension target="org.nuxeo.ecm.core.lifecycle.LifeCycleService" point="lifecycle">
+    <lifecycle name="lifeCycle" defaultInitial="toto">
+      <transitions>
+        <transition name="to_hey" destinationState="hey">
+          <description></description>
+        </transition>
+      </transitions>
+      <states>
+        <state name="toto" description="" initial="true">
+          <transitions>
+            <transition>to_hey</transition>
+          </transitions>
+        </state>
+        <state name="hey" description="">
+          <transitions/>
+        </state>
+      </states>
+    </lifecycle>
+  </extension>
+  <extension target="org.nuxeo.ecm.core.operation.OperationServiceComponent" point="chains">
+    <chain id="testchain">
+      <operation id="Context.FetchDocument"/>
+    </chain>
+  </extension>
+  <extension target="org.nuxeo.ecm.platform.actions.ActionService" point="filters">
+    <filter id="create" append="true">
+      <rule grant="false">
+        <type>NewDocModel</type>
+      </rule>
+    </filter>
+  </extension>
+</component>

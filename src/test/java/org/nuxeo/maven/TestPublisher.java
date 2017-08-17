@@ -38,9 +38,7 @@ import java.util.List;
 import java.util.stream.Stream;
 
 import org.apache.commons.io.FileUtils;
-import org.apache.maven.artifact.DependencyResolutionRequiredException;
 import org.apache.maven.model.Build;
-import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.project.MavenProject;
 import org.junit.Before;
 import org.junit.Test;
@@ -56,7 +54,7 @@ public class TestPublisher {
     ExtractorMojo mojo;
 
     @Before
-    public void setup() throws MojoExecutionException, DependencyResolutionRequiredException {
+    public void setup() throws Exception {
         mojo = new ExtractorMojo();
         mojo.output = "test-output.json";
         mojo.connectUrl = "https://nos-test-connect.nos.nuxeo.com/nuxeo/site";
@@ -64,6 +62,7 @@ public class TestPublisher {
         MavenProject mvnProject = mock(MavenProject.class);
         when(mvnProject.getCollectedProjects()).thenReturn(Collections.emptyList());
         when(mvnProject.getCompileClasspathElements()).thenReturn(Collections.emptyList());
+        when(mvnProject.getId()).thenReturn("sample:project");
 
         when(mvnProject.getBuild()).thenReturn(mock(Build.class));
         when(mvnProject.getBuild().getDirectory()).thenReturn(FileUtils.getTempDirectoryPath());

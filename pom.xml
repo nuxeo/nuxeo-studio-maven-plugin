@@ -223,28 +223,46 @@
           <skipInvocation>${skipITs}</skipInvocation>
           <debug>${debugITs}</debug>
           <cloneProjectsTo>${project.build.directory}/it</cloneProjectsTo>
-          <pomIncludes>
-            <pomInclude>*/pom.xml</pomInclude>
-          </pomIncludes>
           <postBuildHookScript>verify</postBuildHookScript>
           <localRepositoryPath>${project.build.directory}/local-repo</localRepositoryPath>
           <settingsFile>src/it/settings.xml</settingsFile>
           <showVersion>true</showVersion>
           <showErrors>true</showErrors>
-          <goals>
-            <goal>clean</goal>
-            <goal>package</goal>
-          </goals>
           <parallelThreads>5</parallelThreads>
         </configuration>
         <executions>
           <execution>
-            <id>integration-test</id>
+            <id>project-tests</id>
             <goals>
               <goal>install</goal>
               <goal>integration-test</goal>
               <goal>verify</goal>
             </goals>
+            <configuration>
+              <goals>
+                <goal>clean</goal>
+                <goal>package</goal>
+              </goals>
+              <pomIncludes>
+                <pomInclude>*/pom.xml</pomInclude>
+              </pomIncludes>
+            </configuration>
+          </execution>
+          <execution>
+            <id>standalone-tests</id>
+            <goals>
+              <goal>install</goal>
+              <goal>integration-test</goal>
+              <goal>verify</goal>
+            </goals>
+            <configuration>
+              <goals>
+                <goal>org.nuxeo.tools:nuxeo-studio-maven-plugin:extract</goal>
+              </goals>
+              <pomIncludes>
+                <pomInclude>standalone-pom</pomInclude>
+              </pomIncludes>
+            </configuration>
           </execution>
         </executions>
       </plugin>

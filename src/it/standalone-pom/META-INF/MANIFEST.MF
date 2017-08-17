@@ -1,0 +1,10 @@
+Manifest-Version: 1.0
+Bundle-SymbolicName: studio.extensions.standalone
+Bundle-Version: 1.0.0
+Bundle-Name: Nuxeo Studio Extension - studio.extensions.standalone
+Require-Bundle: org.nuxeo.runtime
+Bundle-ManifestVersion: 2
+Bundle-Vendor: Nuxeo
+Nuxeo-Component: OSGI-INF/extensions.xml
+Created-By: Nuxeo Studio
+

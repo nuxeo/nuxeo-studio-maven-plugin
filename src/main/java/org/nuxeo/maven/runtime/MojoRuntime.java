@@ -120,7 +120,15 @@ public class MojoRuntime implements RuntimeContext {
 
     @Override
     public URL getLocalResource(String name) {
-        return getClassloader().getResource(name);
+        URL loadedResource = getClassloader().getResource(name);
+        if (loadedResource == null) {
+            try {
+                loadedResource = new File(name).toURI().toURL();
+            } catch (MalformedURLException e) {
+                // Should never happen
+            }
+        }
+        return loadedResource;
     }
 
     @Override

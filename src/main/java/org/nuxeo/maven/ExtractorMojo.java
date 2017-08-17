@@ -22,6 +22,10 @@ package org.nuxeo.maven;
 import static org.nuxeo.common.Environment.NUXEO_HOME;
 
 import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Paths;
+import java.util.Collections;
+import java.util.List;
 
 import org.apache.maven.plugin.AbstractMojo;
 import org.apache.maven.plugin.MojoExecutionException;
@@ -88,29 +92,42 @@ public class ExtractorMojo extends AbstractMojo {
 
     protected ContributionsHolder holder;
 
-    protected void initialize() throws MojoExecutionException {
-        System.setProperty(NUXEO_HOME, project.getBuild().getOutputDirectory());
+    protected void initialize() throws MojoExecutionException, IOException {
+        System.setProperty(NUXEO_HOME, Files.createTempDirectory("nuxeo").toString());
         holder = new ContributionsHolder();
         serializer = new StudioSerializer(holder);
 
-        MojoRuntime.initCustomClassLoader(project);
+        if (!isStandalone(project)) {
+            MojoRuntime.initCustomClassLoader(project);
+        }
+    }
+
+    public String getBuildDirectory() {
+        return isStandalone(project) ? Paths.get("").toAbsolutePath().toString() : project.getBuild().getDirectory();
+    }
+
+    protected static String getBuildOutputDirectory(MavenProject project) {
+        // When project is standalone-pom; use the current directory instead of a build one
+        return isStandalone(project) ? Paths.get("").toAbsolutePath().toString()
+                : project.getBuild().getOutputDirectory();
+    }
+
+    protected static boolean isStandalone(MavenProject project) {
+        return project.getId().startsWith("org.apache.maven:standalone-pom:");
+    }
+
+    protected List<MavenProject> getCollectedProjects() {
+        return isStandalone(project) ? Collections.singletonList(project) : project.getCollectedProjects();
     }
 
     @Override
     public void execute() throws MojoExecutionException, MojoFailureException {
-        initialize();
-
         try {
+            initialize();
+
             // Load contributions from current project and collected (child) ones
-            loadContributions(project);
-            for (MavenProject child : project.getCollectedProjects()) {
-                loadContributions(child);
-            }
-        } catch (IOException e) {
-            throw new MojoExecutionException("Unable to read bundle contributions", e);
-        }
+            getCollectedProjects().forEach(this::loadContributions);
 
-        try {
             String[] targets = "*".equals(extract) ? holder.getManager().getRegisteredTargets()
                     : extract.split(",\\s*");
 
@@ -120,9 +137,13 @@ public class ExtractorMojo extends AbstractMojo {
         }
     }
 
-    protected void loadContributions(MavenProject project) throws IOException {
-        BundleWalker walker = new BundleWalker(project.getBasedir());
-        walker.getRegistrationInfos().forEach(holder::load);
+    protected void loadContributions(MavenProject project) {
+        BundleWalker walker = new BundleWalker(getBuildOutputDirectory(project));
+        try {
+            walker.getRegistrationInfos().forEach(holder::load);
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
     }
 
     public MavenProject getProject() {

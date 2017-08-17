@@ -43,13 +43,14 @@ public class BundleWalker {
 
     private Log log;
 
-    private String prefix;
-
     private ComponentDescriptorReader reader;
 
     public BundleWalker() {
-        setPrefix("classes/");
         reader = new ComponentDescriptorReader();
+    }
+
+    public BundleWalker(String basePath) {
+        this(new File(basePath));
     }
 
     public BundleWalker(File basePath) {
@@ -59,7 +60,7 @@ public class BundleWalker {
 
     private Path findFile(String filePath) {
         try {
-            return Files.walk(basePath).filter(s -> s.endsWith(prefix + filePath)).findFirst().orElse(null);
+            return Files.walk(basePath).filter(s -> s.endsWith(filePath)).findFirst().orElse(null);
         } catch (IOException e) {
             getLog().debug(e);
             getLog().warn(filePath + ":" + e.getMessage());
@@ -112,10 +113,6 @@ public class BundleWalker {
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
-    }
-
-    public void setPrefix(String prefix) {
-        this.prefix = prefix;
     }
 
     public void setBasePath(File basePath) {
