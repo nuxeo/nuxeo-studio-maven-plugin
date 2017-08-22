@@ -26,13 +26,15 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
+import org.nuxeo.ecm.automation.core.OperationChainContribution;
 import org.nuxeo.ecm.automation.core.OperationContribution;
 import org.nuxeo.ecm.core.schema.FacetDescriptor;
 import org.nuxeo.maven.bundle.ContributionsHolder;
 
 public class StudioSerializer {
 
-    private static final List<Class<?>> asArray = Arrays.asList(FacetDescriptor.class, OperationContribution.class);
+    private static final List<Class<?>> asArray = Arrays.asList(FacetDescriptor.class, OperationContribution.class,
+            OperationChainContribution.class);
 
     private ContributionsHolder holder;
 

@@ -19,18 +19,25 @@
 
 package org.nuxeo.maven.mapper.impl;
 
+import java.util.Arrays;
+import java.util.List;
+
+import org.nuxeo.ecm.automation.core.OperationChainContribution;
 import org.nuxeo.ecm.automation.core.OperationContribution;
 import org.nuxeo.maven.mapper.ExtensionMapper;
 
 public class AutomationMapper extends ExtensionMapper {
 
+    protected static final List<String> EXTENSIONS = Arrays.asList("operations", "chains");
+
     @Override
     public void registerDescriptors() {
         registerDescriptor("operations", OperationContribution.class);
+        registerDescriptor("chains", OperationChainContribution.class);
     }
 
     @Override
     protected boolean accept(String target, String point) {
-        return target.equals("org.nuxeo.ecm.core.operation.OperationServiceComponent") && point.equals("operations");
+        return target.equals("org.nuxeo.ecm.core.operation.OperationServiceComponent") && EXTENSIONS.contains(point);
     }
 }

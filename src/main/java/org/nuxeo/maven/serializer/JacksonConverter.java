@@ -25,6 +25,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import org.nuxeo.ecm.automation.OperationDocumentation;
+import org.nuxeo.ecm.automation.core.OperationChainContribution;
 import org.nuxeo.ecm.automation.core.OperationContribution;
 import org.nuxeo.ecm.core.event.impl.EventListenerDescriptor;
 import org.nuxeo.ecm.core.lifecycle.extensions.LifeCycleDescriptor;
@@ -35,6 +36,7 @@ import org.nuxeo.ecm.core.schema.types.SchemaImpl;
 import org.nuxeo.ecm.core.security.PermissionDescriptor;
 import org.nuxeo.maven.serializer.adapter.DefaultAdapter;
 import org.nuxeo.maven.serializer.adapter.OperationAdapter;
+import org.nuxeo.maven.serializer.adapter.OperationChainAdapter;
 import org.nuxeo.maven.serializer.adapter.SchemaAdapter;
 import org.nuxeo.maven.serializer.adapter.SerializerAdapter;
 import org.nuxeo.maven.serializer.mixin.DocTypeMixin;
@@ -65,6 +67,7 @@ public class JacksonConverter {
         // Adapters aim to adapt descriptor to a more specific object
         registerAdapter(OperationContribution.class, OperationAdapter.class);
         registerAdapter(SchemaBindingDescriptor.class, SchemaAdapter.class);
+        registerAdapter(OperationChainContribution.class, OperationChainAdapter.class);
 
         // Mixins allow to define the way the serialization is done
         registerMixin(FacetDescriptor.class, FacetMixin.class);
