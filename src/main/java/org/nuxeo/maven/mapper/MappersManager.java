@@ -21,6 +21,7 @@ package org.nuxeo.maven.mapper;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.Objects;
 
 import org.nuxeo.maven.runtime.MojoRuntime;
@@ -57,8 +58,20 @@ public class MappersManager {
         return mapper.isEnabled(contribution) && !mapper.isPartial(contribution);
     }
 
-    public Class<?> getDescriptor(String name) {
-        return mappers.stream().map(s -> s.getDescriptor(name)).filter(Objects::nonNull).findFirst().orElse(null);
+    public List<Class<?>> getDescriptor(String name) {
+        return mappers.stream().map(m -> m.getDescriptor(name)).filter(Objects::nonNull).findFirst().orElse(null);
+    }
+
+    public String getDescriptorName(Class<?> klass) {
+        return mappers.stream()
+                      .map(s -> s.descriptors)
+                      .map(Map::entrySet)
+                      .collect(ArrayList<Map.Entry<String, List<Class<?>>>>::new, ArrayList::addAll, ArrayList::addAll)
+                      .stream()
+                      .filter(s -> s.getValue().contains(klass))
+                      .findFirst()
+                      .map(Map.Entry::getKey)
+                      .orElse(null);
     }
 
     public Object[] load(Extension ext) {

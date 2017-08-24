@@ -47,6 +47,7 @@ import org.nuxeo.maven.publisher.Publisher;
 import org.nuxeo.maven.runtime.MojoRuntime;
 
 import net.sf.json.JSON;
+import net.sf.json.JSONArray;
 import net.sf.json.JSONObject;
 import net.sf.json.JSONSerializer;
 
@@ -100,8 +101,9 @@ public class TestPublisher {
     public void testPublisherWithMultipleContributions() throws IOException {
         List<String> targets = Arrays.asList("operations", "doctypes", "schemas", "lifecycles");
         Stream<Path> contributions = Stream.of("operation-contrib.xml", "doctype-contrib.xml", "doctype-nd-contrib.xml",
-                "schema-contrib.xml", "lifecycle-contrib.xml").map(c -> MojoRuntime.instance.getLocalResource(c)).map(
-                        c -> Paths.get(c.getPath()));
+                "schema-contrib.xml", "lifecycle-contrib.xml", "chains-contrib.xml")
+                                           .map(c -> MojoRuntime.instance.getLocalResource(c))
+                                           .map(c -> Paths.get(c.getPath()));
 
         BundleWalker bundleWalker = spy(new BundleWalker());
         doReturn(contributions).when(bundleWalker).getComponents();
@@ -123,6 +125,9 @@ public class TestPublisher {
 
         JSONObject docTypes = (JSONObject) obj.get("doctypes");
         assertEquals(2, docTypes.keySet().size());
+
+        JSONArray operations = (JSONArray) obj.get("operations");
+        assertEquals(3, operations.size());
     }
 
     @Test

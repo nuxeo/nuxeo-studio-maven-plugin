@@ -58,7 +58,9 @@ public class TestWalker extends AbstractTest {
         MappersManager manager = new MappersManager();
         manager.add(new TypeServiceMapper());
 
-        assertEquals(DocumentTypeDescriptor.class, manager.getDescriptor("doctypes"));
+        List<Class<?>> descriptors = manager.getDescriptor("doctypes");
+        assertEquals(1, descriptors.size());
+        assertEquals(DocumentTypeDescriptor.class, descriptors.get(0));
 
         RegistrationInfo ri = getRegistrationInfo("component-contrib.xml");
         assertTrue(Arrays.stream(ri.getExtensions()).anyMatch(manager::accept));

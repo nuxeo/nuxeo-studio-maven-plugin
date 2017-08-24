@@ -32,8 +32,8 @@ public class AutomationMapper extends ExtensionMapper {
 
     @Override
     public void registerDescriptors() {
+        registerDescriptor("operations", OperationChainContribution.class);
         registerDescriptor("operations", OperationContribution.class);
-        registerDescriptor("chains", OperationChainContribution.class);
     }
 
     @Override

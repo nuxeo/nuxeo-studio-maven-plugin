@@ -19,8 +19,9 @@
 
 package org.nuxeo.maven.mapper;
 
-import java.util.Arrays;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
@@ -31,7 +32,7 @@ import org.nuxeo.runtime.model.impl.XMapContext;
 
 public abstract class ExtensionMapper {
 
-    protected Map<String, Class<?>> descriptors = new HashMap<>();
+    protected Map<String, List<Class<?>>> descriptors = new HashMap<>();
 
     public ExtensionMapper() {
         registerDescriptors();
@@ -42,7 +43,7 @@ public abstract class ExtensionMapper {
     protected abstract boolean accept(String target, String point);
 
     public void registerDescriptor(String name, Class<?> descriptor) {
-        descriptors.put(name, descriptor);
+        descriptors.computeIfAbsent(name, s -> new ArrayList<>()).add(descriptor);
     }
 
     public boolean accept(Extension ext) {
@@ -70,15 +71,15 @@ public abstract class ExtensionMapper {
 
     public Object[] loadAll(RuntimeContext ctx, Extension extension) {
         XMap xmap = new XMap();
-        Arrays.stream(getDescriptors()).forEach(xmap::register);
+        getDescriptors().forEach(xmap::register);
         return xmap.loadAll(new XMapContext(ctx), extension.getElement());
     }
 
-    public Class<?>[] getDescriptors() {
-        return descriptors.values().toArray(new Class[0]);
+    public List<Class<?>> getDescriptors() {
+        return descriptors.values().stream().collect(ArrayList::new, ArrayList::addAll, ArrayList::addAll);
     }
 
-    public Class<?> getDescriptor(String name) {
+    public List<Class<?>> getDescriptor(String name) {
         return descriptors.getOrDefault(name, null);
     }
 
@@ -87,6 +88,6 @@ public abstract class ExtensionMapper {
     }
 
     public boolean contains(Class<?> descriptor) {
-        return descriptors.values().contains(descriptor);
+        return descriptors.values().stream().anyMatch(list -> list.contains(descriptor));
     }
 }

@@ -20,21 +20,19 @@
 package org.nuxeo.maven.serializer;
 
 import java.io.OutputStream;
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
-import org.nuxeo.ecm.automation.core.OperationChainContribution;
-import org.nuxeo.ecm.automation.core.OperationContribution;
-import org.nuxeo.ecm.core.schema.FacetDescriptor;
 import org.nuxeo.maven.bundle.ContributionsHolder;
 
 public class StudioSerializer {
 
-    private static final List<Class<?>> asArray = Arrays.asList(FacetDescriptor.class, OperationContribution.class,
-            OperationChainContribution.class);
+    private static final List<String> asArray = Arrays.asList("facets", "operations");
 
     private ContributionsHolder holder;
 
@@ -50,18 +48,25 @@ public class StudioSerializer {
     }
 
     public String serializeAll(String name) {
-        return serializeAll(holder.getManager().getDescriptor(name));
+        return serializeAll(name, holder.getManager().getDescriptor(name));
     }
 
     public String serializeAll(Class<?> descriptor) {
-        final String delimiter = getDelimiter();
-        final String prefix = getPrefix(descriptor);
-        final String suffix = getSuffix(descriptor);
+        String descriptorName = holder.getManager().getDescriptorName(descriptor);
+        return serializeAll(descriptorName, Collections.singletonList(descriptor));
+    }
 
-        return holder.getContributions(descriptor)
-                     .stream()
-                     .map(this::serialize)
-                     .collect(Collectors.joining(delimiter, prefix, suffix));
+    public String serializeAll(String name, List<Class<?>> descriptor) {
+        final String delimiter = getDelimiter();
+        final String prefix = getPrefix(name);
+        final String suffix = getSuffix(name);
+
+        return descriptor.stream()
+                         .map(holder::getContributions)
+                         .collect(ArrayList::new, ArrayList::addAll, ArrayList::addAll)
+                         .stream()
+                         .map(this::serialize)
+                         .collect(Collectors.joining(delimiter, prefix, suffix));
     }
 
     protected String serialize(Object obj) {
@@ -72,11 +77,11 @@ public class StudioSerializer {
         return ",";
     }
 
-    public String getPrefix(Class<?> descriptor) {
-        return asArray.contains(descriptor) ? "[" : "{";
+    public String getPrefix(String name) {
+        return asArray.contains(name) ? "[" : "{";
     }
 
-    public String getSuffix(Class<?> descriptor) {
-        return asArray.contains(descriptor) ? "]" : "}";
+    public String getSuffix(String name) {
+        return asArray.contains(name) ? "]" : "}";
     }
 }
