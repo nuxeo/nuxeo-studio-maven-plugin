@@ -19,6 +19,7 @@
 
 package org.nuxeo.maven.publisher;
 
+import static javax.ws.rs.core.MediaType.APPLICATION_JSON_TYPE;
 import static javax.ws.rs.core.Response.Status.CREATED;
 import static org.apache.commons.lang3.StringUtils.isNotBlank;
 
@@ -115,8 +116,10 @@ public abstract class Publisher {
                 serializer.serializeInto(baos, targets);
 
                 Client client = Client.create();
-                ClientResponse post = client.resource(operationsUrl).header(TOKEN_HEADER, token).post(
-                        ClientResponse.class, baos.toString("UTF-8"));
+                ClientResponse post = client.resource(operationsUrl)
+                                            .type(APPLICATION_JSON_TYPE)
+                                            .header(TOKEN_HEADER, token)
+                                            .post(ClientResponse.class, baos.toString("UTF-8"));
 
                 if (post.getStatus() != CREATED.getStatusCode()) {
                     throw new IOException(post.getEntity(String.class));
