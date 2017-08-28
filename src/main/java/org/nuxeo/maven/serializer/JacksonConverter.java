@@ -24,6 +24,7 @@ import java.io.OutputStream;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.apache.commons.lang.StringUtils;
 import org.nuxeo.ecm.automation.OperationDocumentation;
 import org.nuxeo.ecm.automation.core.OperationChainContribution;
 import org.nuxeo.ecm.automation.core.OperationContribution;
@@ -109,8 +110,15 @@ public class JacksonConverter {
         try (JsonGenerator gen = factory.createGenerator(os, JsonEncoding.UTF8)) {
             gen.writeStartObject();
             for (String k : serialized.keySet()) {
+                // XXX NXS-4051: Skip empty object, to prevent from overriding existing data from now. To remove when
+                // Studio will handle registries merge
+                String value = serialized.get(k);
+                if (StringUtils.isBlank(value)) {
+                    continue;
+                }
+
                 gen.writeFieldName(k);
-                gen.writeRawValue(serialized.get(k));
+                gen.writeRawValue(value);
             }
             gen.writeEndObject();
         } catch (IOException e) {

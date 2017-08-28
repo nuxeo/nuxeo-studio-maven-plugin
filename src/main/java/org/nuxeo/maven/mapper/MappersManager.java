@@ -52,18 +52,24 @@ public class MappersManager {
     }
 
     public boolean isSerializable(Class<?> descriptor, Object contribution) {
-        ExtensionMapper mapper = mappers.stream().filter(s -> s.contains(descriptor)).findFirst().orElseThrow(
-                RuntimeException::new);
+        ExtensionMapper mapper = mappers.stream() //
+                                        .filter(s -> s.contains(descriptor))
+                                        .findFirst()
+                                        .orElseThrow(RuntimeException::new);
 
         return mapper.isEnabled(contribution) && !mapper.isPartial(contribution);
     }
 
     public List<Class<?>> getDescriptor(String name) {
-        return mappers.stream().map(m -> m.getDescriptor(name)).filter(Objects::nonNull).findFirst().orElse(null);
+        return mappers.stream() //
+                      .map(m -> m.getDescriptor(name))
+                      .filter(Objects::nonNull)
+                      .findFirst()
+                      .orElse(new ArrayList<>());
     }
 
     public String getDescriptorName(Class<?> klass) {
-        return mappers.stream()
+        return mappers.stream() //
                       .map(s -> s.descriptors)
                       .map(Map::entrySet)
                       .collect(ArrayList<Map.Entry<String, List<Class<?>>>>::new, ArrayList::addAll, ArrayList::addAll)
@@ -75,7 +81,10 @@ public class MappersManager {
     }
 
     public Object[] load(Extension ext) {
-        ExtensionMapper mapper = mappers.stream().filter(s -> s.accept(ext)).findFirst().orElse(null);
+        ExtensionMapper mapper = mappers.stream() //
+                                        .filter(s -> s.accept(ext))
+                                        .findFirst()
+                                        .orElse(null);
 
         if (mapper != null) {
             return mapper.loadAll(MojoRuntime.instance, ext);
@@ -85,9 +94,9 @@ public class MappersManager {
     }
 
     public String[] getRegisteredTargets() {
-        return mappers.stream()
+        return mappers.stream() //
                       .map(ExtensionMapper::getDescriptorNames)
-                      .collect(ArrayList::new, ArrayList::addAll, ArrayList::addAll)
+                      .collect(ArrayList<String>::new, ArrayList::addAll, ArrayList::addAll)
                       .toArray(new String[0]);
     }
 }

@@ -106,6 +106,24 @@ public class TestSerializer extends AbstractTest {
     }
 
     @Test
+    public void testMissingContributions() {
+        ContributionsHolder holder = new ContributionsHolder();
+        List<DocumentTypeDescriptor> contributions = holder.getContributions(DocumentTypeDescriptor.class);
+
+        assertEquals(0, contributions.size());
+
+        StudioSerializer serializer = new StudioSerializer(holder);
+        String s = serializer.serializeDescriptors(DocumentTypeDescriptor.class);
+
+        assertEquals(null, s);
+
+        ByteArrayOutputStream io = new ByteArrayOutputStream();
+        serializer.serializeInto(io, new String[] { "chains", "docTypes" });
+
+        assertEquals("{}", new String(io.toByteArray()));
+    }
+
+    @Test
     public void testCoreEventSerializer() throws URISyntaxException {
         ContributionsHolder holder = loadComponent("events-contrib.xml");
         List<EventListenerDescriptor> contributions = holder.getContributions(EventListenerDescriptor.class);
@@ -113,7 +131,7 @@ public class TestSerializer extends AbstractTest {
         assertEquals(5, contributions.get(0).getEvents().size());
 
         StudioSerializer serializer = new StudioSerializer(holder);
-        String result = serializer.serializeAll(EventListenerDescriptor.class);
+        String result = serializer.serializeDescriptors(EventListenerDescriptor.class);
         assertJsonEquals(EXPECTED_JSON_EVENT, result);
     }
 
