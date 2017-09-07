@@ -45,6 +45,7 @@
     <apache.lang3.version>3.3.2</apache.lang3.version>
     <maven.version>3.5.0</maven.version>
     <maven.tools.version>3.5</maven.tools.version>
+    <maven.invoker.version>3.0.1</maven.invoker.version>
     <nuxeo.version>9.1</nuxeo.version>
     <surefire.version>2.19.1</surefire.version>
     <mockito.version>1.9.5</mockito.version>
@@ -218,10 +219,11 @@
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-invoker-plugin</artifactId>
-        <version>2.0.0</version>
+        <version>${maven.invoker.version}</version>
         <configuration>
           <skipInvocation>${skipITs}</skipInvocation>
           <debug>${debugITs}</debug>
+          <ignoreFailures>false</ignoreFailures>
           <cloneProjectsTo>${project.build.directory}/it</cloneProjectsTo>
           <postBuildHookScript>verify</postBuildHookScript>
           <localRepositoryPath>${project.build.directory}/local-repo</localRepositoryPath>
@@ -231,6 +233,23 @@
           <parallelThreads>5</parallelThreads>
         </configuration>
         <executions>
+          <execution>
+            <id>standalone-tests</id>
+            <goals>
+              <goal>install</goal>
+              <goal>integration-test</goal>
+              <goal>verify</goal>
+            </goals>
+            <configuration>
+              <goals>
+                <goal>org.nuxeo.tools:nuxeo-studio-maven-plugin:extract</goal>
+              </goals>
+              <pomIncludes>
+                <pomInclude>standalone-pom</pomInclude>
+              </pomIncludes>
+            </configuration>
+          </execution>
+          <!-- XXX Only the last execution makes the build failed. -->
           <execution>
             <id>project-tests</id>
             <goals>
@@ -245,22 +264,6 @@
               </goals>
               <pomIncludes>
                 <pomInclude>*/pom.xml</pomInclude>
-              </pomIncludes>
-            </configuration>
-          </execution>
-          <execution>
-            <id>standalone-tests</id>
-            <goals>
-              <goal>install</goal>
-              <goal>integration-test</goal>
-              <goal>verify</goal>
-            </goals>
-            <configuration>
-              <goals>
-                <goal>org.nuxeo.tools:nuxeo-studio-maven-plugin:extract</goal>
-              </goals>
-              <pomIncludes>
-                <pomInclude>standalone-pom</pomInclude>
               </pomIncludes>
             </configuration>
           </execution>
@@ -457,7 +460,7 @@
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-invoker-plugin</artifactId>
-        <version>2.0.0</version>
+        <version>${maven.invoker.version}</version>
       </plugin>
       <plugin>
         <groupId>org.codehaus.mojo</groupId>

@@ -1,4 +1,8 @@
+import groovy.json.JsonSlurper
+
 File touchFile = new File(basedir, "target/nuxeo-studio-registries.json")
 assert touchFile.isFile()
 
-// Should also check that the file is an empty json
+def json = new JsonSlurper().parse(touchFile)
+assert json instanceof Map
+assert json.entrySet().isEmpty()
