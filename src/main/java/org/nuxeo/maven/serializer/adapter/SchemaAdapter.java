@@ -29,11 +29,6 @@ import org.nuxeo.maven.runtime.MojoRuntime;
 import org.xml.sax.SAXException;
 
 public class SchemaAdapter implements SerializerAdapter<SchemaBindingDescriptor, SchemaImpl> {
-    static {
-        loadSchema("base", null, "schemas/base.xsd");
-        loadSchema("core-types", null, "schemas/core-types.xsd");
-    }
-
     @Override
     public SchemaImpl adapt(SchemaBindingDescriptor descriptor) {
         return loadSchema(descriptor);
@@ -45,15 +40,6 @@ public class SchemaAdapter implements SerializerAdapter<SchemaBindingDescriptor,
         } catch (SAXException | TypeException e) {
             throw new RuntimeException("Unable to adapt schema binding: " + descriptor.name, e);
         }
-    }
-
-    protected static SchemaImpl loadSchema(String name, String prefix, String src) {
-        SchemaBindingDescriptor desc = new SchemaBindingDescriptor();
-        desc.name = name;
-        desc.prefix = prefix;
-        desc.src = src;
-
-        return loadSchema(desc);
     }
 
     /**

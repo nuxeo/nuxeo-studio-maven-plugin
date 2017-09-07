@@ -42,6 +42,8 @@ public abstract class EventListenerMixin {
         private static List<String> systemEvents;
 
         static {
+            // Registering Common System events from Nuxeo classes in order to skip them during export if prensent on
+            // Studio
             // TODO Temporary; we should use a big constant file with all core events...
             systemEvents = extractField(DocumentEventTypes.class);
             systemEvents.addAll(extractField(LifeCycleConstants.class));

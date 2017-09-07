@@ -74,7 +74,7 @@ public class AbstractTest {
         ContributionsHolder holder = loadComponent(component);
         assertEquals(size, holder.getContributions(descriptor).size());
 
-        StudioSerializer serializer = new StudioSerializer(holder);
+        StudioSerializer serializer = new StudioSerializer(null, holder);
         String result = serializer.serializeDescriptors(descriptor);
         assertJsonEquals(expectedJson, result);
     }

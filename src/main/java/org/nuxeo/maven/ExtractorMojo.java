@@ -24,7 +24,7 @@ import static org.nuxeo.common.Environment.NUXEO_HOME;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
-import java.util.Collections;
+import java.util.ArrayList;
 import java.util.List;
 
 import org.apache.maven.plugin.AbstractMojo;
@@ -85,7 +85,7 @@ public class ExtractorMojo extends AbstractMojo {
     /**
      * Nuxeo Connect URL
      */
-    @Parameter(defaultValue = "https://connect.nuxeo.com/nuxeo/site", property = "nsmp.connectUrl")
+    @Parameter(defaultValue = "https://connect.nuxeo.com/nuxeo", property = "nsmp.connectUrl")
     protected String connectUrl;
 
     protected StudioSerializer serializer;
@@ -95,7 +95,7 @@ public class ExtractorMojo extends AbstractMojo {
     protected void initialize() throws MojoExecutionException, IOException {
         System.setProperty(NUXEO_HOME, Files.createTempDirectory("nuxeo").toString());
         holder = new ContributionsHolder();
-        serializer = new StudioSerializer(holder);
+        serializer = new StudioSerializer(this, holder);
 
         if (!isStandalone(project)) {
             MojoRuntime.initCustomClassLoader(project);
@@ -116,8 +116,13 @@ public class ExtractorMojo extends AbstractMojo {
         return project.getId().startsWith("org.apache.maven:standalone-pom:");
     }
 
-    protected List<MavenProject> getCollectedProjects() {
-        return isStandalone(project) ? Collections.singletonList(project) : project.getCollectedProjects();
+    protected List<MavenProject> getProjects() {
+        List<MavenProject> projects = new ArrayList<>();
+        projects.add(project);
+        if (!isStandalone(project)) {
+            projects.addAll(project.getCollectedProjects());
+        }
+        return projects;
     }
 
     @Override
@@ -126,7 +131,7 @@ public class ExtractorMojo extends AbstractMojo {
             initialize();
 
             // Load contributions from current project and collected (child) ones
-            getCollectedProjects().forEach(this::loadContributions);
+            getProjects().forEach(this::loadContributions);
 
             String[] targets = "*".equals(extract) ? holder.getManager().getRegisteredTargets()
                     : extract.split(",\\s*");

@@ -34,7 +34,7 @@ TODO
 
 ## Parameters
 
-- **connectUrl** (Default: `https://connect.nuxeo.com/nuxeo/site`): Nuxeo Connect URL
+- **connectUrl** (Default: `https://connect.nuxeo.com/nuxeo`): Nuxeo Connect URL
 
    User property: `nsmp.connectUrl`
 

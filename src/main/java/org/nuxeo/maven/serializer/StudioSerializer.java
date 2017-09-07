@@ -26,8 +26,10 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.stream.Collectors;
 
+import org.nuxeo.maven.ExtractorMojo;
 import org.nuxeo.maven.bundle.ContributionsHolder;
 
 public class StudioSerializer {
@@ -36,15 +38,22 @@ public class StudioSerializer {
 
     private ContributionsHolder holder;
 
+    private ExtractorMojo mojo;
+
     public StudioSerializer(ContributionsHolder holder) {
+        this(null, holder);
+    }
+
+    public StudioSerializer(ExtractorMojo mojo, ContributionsHolder holder) {
         this.holder = holder;
+        this.mojo = mojo;
     }
 
     public void serializeInto(OutputStream os, String[] targets) {
         Map<String, String> serialized = new HashMap<>();
         Arrays.stream(targets).forEach(t -> serialized.put(t, this.serializeDescriptors(t)));
 
-        JacksonConverter.instance.newGlobalStudioObject(os, serialized);
+        JacksonConverter.instance(mojo).newGlobalStudioObject(os, serialized);
     }
 
     public String serializeDescriptors(String name) {
@@ -62,18 +71,21 @@ public class StudioSerializer {
         final String suffix = getSuffix(name);
 
         List<Object> contribs = descriptor.stream() //
-                                          .map(holder::getContributions)
+                                          .map(holder::getContributions) //
                                           .collect(ArrayList::new, ArrayList::addAll, ArrayList::addAll);
 
         if (contribs.size() == 0) {
             return null;
         }
 
-        return contribs.stream().map(this::serialize).collect(Collectors.joining(delimiter, prefix, suffix));
+        return contribs.stream() //
+                       .map(this::serialize) //
+                       .filter(Objects::nonNull) //
+                       .collect(Collectors.joining(delimiter, prefix, suffix));
     }
 
     protected String serialize(Object obj) {
-        return JacksonConverter.instance.serialize(obj);
+        return JacksonConverter.instance(mojo).serialize(obj);
     }
 
     public String getDelimiter() {

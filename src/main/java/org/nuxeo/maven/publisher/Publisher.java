@@ -93,7 +93,7 @@ public abstract class Publisher {
 
         protected static final String TOKEN_HEADER = "X-Authentication-Token";
 
-        protected static final String REGISTRY_ENDPOINT = "studio/v2/project/{symbolicName}/workspace/ws.registries";
+        protected static final String REGISTRY_ENDPOINT = "site/studio/v2/project/{symbolicName}/workspace/ws.registries";
 
         protected String connectUrl;
 

@@ -35,6 +35,7 @@ import org.nuxeo.ecm.core.schema.FacetDescriptor;
 import org.nuxeo.ecm.core.schema.SchemaBindingDescriptor;
 import org.nuxeo.ecm.core.schema.types.SchemaImpl;
 import org.nuxeo.ecm.core.security.PermissionDescriptor;
+import org.nuxeo.maven.ExtractorMojo;
 import org.nuxeo.maven.serializer.adapter.DefaultAdapter;
 import org.nuxeo.maven.serializer.adapter.OperationAdapter;
 import org.nuxeo.maven.serializer.adapter.OperationChainAdapter;
@@ -56,15 +57,21 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.ser.std.StdSerializer;
 
 public class JacksonConverter {
-    public static final JacksonConverter instance = new JacksonConverter();
-
     protected Map<Class<?>, Class<?>> mixins = new HashMap<>();
 
     protected Map<Class<?>, SerializerAdapter> adapters = new HashMap<>();
 
     protected SerializerAdapter defaultAdapter = new DefaultAdapter();
 
-    private JacksonConverter() {
+    protected ExtractorMojo mojo;
+
+    public static JacksonConverter instance(ExtractorMojo mojo) {
+        return new JacksonConverter(mojo);
+    }
+
+    private JacksonConverter(ExtractorMojo mojo) {
+        this.mojo = mojo;
+
         // Adapters aim to adapt descriptor to a more specific object
         registerAdapter(OperationContribution.class, OperationAdapter.class);
         registerAdapter(SchemaBindingDescriptor.class, SchemaAdapter.class);
@@ -96,6 +103,13 @@ public class JacksonConverter {
         try {
             ObjectMapper om = new ObjectMapper();
             Object targetAdapted = adapters.getOrDefault(target.getClass(), defaultAdapter).adapt(target);
+
+            // Mainly occurred with {@code org.nuxeo.maven.serializer.adapter.SchemaAdapter#adapt} when schema file is
+            // missing.
+            if (targetAdapted == null) {
+                mojo.getLog().warn("Unable to adapt: \"" + target + "\" (" + target.getClass() + ")");
+                return null;
+            }
 
             om.addMixIn(targetAdapted.getClass(), mixins.getOrDefault(targetAdapted.getClass(), Object.class));
             return om.writeValueAsString(targetAdapted);
