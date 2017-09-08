@@ -21,13 +21,11 @@ package org.nuxeo.maven;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
-import static org.nuxeo.common.Environment.NUXEO_HOME;
 
 import java.io.File;
 import java.io.IOException;
 import java.net.URISyntaxException;
 import java.net.URL;
-import java.nio.file.Files;
 
 import org.junit.Before;
 import org.nuxeo.maven.bundle.BundleWalker;
@@ -41,15 +39,17 @@ import net.sf.json.test.JSONAssert;
 public class AbstractTest {
     protected BundleWalker walker;
 
+    /**
+     * Not used, just to initialize ExtractorMojo static block
+     */
+    protected ExtractorMojo mojo = new ExtractorMojo();
+
     @Before
     public void beforeEach() throws IOException {
-        // Nuxeo Environment is not well initialized without a NUXEO_HOME
-        // Required by org.nuxeo.ecm.core.schema.SchemaManagerImpl()
-        System.setProperty(NUXEO_HOME,
-                Files.createTempDirectory(String.valueOf(System.currentTimeMillis())).toString());
-
         walker = new BundleWalker();
         walker.setBasePath(new File("src/it/simple-bundle/src/main/resources"));
+
+        assertNotNull(mojo);
     }
 
     protected RegistrationInfo getRegistrationInfo(String resourcePath) throws URISyntaxException {

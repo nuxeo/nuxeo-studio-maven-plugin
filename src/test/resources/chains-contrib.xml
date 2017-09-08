@@ -26,6 +26,22 @@
         <param type="stringlist" name="additional list of actors prefixed ids">user:Administrator</param>
         <param type="boolean" name="create one task per actor">true</param>
       </operation>
+      <operation id="Sparta.RedlineCreatePreviewWatermark">
+        <param type="properties" name="coverPageProperties">fontSize=12
+          rotation=0
+          hex255Color=#000000
+          alphaColor= 1
+          xPosition=0.5
+          yPosition=0.13
+          invertX=false
+          invertY=false
+          relativeCoordinates=true
+        </param>
+        <param type="string" name="coverPageTemplate">template:coverPageTemplate</param>
+        <param type="boolean" name="createCoverPage">true</param>
+        <param type="string" name="headerAndFooterTemplate">template:pageHeaderAndFooter</param>
+        <param type="boolean" name="save">true</param>
+      </operation>
     </chain>
   </extension>
 </component>

@@ -37,9 +37,11 @@ import org.apache.maven.plugins.annotations.ResolutionScope;
 import org.apache.maven.project.MavenProject;
 import org.nuxeo.maven.bundle.BundleWalker;
 import org.nuxeo.maven.bundle.ContributionsHolder;
+import org.nuxeo.maven.bundle.FakeRuntimeService;
 import org.nuxeo.maven.publisher.Publisher;
 import org.nuxeo.maven.runtime.MojoRuntime;
 import org.nuxeo.maven.serializer.StudioSerializer;
+import org.nuxeo.runtime.api.Framework;
 
 /**
  * Parse each project to load contributions' descriptors from the MANIFEST.MF and map them to studio contributions
@@ -51,6 +53,16 @@ import org.nuxeo.maven.serializer.StudioSerializer;
  */
 @Mojo(name = "extract", requiresProject = false, defaultPhase = LifecyclePhase.PREPARE_PACKAGE, requiresDependencyCollection = ResolutionScope.COMPILE, inheritByDefault = false, aggregator = true, threadSafe = true)
 public class ExtractorMojo extends AbstractMojo {
+
+    static {
+        // Fake Nuxeo Runtime initialization
+        try {
+            System.setProperty(NUXEO_HOME, Files.createTempDirectory("nuxeo").toString());
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+        Framework.initialize(new FakeRuntimeService());
+    }
 
     @Parameter(defaultValue = "${project}", readonly = true, property = "nsmp.project")
     protected MavenProject project;
@@ -93,7 +105,6 @@ public class ExtractorMojo extends AbstractMojo {
     protected ContributionsHolder holder;
 
     protected void initialize() throws MojoExecutionException, IOException {
-        System.setProperty(NUXEO_HOME, Files.createTempDirectory("nuxeo").toString());
         holder = new ContributionsHolder();
         serializer = new StudioSerializer(this, holder);
 
