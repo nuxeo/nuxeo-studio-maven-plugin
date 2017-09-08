@@ -48,20 +48,6 @@
           </rules>
         </configuration>
       </plugin>
-      <plugin>
-        <groupId>@project.groupId@</groupId>
-        <artifactId>@project.artifactId@</artifactId>
-        <version>@project.version@</version>
-        <executions>
-          <execution>
-            <id>extract</id>
-            <goals>
-              <goal>extract</goal>
-            </goals>
-            <inherited>false</inherited>
-          </execution>
-        </executions>
-      </plugin>
     </plugins>
   </build>
 

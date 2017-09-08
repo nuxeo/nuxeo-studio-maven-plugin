@@ -37,22 +37,6 @@
           </rules>
         </configuration>
       </plugin>
-      <plugin>
-        <groupId>@project.groupId@</groupId>
-        <artifactId>@project.artifactId@</artifactId>
-        <version>@project.version@</version>
-        <configuration>
-          <extract>operations,schemas</extract>
-        </configuration>
-        <executions>
-          <execution>
-            <id>extract</id>
-            <goals>
-              <goal>extract</goal>
-            </goals>
-          </execution>
-        </executions>
-      </plugin>
     </plugins>
   </build>
   <repositories>

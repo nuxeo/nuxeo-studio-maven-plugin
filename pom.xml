@@ -261,6 +261,7 @@
               <goals>
                 <goal>clean</goal>
                 <goal>package</goal>
+                <goal>org.nuxeo.tools:nuxeo-studio-maven-plugin:extract</goal>
               </goals>
               <pomIncludes>
                 <pomInclude>*/pom.xml</pomInclude>
