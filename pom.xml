@@ -234,23 +234,6 @@
         </configuration>
         <executions>
           <execution>
-            <id>standalone-tests</id>
-            <goals>
-              <goal>install</goal>
-              <goal>integration-test</goal>
-              <goal>verify</goal>
-            </goals>
-            <configuration>
-              <goals>
-                <goal>org.nuxeo.tools:nuxeo-studio-maven-plugin:extract</goal>
-              </goals>
-              <pomIncludes>
-                <pomInclude>standalone-pom</pomInclude>
-              </pomIncludes>
-            </configuration>
-          </execution>
-          <!-- XXX Only the last execution makes the build failed. -->
-          <execution>
             <id>project-tests</id>
             <goals>
               <goal>install</goal>
@@ -264,7 +247,7 @@
                 <goal>org.nuxeo.tools:nuxeo-studio-maven-plugin:extract</goal>
               </goals>
               <pomIncludes>
-                <pomInclude>*/pom.xml</pomInclude>
+                <pomInclude>*-bundle</pomInclude>
               </pomIncludes>
             </configuration>
           </execution>

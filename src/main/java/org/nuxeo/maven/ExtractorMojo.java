@@ -134,7 +134,7 @@ public class ExtractorMojo extends AbstractMojo {
             getProjects().forEach(this::loadContributions);
 
             String[] targets = "*".equals(extract) ? holder.getManager().getRegisteredTargets()
-                    : extract.split(",\\s*");
+                    : extract.split(",|\\s\\s*");
 
             Publisher.instance(this).publish(targets);
         } catch (IOException e) {
