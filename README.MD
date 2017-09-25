@@ -28,7 +28,39 @@ Publish contributions in Studio Registries:
 mvn [-o] [-DskipTests] [-DskipITs] [package] org.nuxeo.tools:nuxeo-studio-maven-plugin:extract -Dnsmp.symbolicName="MY-PROJECT" -Dnsmp.token="MY-TOKEN"
 ```
 
-Online documentation:
+## Setting Nuxeo Plugins Repository
+
+`nuxeo-studio-maven-plugin` Maven Plugin is available throught http://maven.nuxeo.org/nexus/content/groups/public plugins repository.
+
+To configure it, you can read the [Maven Usage](https://doc.nuxeo.com/corg/maven-usage/) documentation page. Or add the following section to your settings file (`$M2_REPO/settings.xml`):
+
+```xml
+<?xml version="1.0"?>
+<settings>
+  <profiles>
+    <profile>
+      <id>Nuxeo</id>
+      <pluginRepositories>
+        <pluginRepository>
+          <id>public</id>
+          <url>http://maven.nuxeo.org/nexus/content/groups/public</url>
+          <releases>
+            <enabled>true</enabled>
+          </releases>
+          <snapshots>
+            <enabled>false</enabled>
+          </snapshots>
+        </pluginRepository>
+      </pluginRepositories>
+    </profile>
+  </profiles>
+  <activeProfiles>
+    <activeProfile>Nuxeo</activeProfile>
+  </activeProfiles>
+</settings>
+```
+
+## Online documentation
 
 TODO
 
