@@ -23,6 +23,7 @@ import java.io.IOException;
 import java.io.OutputStream;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Objects;
 
 import org.apache.commons.lang.StringUtils;
 import org.nuxeo.ecm.automation.OperationDocumentation;
@@ -111,6 +112,7 @@ public class JacksonConverter {
                 return null;
             }
 
+            mojo.getLog().info("Serialize: " + targetAdapted.toString().trim());
             om.addMixIn(targetAdapted.getClass(), mixins.getOrDefault(targetAdapted.getClass(), Object.class));
             return om.writeValueAsString(targetAdapted);
         } catch (JsonProcessingException e) {
@@ -120,6 +122,10 @@ public class JacksonConverter {
 
     public void newGlobalStudioObject(OutputStream os, Map<String, String> serialized) {
         JsonFactory factory = new JsonFactory();
+
+        if (mojo.isFailOnEmpty() && serialized.values().stream().allMatch(Objects::isNull)) {
+            throw new RuntimeException("Nothing to export.");
+        }
 
         try (JsonGenerator gen = factory.createGenerator(os, JsonEncoding.UTF8)) {
             gen.writeStartObject();

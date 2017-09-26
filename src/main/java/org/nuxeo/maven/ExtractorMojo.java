@@ -95,6 +95,12 @@ public class ExtractorMojo extends AbstractMojo {
     protected String symbolicName;
 
     /**
+     * Extract fails if nothing is extracted
+     */
+    @Parameter(defaultValue = "false", readonly = true, property = "nsmp.failOnEmpty")
+    protected boolean failOnEmpty;
+
+    /**
      * Nuxeo Connect URL
      */
     @Parameter(defaultValue = "https://connect.nuxeo.com/nuxeo", property = "nsmp.connectUrl")
@@ -184,6 +190,10 @@ public class ExtractorMojo extends AbstractMojo {
 
     public String getConnectUrl() {
         return connectUrl;
+    }
+
+    public boolean isFailOnEmpty() {
+        return failOnEmpty;
     }
 
     public StudioSerializer getSerializer() {

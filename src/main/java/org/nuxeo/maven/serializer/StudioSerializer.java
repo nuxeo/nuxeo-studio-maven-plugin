@@ -40,10 +40,6 @@ public class StudioSerializer {
 
     private ExtractorMojo mojo;
 
-    public StudioSerializer(ContributionsHolder holder) {
-        this(null, holder);
-    }
-
     public StudioSerializer(ExtractorMojo mojo, ContributionsHolder holder) {
         this.holder = holder;
         this.mojo = mojo;
@@ -57,7 +53,7 @@ public class StudioSerializer {
     }
 
     public String serializeDescriptors(String name) {
-        return serializeDescriptors(name, holder.getManager().getDescriptor(name));
+        return serializeDescriptors(name, holder.getManager().getDescriptors(name));
     }
 
     public String serializeDescriptors(Class<?> descriptor) {

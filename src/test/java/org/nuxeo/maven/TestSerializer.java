@@ -23,6 +23,7 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
 import java.io.ByteArrayOutputStream;
+import java.io.OutputStream;
 import java.io.UnsupportedEncodingException;
 import java.net.URISyntaxException;
 import java.util.Arrays;
@@ -112,7 +113,7 @@ public class TestSerializer extends AbstractTest {
 
         assertEquals(0, contributions.size());
 
-        StudioSerializer serializer = new StudioSerializer(holder);
+        StudioSerializer serializer = new StudioSerializer(mojo, holder);
         String s = serializer.serializeDescriptors(DocumentTypeDescriptor.class);
 
         assertEquals(null, s);
@@ -130,9 +131,24 @@ public class TestSerializer extends AbstractTest {
         assertEquals(1, contributions.size());
         assertEquals(5, contributions.get(0).getEvents().size());
 
-        StudioSerializer serializer = new StudioSerializer(holder);
+        StudioSerializer serializer = new StudioSerializer(mojo, holder);
         String result = serializer.serializeDescriptors(EventListenerDescriptor.class);
         assertJsonEquals(EXPECTED_JSON_EVENT, result);
+    }
+
+    @Test(expected = RuntimeException.class)
+    public void testExceptionThrownWhenEmpty() throws URISyntaxException {
+        // Enable fail on empty parameter
+        mojo.failOnEmpty = true;
+
+        ContributionsHolder holder = new ContributionsHolder();
+        holder.load(getRegistrationInfo("operation-contrib.xml"));
+        holder.load(getRegistrationInfo("permission-contrib.xml"));
+        holder.load(getRegistrationInfo("component-contrib.xml"));
+
+        StudioSerializer serializer = new StudioSerializer(mojo, holder);
+        OutputStream os = new ByteArrayOutputStream();
+        serializer.serializeInto(os, new String[] { "misssing", "empty", "events" });
     }
 
     @Test
@@ -142,7 +158,7 @@ public class TestSerializer extends AbstractTest {
         holder.load(getRegistrationInfo("permission-contrib.xml"));
         holder.load(getRegistrationInfo("component-contrib.xml"));
 
-        StudioSerializer serializer = new StudioSerializer(holder);
+        StudioSerializer serializer = new StudioSerializer(mojo, holder);
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
         serializer.serializeInto(baos, "operations,permissions,facets".split(","));
 

@@ -60,7 +60,7 @@ public class MappersManager {
         return mapper.isEnabled(contribution) && !mapper.isPartial(contribution);
     }
 
-    public List<Class<?>> getDescriptor(String name) {
+    public List<Class<?>> getDescriptors(String name) {
         return mappers.stream() //
                       .map(m -> m.getDescriptor(name))
                       .filter(Objects::nonNull)
