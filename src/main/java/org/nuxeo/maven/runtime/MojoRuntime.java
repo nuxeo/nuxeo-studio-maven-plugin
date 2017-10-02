@@ -62,11 +62,8 @@ import org.osgi.framework.Bundle;
 public class MojoRuntime implements RuntimeContext {
 
     public static MojoRuntime instance = new MojoRuntime();
-
-    private static ClassLoader custom;
-
     public static SchemaManagerImpl schemaManager = new SchemaManagerImpl();
-
+    private static ClassLoader custom;
     private Set<URI> extResourcesSources = new HashSet<>();
 
     private MojoRuntime() {

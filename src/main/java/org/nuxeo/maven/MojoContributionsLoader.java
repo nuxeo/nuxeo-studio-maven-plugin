@@ -25,6 +25,7 @@ import java.net.URI;
 import java.nio.file.FileSystem;
 import java.nio.file.FileSystems;
 import java.nio.file.Paths;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 
@@ -57,17 +58,17 @@ public class MojoContributionsLoader {
     public void load() throws MojoExecutionException {
         if (StringUtils.isNotBlank(mojo.getJarFile())) {
             // Based on external jarFile
-            loadFromJarFile(mojo.getJarFile());
+            Arrays.stream(mojo.getJarFile().split(",")).forEach(this::loadFromJarFile);
         } else {
             // Based on Project (Standalone project, other project)
             loadFromMavenProjects(mojo.getProjects());
         }
     }
 
-    protected void loadFromJarFile(String jarFile) throws MojoExecutionException {
+    protected void loadFromJarFile(String jarFile) {
         File file = new File(jarFile);
         if (!file.exists()) {
-            throw new MojoExecutionException("Unknown jar file: " + jarFile);
+            throw new RuntimeException("Unknown jar file: " + jarFile);
         }
 
         URI uri = URI.create("jar:file:" + file.getAbsolutePath());

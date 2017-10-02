@@ -22,21 +22,11 @@ package org.nuxeo.maven;
 import static org.nuxeo.common.Environment.NUXEO_HOME;
 
 import java.io.IOException;
-import java.net.URI;
-import java.nio.file.FileSystem;
-import java.nio.file.FileSystems;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.stream.Stream;
 
-import org.apache.maven.artifact.Artifact;
-import org.apache.maven.artifact.DefaultArtifact;
-import org.apache.maven.artifact.handler.DefaultArtifactHandler;
-import org.apache.maven.execution.MavenSession;
-import org.apache.maven.model.Dependency;
 import org.apache.maven.plugin.AbstractMojo;
 import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugin.MojoFailureException;
@@ -45,7 +35,6 @@ import org.apache.maven.plugins.annotations.Mojo;
 import org.apache.maven.plugins.annotations.Parameter;
 import org.apache.maven.plugins.annotations.ResolutionScope;
 import org.apache.maven.project.MavenProject;
-import org.nuxeo.maven.bundle.BundleWalker;
 import org.nuxeo.maven.bundle.ContributionsHolder;
 import org.nuxeo.maven.bundle.FakeRuntimeService;
 import org.nuxeo.maven.publisher.Publisher;
@@ -87,7 +76,7 @@ public class ExtractorMojo extends AbstractMojo {
     protected String extract;
 
     /**
-     * Extract contributions from a jar file
+     * Extract contributions from a jar file. Multiple files must be separate using a coma.
      */
     @Parameter(property = "nsmp.jarFile")
     protected String jarFile;
@@ -163,15 +152,6 @@ public class ExtractorMojo extends AbstractMojo {
             Publisher.instance(this).publish(targets);
         } catch (IOException e) {
             throw new MojoExecutionException("Unable to publish extractions", e);
-        }
-    }
-
-    protected void loadContributions(MavenProject project) {
-        BundleWalker walker = new BundleWalker(getBuildOutputDirectory(project));
-        try {
-            walker.getRegistrationInfos().forEach(holder::load);
-        } catch (IOException e) {
-            throw new RuntimeException(e);
         }
     }
 

@@ -66,10 +66,6 @@ public class JacksonConverter {
 
     protected ExtractorMojo mojo;
 
-    public static JacksonConverter instance(ExtractorMojo mojo) {
-        return new JacksonConverter(mojo);
-    }
-
     private JacksonConverter(ExtractorMojo mojo) {
         this.mojo = mojo;
 
@@ -86,6 +82,10 @@ public class JacksonConverter {
         registerMixin(EventListenerDescriptor.class, EventListenerMixin.class);
         registerMixin(SchemaImpl.class, SchemaMixin.class);
         registerMixin(DocumentTypeDescriptor.class, DocTypeMixin.class);
+    }
+
+    public static JacksonConverter instance(ExtractorMojo mojo) {
+        return new JacksonConverter(mojo);
     }
 
     protected void registerMixin(Class<?> target, Class<?> mixin) {

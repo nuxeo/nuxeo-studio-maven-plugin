@@ -41,10 +41,8 @@ public abstract class LifeCycleMixin {
         public void serialize(LifeCycleDescriptor value, JsonGenerator gen, SerializerProvider provider)
                 throws IOException {
             List<String> states = value.getStates().stream().map(LifeCycleState::getName).collect(Collectors.toList());
-            List<String> transitions = value.getTransitions()
-                                            .stream()
-                                            .map(LifeCycleTransition::getName)
-                                            .collect(Collectors.toList());
+            List<String> transitions = value.getTransitions().stream().map(LifeCycleTransition::getName).collect(
+                    Collectors.toList());
 
             Map<String, List> lifecycle = new HashMap<>();
             lifecycle.put("states", states);
