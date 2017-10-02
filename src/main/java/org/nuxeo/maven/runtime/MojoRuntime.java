@@ -22,11 +22,18 @@ package org.nuxeo.maven.runtime;
 import java.io.File;
 import java.io.IOException;
 import java.net.MalformedURLException;
+import java.net.URI;
 import java.net.URL;
 import java.net.URLClassLoader;
+import java.nio.file.FileSystem;
+import java.nio.file.FileSystems;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Objects;
 import java.util.Set;
 
 import org.apache.maven.artifact.DependencyResolutionRequiredException;
@@ -56,9 +63,11 @@ public class MojoRuntime implements RuntimeContext {
 
     public static MojoRuntime instance = new MojoRuntime();
 
+    private static ClassLoader custom;
+
     public static SchemaManagerImpl schemaManager = new SchemaManagerImpl();
 
-    private static ClassLoader custom;
+    private Set<URI> extResourcesSources = new HashSet<>();
 
     private MojoRuntime() {
     }
@@ -88,6 +97,10 @@ public class MojoRuntime implements RuntimeContext {
         } catch (DependencyResolutionRequiredException | MalformedURLException e) {
             throw new MojoExecutionException("Unable to load compile dependencies", e);
         }
+    }
+
+    public void addResourcesSource(URI source) {
+        extResourcesSources.add(source);
     }
 
     protected ClassLoader getClassloader() {
@@ -121,14 +134,40 @@ public class MojoRuntime implements RuntimeContext {
     @Override
     public URL getLocalResource(String name) {
         URL loadedResource = getClassloader().getResource(name);
-        if (loadedResource == null) {
-            try {
-                loadedResource = new File(name).toURI().toURL();
-            } catch (MalformedURLException e) {
-                // Should never happen
-            }
+        if (loadedResource != null) {
+            return loadedResource;
         }
-        return loadedResource;
+
+        try {
+            File file = new File(name);
+            if (file.exists()) {
+                return file.toURI().toURL();
+            }
+        } catch (MalformedURLException e) {
+            // Should never happen
+        }
+
+        return extResourcesSources.stream()
+                                  .map(s -> this.getResourceFromFile(s, name))
+                                  .filter(Objects::nonNull)
+                                  .findFirst()
+                                  .orElse(null);
+    }
+
+    public URL getResourceFromFile(URI uri, String name) {
+        try {
+            try (FileSystem fs = FileSystems.newFileSystem(uri, new HashMap<>())) {
+                Path path = fs.getPath(name);
+
+                if (Files.exists(path)) {
+                    return path.toUri().toURL();
+                }
+            }
+        } catch (IOException e) {
+            // Ignore
+        }
+
+        return null;
     }
 
     @Override
@@ -179,5 +218,9 @@ public class MojoRuntime implements RuntimeContext {
     @Override
     public void destroy() {
 
+    }
+
+    public void clearExternalSources() {
+        extResourcesSources.clear();
     }
 }

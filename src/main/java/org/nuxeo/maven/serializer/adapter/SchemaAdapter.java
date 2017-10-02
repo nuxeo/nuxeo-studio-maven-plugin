@@ -51,10 +51,6 @@ public class SchemaAdapter implements SerializerAdapter<SchemaBindingDescriptor,
             sd.context = MojoRuntime.instance;
         }
 
-        // public CustomXSDLoader(SchemaManagerImpl schemaManager) {
-        // super(schemaManager);
-        // }
-
         @Override
         protected ObjectResolverService getObjectResolverService() {
             return (s, map) -> null;

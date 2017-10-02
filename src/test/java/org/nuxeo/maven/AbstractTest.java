@@ -27,9 +27,11 @@ import java.io.IOException;
 import java.net.URISyntaxException;
 import java.net.URL;
 
+import org.junit.After;
 import org.junit.Before;
 import org.nuxeo.maven.bundle.BundleWalker;
 import org.nuxeo.maven.bundle.ContributionsHolder;
+import org.nuxeo.maven.runtime.MojoRuntime;
 import org.nuxeo.maven.serializer.StudioSerializer;
 import org.nuxeo.runtime.model.RegistrationInfo;
 
@@ -50,6 +52,11 @@ public class AbstractTest {
         walker.setBasePath(new File("src/it/simple-bundle/src/main/resources"));
 
         assertNotNull(mojo);
+    }
+
+    @After
+    public void afterEach() {
+        MojoRuntime.instance.clearExternalSources();
     }
 
     protected RegistrationInfo getRegistrationInfo(String resourcePath) throws URISyntaxException {

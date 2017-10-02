@@ -24,20 +24,30 @@ import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
 import java.io.IOException;
+import java.net.URI;
 import java.net.URISyntaxException;
+import java.net.URL;
+import java.nio.file.FileSystem;
+import java.nio.file.FileSystems;
 import java.nio.file.Path;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
 import java.util.stream.Collectors;
 
 import org.junit.Test;
 import org.nuxeo.ecm.core.schema.DocumentTypeDescriptor;
 import org.nuxeo.ecm.core.schema.SchemaBindingDescriptor;
+import org.nuxeo.maven.bundle.BundleWalker;
 import org.nuxeo.maven.bundle.ContributionsHolder;
 import org.nuxeo.maven.mapper.MappersManager;
 import org.nuxeo.maven.mapper.impl.TypeServiceMapper;
 import org.nuxeo.runtime.model.Extension;
 import org.nuxeo.runtime.model.RegistrationInfo;
+import org.xml.sax.SAXException;
+
+import com.sun.xml.xsom.XSSchemaSet;
+import com.sun.xml.xsom.parser.XSOMParser;
 
 public class TestWalker extends AbstractTest {
 
@@ -86,5 +96,20 @@ public class TestWalker extends AbstractTest {
 
         RegistrationInfo ri = walker.read(components.get(0));
         assertNotNull(ri);
+    }
+
+    @Test
+    public void jarFileWalkerTest() throws URISyntaxException, IOException {
+        URL resource = getClass().getClassLoader().getResource("test-project-core-1.0-SNAPSHOT.jar");
+        URI uri = URI.create("jar:file:" + resource.getFile());
+
+        try (FileSystem jfs = FileSystems.newFileSystem(uri, new HashMap<>())) {
+            BundleWalker walker = new BundleWalker(jfs.getPath("/"));
+            assertEquals(2, walker.getComponents().count());
+
+            RegistrationInfo ri = walker.getRegistrationInfos().findFirst().orElse(null);
+            assertNotNull(ri);
+            assertEquals("service:org.nuxeo.platform.audit.lifecycle.contrib", ri.getName().getRawName());
+        }
     }
 }

@@ -20,13 +20,21 @@
 package org.nuxeo.maven;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
 import java.io.ByteArrayOutputStream;
+import java.io.IOException;
 import java.io.OutputStream;
 import java.io.UnsupportedEncodingException;
+import java.net.URI;
 import java.net.URISyntaxException;
+import java.net.URL;
+import java.nio.file.FileSystem;
+import java.nio.file.FileSystems;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
 
 import org.junit.Test;
@@ -38,10 +46,16 @@ import org.nuxeo.ecm.core.schema.DocumentTypeDescriptor;
 import org.nuxeo.ecm.core.schema.FacetDescriptor;
 import org.nuxeo.ecm.core.schema.SchemaBindingDescriptor;
 import org.nuxeo.ecm.core.security.PermissionDescriptor;
+import org.nuxeo.maven.bundle.BundleWalker;
 import org.nuxeo.maven.bundle.ContributionsHolder;
 import org.nuxeo.maven.mapper.impl.TypeServiceMapper;
+import org.nuxeo.maven.runtime.MojoRuntime;
 import org.nuxeo.maven.serializer.StudioSerializer;
 import org.nuxeo.runtime.model.RegistrationInfo;
+import org.xml.sax.SAXException;
+
+import com.sun.xml.xsom.XSSchemaSet;
+import com.sun.xml.xsom.parser.XSOMParser;
 
 import net.sf.json.test.JSONAssert;
 
@@ -166,5 +180,44 @@ public class TestSerializer extends AbstractTest {
         String expected = String.format("{\"operations\": %s, \"facets\": %s, \"permissions\": %s}",
                 EXPECTED_JSON_OPERATIONS, EXPECTED_JSON_FACETS, EXPECTED_JSON_PERMISSIONS);
         JSONAssert.assertJsonEquals(expected, result);
+    }
+
+    @Test
+    public void jarFileSerialization() throws IOException {
+        URL resource = getClass().getClassLoader().getResource("test-project-core-1.0-SNAPSHOT.jar");
+        URI uri = URI.create("jar:file:" + resource.getFile());
+        MojoRuntime.instance.addResourcesSource(uri);
+
+        ContributionsHolder holder = new ContributionsHolder();
+
+        try (FileSystem jfs = FileSystems.newFileSystem(uri, new HashMap<>())) {
+            BundleWalker walker = new BundleWalker(jfs.getPath("/"));
+            walker.getRegistrationInfos().forEach(holder::load);
+        }
+
+        StudioSerializer serializer = new StudioSerializer(mojo, holder);
+        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+        serializer.serializeInto(baos, "schemas,lifecycles".split(","));
+
+        String result = baos.toString("UTF-8");
+        assertNotNull(result);
+    }
+
+    @Test
+    public void loadSchemaForDependency() throws IOException, SAXException {
+        URL resource = getClass().getClassLoader().getResource("test-project-core-1.0-SNAPSHOT.jar");
+        URI uri = URI.create("jar:file:" + resource.getFile());
+
+        URL file = MojoRuntime.instance.getResourceFromFile(uri, "blalba");
+        assertNull(file);
+
+        file = MojoRuntime.instance.getResourceFromFile(uri, "schemas/aceinfo.xsd");
+        assertNotNull(file);
+
+        XSOMParser parser = new XSOMParser();
+        parser.parse(file);
+        XSSchemaSet xsSchemas = parser.getResult();
+        assertNotNull(xsSchemas);
+        assertEquals(2, xsSchemas.getSchemaSize());
     }
 }

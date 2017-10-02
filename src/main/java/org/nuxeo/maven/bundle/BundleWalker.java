@@ -20,7 +20,6 @@
 package org.nuxeo.maven.bundle;
 
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.file.Files;
@@ -58,6 +57,11 @@ public class BundleWalker {
         setBasePath(basePath);
     }
 
+    public BundleWalker(Path basePath) {
+        this();
+        this.basePath = basePath;
+    }
+
     private Path findFile(String filePath) {
         try {
             return Files.walk(basePath).filter(s -> s.endsWith(filePath)).findFirst().orElse(null);
@@ -76,7 +80,7 @@ public class BundleWalker {
         }
 
         Manifest manifest;
-        try (FileInputStream fis = new FileInputStream(manifestPath.toFile())) {
+        try (InputStream fis = Files.newInputStream(manifestPath)) {
             manifest = new Manifest(fis);
         }
 
@@ -85,7 +89,7 @@ public class BundleWalker {
             return Stream.empty();
         }
 
-        return Arrays.stream(components.split("[, \t\n\r\f]"))
+        return Arrays.stream(components.split("[, \t\n\r\f]+"))
                      .filter(StringUtils::isNotBlank)
                      .map(this::findFile)
                      .filter(Objects::nonNull);
@@ -108,7 +112,7 @@ public class BundleWalker {
     }
 
     public RegistrationInfo read(Path component) {
-        try (InputStream is = new FileInputStream(component.toFile())) {
+        try (InputStream is = Files.newInputStream(component)) {
             return reader.read(MojoRuntime.instance, is);
         } catch (IOException e) {
             throw new RuntimeException(e);

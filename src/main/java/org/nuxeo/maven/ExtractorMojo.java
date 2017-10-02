@@ -22,11 +22,21 @@ package org.nuxeo.maven;
 import static org.nuxeo.common.Environment.NUXEO_HOME;
 
 import java.io.IOException;
+import java.net.URI;
+import java.nio.file.FileSystem;
+import java.nio.file.FileSystems;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.stream.Stream;
 
+import org.apache.maven.artifact.Artifact;
+import org.apache.maven.artifact.DefaultArtifact;
+import org.apache.maven.artifact.handler.DefaultArtifactHandler;
+import org.apache.maven.execution.MavenSession;
+import org.apache.maven.model.Dependency;
 import org.apache.maven.plugin.AbstractMojo;
 import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugin.MojoFailureException;
@@ -51,7 +61,7 @@ import org.nuxeo.runtime.api.Framework;
  * Nuxeo Studio.
  * </p>
  */
-@Mojo(name = "extract", requiresProject = false, defaultPhase = LifecyclePhase.PREPARE_PACKAGE, requiresDependencyCollection = ResolutionScope.COMPILE, inheritByDefault = false, aggregator = true, threadSafe = true)
+@Mojo(name = "extract", requiresProject = false, defaultPhase = LifecyclePhase.PREPARE_PACKAGE, requiresDependencyCollection = ResolutionScope.COMPILE_PLUS_RUNTIME, inheritByDefault = false, aggregator = true, threadSafe = true)
 public class ExtractorMojo extends AbstractMojo {
 
     static {
@@ -75,6 +85,12 @@ public class ExtractorMojo extends AbstractMojo {
      */
     @Parameter(defaultValue = "*", property = "nsmp.extract")
     protected String extract;
+
+    /**
+     * Extract contributions from a jar file
+     */
+    @Parameter(property = "nsmp.jarFile")
+    protected String jarFile;
 
     /**
      * File output name. JSON Registries will be written in this file in the "output" directory.
@@ -114,29 +130,20 @@ public class ExtractorMojo extends AbstractMojo {
         holder = new ContributionsHolder();
         serializer = new StudioSerializer(this, holder);
 
-        if (!isStandalone(project)) {
+        if (!MojoContributionsLoader.isStandaloneProject(project)) {
             MojoRuntime.initCustomClassLoader(project);
         }
     }
 
     public String getBuildDirectory() {
-        return isStandalone(project) ? Paths.get("").toAbsolutePath().toString() : project.getBuild().getDirectory();
-    }
-
-    protected static String getBuildOutputDirectory(MavenProject project) {
-        // When project is standalone-pom; use the current directory instead of a build one
-        return isStandalone(project) ? Paths.get("").toAbsolutePath().toString()
-                : project.getBuild().getOutputDirectory();
-    }
-
-    protected static boolean isStandalone(MavenProject project) {
-        return project.getId().startsWith("org.apache.maven:standalone-pom:");
+        return MojoContributionsLoader.isStandaloneProject(project) ? Paths.get("").toAbsolutePath().toString()
+                : project.getBuild().getDirectory();
     }
 
     protected List<MavenProject> getProjects() {
         List<MavenProject> projects = new ArrayList<>();
         projects.add(project);
-        if (!isStandalone(project)) {
+        if (!MojoContributionsLoader.isStandaloneProject(project)) {
             projects.addAll(project.getCollectedProjects());
         }
         return projects;
@@ -148,7 +155,7 @@ public class ExtractorMojo extends AbstractMojo {
             initialize();
 
             // Load contributions from current project and collected (child) ones
-            getProjects().forEach(this::loadContributions);
+            new MojoContributionsLoader(this).load();
 
             String[] targets = "*".equals(extract) ? holder.getManager().getRegisteredTargets()
                     : extract.split(",|\\s\\s*");
@@ -194,6 +201,10 @@ public class ExtractorMojo extends AbstractMojo {
 
     public boolean isFailOnEmpty() {
         return failOnEmpty;
+    }
+
+    public String getJarFile() {
+        return jarFile;
     }
 
     public StudioSerializer getSerializer() {
