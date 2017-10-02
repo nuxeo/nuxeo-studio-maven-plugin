@@ -66,6 +66,10 @@ TODO
 
 ## Parameters
 
+- **jarFile**: External Jar File. Multiple files must be separate using a coma.
+
+   User property: `nsmp.jarFile`
+
 - **connectUrl** (Default: `https://connect.nuxeo.com/nuxeo`): Nuxeo Connect URL
 
    User property: `nsmp.connectUrl`
