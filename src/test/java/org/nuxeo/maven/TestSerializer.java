@@ -49,7 +49,7 @@ import org.nuxeo.ecm.core.security.PermissionDescriptor;
 import org.nuxeo.maven.bundle.BundleWalker;
 import org.nuxeo.maven.bundle.ContributionsHolder;
 import org.nuxeo.maven.mapper.impl.TypeServiceMapper;
-import org.nuxeo.maven.runtime.MojoRuntime;
+import org.nuxeo.maven.runtime.ExtractorRuntimeContext;
 import org.nuxeo.maven.serializer.StudioSerializer;
 import org.nuxeo.runtime.model.RegistrationInfo;
 import org.xml.sax.SAXException;
@@ -127,7 +127,7 @@ public class TestSerializer extends AbstractTest {
 
         assertEquals(0, contributions.size());
 
-        StudioSerializer serializer = new StudioSerializer(mojo, holder);
+        StudioSerializer serializer = new StudioSerializer(holder, opts);
         String s = serializer.serializeDescriptors(DocumentTypeDescriptor.class);
 
         assertEquals(null, s);
@@ -145,7 +145,7 @@ public class TestSerializer extends AbstractTest {
         assertEquals(1, contributions.size());
         assertEquals(5, contributions.get(0).getEvents().size());
 
-        StudioSerializer serializer = new StudioSerializer(mojo, holder);
+        StudioSerializer serializer = new StudioSerializer(holder, opts);
         String result = serializer.serializeDescriptors(EventListenerDescriptor.class);
         assertJsonEquals(EXPECTED_JSON_EVENT, result);
     }
@@ -153,14 +153,14 @@ public class TestSerializer extends AbstractTest {
     @Test(expected = RuntimeException.class)
     public void testExceptionThrownWhenEmpty() throws URISyntaxException {
         // Enable fail on empty parameter
-        mojo.failOnEmpty = true;
+        opts.failOnEmpty = true;
 
         ContributionsHolder holder = new ContributionsHolder();
         holder.load(getRegistrationInfo("operation-contrib.xml"));
         holder.load(getRegistrationInfo("permission-contrib.xml"));
         holder.load(getRegistrationInfo("component-contrib.xml"));
 
-        StudioSerializer serializer = new StudioSerializer(mojo, holder);
+        StudioSerializer serializer = new StudioSerializer(holder, opts);
         OutputStream os = new ByteArrayOutputStream();
         serializer.serializeInto(os, new String[] { "misssing", "empty", "events" });
     }
@@ -172,7 +172,7 @@ public class TestSerializer extends AbstractTest {
         holder.load(getRegistrationInfo("permission-contrib.xml"));
         holder.load(getRegistrationInfo("component-contrib.xml"));
 
-        StudioSerializer serializer = new StudioSerializer(mojo, holder);
+        StudioSerializer serializer = new StudioSerializer(holder, opts);
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
         serializer.serializeInto(baos, "operations,permissions,facets".split(","));
 
@@ -182,11 +182,16 @@ public class TestSerializer extends AbstractTest {
         JSONAssert.assertJsonEquals(expected, result);
     }
 
+    protected URI getJarURI() {
+        URL resource = getClass().getClassLoader().getResource("test-project-core-1.0-SNAPSHOT.jar");
+        assertNotNull(resource);
+        return URI.create("jar:file:" + resource.getFile());
+    }
+
     @Test
     public void jarFileSerialization() throws IOException {
-        URL resource = getClass().getClassLoader().getResource("test-project-core-1.0-SNAPSHOT.jar");
-        URI uri = URI.create("jar:file:" + resource.getFile());
-        MojoRuntime.instance.addResourcesSource(uri);
+        URI uri = getJarURI();
+        ExtractorRuntimeContext.instance.addExternalSource(uri);
 
         ContributionsHolder holder = new ContributionsHolder();
 
@@ -195,7 +200,7 @@ public class TestSerializer extends AbstractTest {
             walker.getRegistrationInfos().forEach(holder::load);
         }
 
-        StudioSerializer serializer = new StudioSerializer(mojo, holder);
+        StudioSerializer serializer = new StudioSerializer(holder, opts);
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
         serializer.serializeInto(baos, "schemas,lifecycles".split(","));
 
@@ -205,13 +210,11 @@ public class TestSerializer extends AbstractTest {
 
     @Test
     public void loadSchemaForDependency() throws IOException, SAXException {
-        URL resource = getClass().getClassLoader().getResource("test-project-core-1.0-SNAPSHOT.jar");
-        URI uri = URI.create("jar:file:" + resource.getFile());
-
-        URL file = MojoRuntime.instance.getResourceFromFile(uri, "blalba");
+        URI uri = getJarURI();
+        URL file = ExtractorRuntimeContext.instance.getResourceFromFile(uri, "blalba");
         assertNull(file);
 
-        file = MojoRuntime.instance.getResourceFromFile(uri, "schemas/aceinfo.xsd");
+        file = ExtractorRuntimeContext.instance.getResourceFromFile(uri, "schemas/aceinfo.xsd");
         assertNotNull(file);
 
         XSOMParser parser = new XSOMParser();

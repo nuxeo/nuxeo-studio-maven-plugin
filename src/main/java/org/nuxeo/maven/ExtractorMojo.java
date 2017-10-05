@@ -24,9 +24,10 @@ import static org.nuxeo.common.Environment.NUXEO_HOME;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.HashSet;
+import java.util.Set;
 
+import org.apache.maven.artifact.DependencyResolutionRequiredException;
 import org.apache.maven.plugin.AbstractMojo;
 import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugin.MojoFailureException;
@@ -38,7 +39,7 @@ import org.apache.maven.project.MavenProject;
 import org.nuxeo.maven.bundle.ContributionsHolder;
 import org.nuxeo.maven.bundle.FakeRuntimeService;
 import org.nuxeo.maven.publisher.Publisher;
-import org.nuxeo.maven.runtime.MojoRuntime;
+import org.nuxeo.maven.runtime.ExtractorRuntimeContext;
 import org.nuxeo.maven.serializer.StudioSerializer;
 import org.nuxeo.runtime.api.Framework;
 
@@ -52,16 +53,6 @@ import org.nuxeo.runtime.api.Framework;
  */
 @Mojo(name = "extract", requiresProject = false, defaultPhase = LifecyclePhase.PREPARE_PACKAGE, requiresDependencyCollection = ResolutionScope.COMPILE_PLUS_RUNTIME, inheritByDefault = false, aggregator = true, threadSafe = true)
 public class ExtractorMojo extends AbstractMojo {
-
-    static {
-        // Fake Nuxeo Runtime initialization
-        try {
-            System.setProperty(NUXEO_HOME, Files.createTempDirectory("nuxeo").toString());
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
-        Framework.initialize(new FakeRuntimeService());
-    }
 
     @Parameter(defaultValue = "${project}", readonly = true, property = "nsmp.project")
     protected MavenProject project;
@@ -115,13 +106,34 @@ public class ExtractorMojo extends AbstractMojo {
 
     protected ContributionsHolder holder;
 
+    protected ExtractorOptions buildOptions() {
+        ExtractorOptions opts = new ExtractorOptions();
+        opts.setBuildDirectory(getBuildDirectory());
+        opts.setConnectUrl(getConnectUrl());
+        opts.setExtract(getExtract());
+        opts.setOutput(getOutput());
+        opts.setSymbolicName(getSymbolicName());
+        opts.setToken(getToken());
+        return opts;
+    }
+
     protected void initialize() throws MojoExecutionException, IOException {
         holder = new ContributionsHolder();
-        serializer = new StudioSerializer(this, holder);
+        serializer = new StudioSerializer(holder, buildOptions());
 
+        Set<String> compileClasspathElements = new HashSet<>();
         if (!MojoContributionsLoader.isStandaloneProject(project)) {
-            MojoRuntime.initCustomClassLoader(project);
+            try {
+                compileClasspathElements.addAll(project.getCompileClasspathElements());
+                for (MavenProject child : project.getCollectedProjects()) {
+                    compileClasspathElements.addAll(child.getCompileClasspathElements());
+                }
+            } catch (DependencyResolutionRequiredException e) {
+                throw new MojoExecutionException(e.getMessage(), e);
+            }
         }
+
+        ExtractorRuntimeContext.initCustomClassLoader(compileClasspathElements);
     }
 
     public String getBuildDirectory() {
@@ -129,27 +141,20 @@ public class ExtractorMojo extends AbstractMojo {
                 : project.getBuild().getDirectory();
     }
 
-    protected List<MavenProject> getProjects() {
-        List<MavenProject> projects = new ArrayList<>();
-        projects.add(project);
-        if (!MojoContributionsLoader.isStandaloneProject(project)) {
-            projects.addAll(project.getCollectedProjects());
-        }
-        return projects;
-    }
-
     @Override
     public void execute() throws MojoExecutionException, MojoFailureException {
         try {
+            ExtractorOptions opts = buildOptions();
+
             initialize();
 
             // Load contributions from current project and collected (child) ones
             new MojoContributionsLoader(this).load();
 
-            String[] targets = "*".equals(extract) ? holder.getManager().getRegisteredTargets()
-                    : extract.split(",|\\s\\s*");
+            String[] targets = "*".equals(opts.getExtract()) ? holder.getManager().getRegisteredTargets()
+                    : opts.getExtract().split(",|\\s\\s*");
 
-            Publisher.instance(this).publish(targets);
+            Publisher.instance(serializer, opts).publish(targets);
         } catch (IOException e) {
             throw new MojoExecutionException("Unable to publish extractions", e);
         }

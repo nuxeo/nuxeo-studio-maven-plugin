@@ -31,7 +31,7 @@ import org.junit.After;
 import org.junit.Before;
 import org.nuxeo.maven.bundle.BundleWalker;
 import org.nuxeo.maven.bundle.ContributionsHolder;
-import org.nuxeo.maven.runtime.MojoRuntime;
+import org.nuxeo.maven.runtime.ExtractorRuntimeContext;
 import org.nuxeo.maven.serializer.StudioSerializer;
 import org.nuxeo.runtime.model.RegistrationInfo;
 
@@ -41,22 +41,19 @@ import net.sf.json.test.JSONAssert;
 public class AbstractTest {
     protected BundleWalker walker;
 
-    /**
-     * Not used, just to initialize ExtractorMojo static block
-     */
-    protected ExtractorMojo mojo = new ExtractorMojo();
+    protected ExtractorOptions opts;
 
     @Before
     public void beforeEach() throws IOException {
         walker = new BundleWalker();
         walker.setBasePath(new File("src/it/simple-bundle/src/main/resources"));
 
-        assertNotNull(mojo);
+        opts = new ExtractorOptions();
     }
 
     @After
     public void afterEach() {
-        MojoRuntime.instance.clearExternalSources();
+        ExtractorRuntimeContext.instance.clearExternalSources();
     }
 
     protected RegistrationInfo getRegistrationInfo(String resourcePath) throws URISyntaxException {
@@ -81,7 +78,7 @@ public class AbstractTest {
         ContributionsHolder holder = loadComponent(component);
         assertEquals(size, holder.getContributions(descriptor).size());
 
-        StudioSerializer serializer = new StudioSerializer(mojo, holder);
+        StudioSerializer serializer = new StudioSerializer(holder, ExtractorOptions.DEFAULT);
         String result = serializer.serializeDescriptors(descriptor);
         assertJsonEquals(expectedJson, result);
     }

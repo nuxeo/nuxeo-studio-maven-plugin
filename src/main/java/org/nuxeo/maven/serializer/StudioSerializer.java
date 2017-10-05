@@ -29,7 +29,7 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.stream.Collectors;
 
-import org.nuxeo.maven.ExtractorMojo;
+import org.nuxeo.maven.ExtractorOptions;
 import org.nuxeo.maven.bundle.ContributionsHolder;
 
 public class StudioSerializer {
@@ -38,18 +38,18 @@ public class StudioSerializer {
 
     private ContributionsHolder holder;
 
-    private ExtractorMojo mojo;
+    private ExtractorOptions options;
 
-    public StudioSerializer(ExtractorMojo mojo, ContributionsHolder holder) {
+    public StudioSerializer(ContributionsHolder holder, ExtractorOptions options) {
         this.holder = holder;
-        this.mojo = mojo;
+        this.options = options;
     }
 
     public void serializeInto(OutputStream os, String[] targets) {
         Map<String, String> serialized = new HashMap<>();
         Arrays.stream(targets).forEach(t -> serialized.put(t, this.serializeDescriptors(t)));
 
-        JacksonConverter.instance(mojo).newGlobalStudioObject(os, serialized);
+        JacksonConverter.instance(options).newGlobalStudioObject(os, serialized);
     }
 
     public String serializeDescriptors(String name) {
@@ -81,7 +81,7 @@ public class StudioSerializer {
     }
 
     protected String serialize(Object obj) {
-        return JacksonConverter.instance(mojo).serialize(obj);
+        return JacksonConverter.instance(options).serialize(obj);
     }
 
     public String getDelimiter() {

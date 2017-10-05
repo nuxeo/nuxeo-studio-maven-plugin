@@ -30,17 +30,17 @@ import java.util.jar.Manifest;
 import java.util.stream.Stream;
 
 import org.apache.commons.lang3.StringUtils;
-import org.apache.maven.plugin.logging.Log;
-import org.apache.maven.plugin.logging.SystemStreamLog;
-import org.nuxeo.maven.runtime.MojoRuntime;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+import org.nuxeo.maven.runtime.ExtractorRuntimeContext;
 import org.nuxeo.runtime.model.RegistrationInfo;
 import org.nuxeo.runtime.model.impl.ComponentDescriptorReader;
 
 public class BundleWalker {
 
-    private Path basePath;
+    private static Log log = LogFactory.getLog(BundleWalker.class);
 
-    private Log log;
+    private Path basePath;
 
     private ComponentDescriptorReader reader;
 
@@ -66,8 +66,8 @@ public class BundleWalker {
         try {
             return Files.walk(basePath).filter(s -> s.endsWith(filePath)).findFirst().orElse(null);
         } catch (IOException e) {
-            getLog().debug(e);
-            getLog().warn(filePath + ":" + e.getMessage());
+            log.debug(e);
+            log.warn(filePath + ":" + e.getMessage());
             return null;
         }
     }
@@ -75,7 +75,7 @@ public class BundleWalker {
     public Stream<Path> getComponents() throws IOException {
         Path manifestPath = getManifest();
         if (manifestPath == null) {
-            getLog().info(String.format("%s do no contains MANIFEST.MF file", basePath.toAbsolutePath().toString()));
+            log.info(String.format("%s do no contains MANIFEST.MF file", basePath.toAbsolutePath().toString()));
             return Stream.empty();
         }
 
@@ -99,21 +99,13 @@ public class BundleWalker {
         return findFile("META-INF/MANIFEST.MF");
     }
 
-    private Log getLog() {
-        if (this.log == null) {
-            this.log = new SystemStreamLog();
-        }
-
-        return this.log;
-    }
-
     public Stream<RegistrationInfo> getRegistrationInfos() throws IOException {
         return getComponents().map(this::read).filter(Objects::nonNull);
     }
 
     public RegistrationInfo read(Path component) {
         try (InputStream is = Files.newInputStream(component)) {
-            return reader.read(MojoRuntime.instance, is);
+            return reader.read(ExtractorRuntimeContext.instance, is);
         } catch (IOException e) {
             throw new RuntimeException(e);
         }

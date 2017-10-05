@@ -25,13 +25,13 @@ import org.nuxeo.ecm.core.schema.XSDLoader;
 import org.nuxeo.ecm.core.schema.types.SchemaImpl;
 import org.nuxeo.ecm.core.schema.types.TypeException;
 import org.nuxeo.ecm.core.schema.types.resolver.ObjectResolverService;
-import org.nuxeo.maven.runtime.MojoRuntime;
+import org.nuxeo.maven.runtime.ExtractorRuntimeContext;
 import org.xml.sax.SAXException;
 
 public class SchemaAdapter implements SerializerAdapter<SchemaBindingDescriptor, SchemaImpl> {
     protected static SchemaImpl loadSchema(SchemaBindingDescriptor descriptor) {
         try {
-            return new CustomXSDLoader(MojoRuntime.schemaManager, descriptor).loadSchema();
+            return new CustomXSDLoader(ExtractorRuntimeContext.schemaManager, descriptor).loadSchema();
         } catch (SAXException | TypeException e) {
             throw new RuntimeException("Unable to adapt schema binding: " + descriptor.name, e);
         }
@@ -48,7 +48,7 @@ public class SchemaAdapter implements SerializerAdapter<SchemaBindingDescriptor,
     public static class CustomXSDLoader extends XSDLoader {
         public CustomXSDLoader(SchemaManagerImpl schemaManager, SchemaBindingDescriptor sd) {
             super(schemaManager, sd);
-            sd.context = MojoRuntime.instance;
+            sd.context = ExtractorRuntimeContext.instance;
         }
 
         @Override
@@ -57,7 +57,7 @@ public class SchemaAdapter implements SerializerAdapter<SchemaBindingDescriptor,
         }
 
         public SchemaImpl loadSchema() throws TypeException, SAXException {
-            return (SchemaImpl) loadSchema(sd.name, sd.prefix, MojoRuntime.instance.getLocalResource(sd.src));
+            return (SchemaImpl) loadSchema(sd.name, sd.prefix, ExtractorRuntimeContext.instance.getLocalResource(sd.src));
         }
     }
 }

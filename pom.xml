@@ -1,4 +1,5 @@
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
   <modelVersion>4.0.0</modelVersion>
 
   <groupId>org.nuxeo.tools</groupId>
@@ -38,6 +39,7 @@
 
   <properties>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+    <nuxeo.version>9.3-SNAPSHOT</nuxeo.version>
     <debugITs>false</debugITs>
     <skipITs>false</skipITs>
     <jackson.version>2.7.4</jackson.version>
@@ -45,7 +47,6 @@
     <maven.version>3.5.0</maven.version>
     <maven.tools.version>3.5</maven.tools.version>
     <maven.invoker.version>3.0.1</maven.invoker.version>
-    <nuxeo.version>9.1</nuxeo.version>
     <surefire.version>2.19.1</surefire.version>
     <mockito.version>1.9.5</mockito.version>
     <junit.version>4.12</junit.version>

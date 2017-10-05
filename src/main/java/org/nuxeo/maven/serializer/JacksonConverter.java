@@ -26,6 +26,8 @@ import java.util.Map;
 import java.util.Objects;
 
 import org.apache.commons.lang.StringUtils;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.nuxeo.ecm.automation.OperationDocumentation;
 import org.nuxeo.ecm.automation.core.OperationChainContribution;
 import org.nuxeo.ecm.automation.core.OperationContribution;
@@ -36,7 +38,7 @@ import org.nuxeo.ecm.core.schema.FacetDescriptor;
 import org.nuxeo.ecm.core.schema.SchemaBindingDescriptor;
 import org.nuxeo.ecm.core.schema.types.SchemaImpl;
 import org.nuxeo.ecm.core.security.PermissionDescriptor;
-import org.nuxeo.maven.ExtractorMojo;
+import org.nuxeo.maven.ExtractorOptions;
 import org.nuxeo.maven.serializer.adapter.DefaultAdapter;
 import org.nuxeo.maven.serializer.adapter.OperationAdapter;
 import org.nuxeo.maven.serializer.adapter.OperationChainAdapter;
@@ -58,16 +60,19 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.ser.std.StdSerializer;
 
 public class JacksonConverter {
+
+    private static final Log log = LogFactory.getLog(JacksonConverter.class);
+
     protected Map<Class<?>, Class<?>> mixins = new HashMap<>();
 
     protected Map<Class<?>, SerializerAdapter> adapters = new HashMap<>();
 
     protected SerializerAdapter defaultAdapter = new DefaultAdapter();
 
-    protected ExtractorMojo mojo;
+    protected ExtractorOptions options;
 
-    private JacksonConverter(ExtractorMojo mojo) {
-        this.mojo = mojo;
+    private JacksonConverter(ExtractorOptions options) {
+        this.options = options;
 
         // Adapters aim to adapt descriptor to a more specific object
         registerAdapter(OperationContribution.class, OperationAdapter.class);
@@ -84,8 +89,12 @@ public class JacksonConverter {
         registerMixin(DocumentTypeDescriptor.class, DocTypeMixin.class);
     }
 
-    public static JacksonConverter instance(ExtractorMojo mojo) {
-        return new JacksonConverter(mojo);
+    public static JacksonConverter instance() {
+        return new JacksonConverter(ExtractorOptions.DEFAULT);
+    }
+
+    public static JacksonConverter instance(ExtractorOptions options) {
+        return new JacksonConverter(options);
     }
 
     protected void registerMixin(Class<?> target, Class<?> mixin) {
@@ -108,11 +117,11 @@ public class JacksonConverter {
             // Mainly occurred with {@code org.nuxeo.maven.serializer.adapter.SchemaAdapter#adapt} when schema file is
             // missing.
             if (targetAdapted == null) {
-                mojo.getLog().warn("Unable to adapt: \"" + target + "\" (" + target.getClass() + ")");
+                log.warn("Unable to adapt: \"" + target + "\" (" + target.getClass() + ")");
                 return null;
             }
 
-            mojo.getLog().info("Serialize: " + targetAdapted.toString().trim());
+            log.info("Serialize: " + targetAdapted.toString().trim());
             om.addMixIn(targetAdapted.getClass(), mixins.getOrDefault(targetAdapted.getClass(), Object.class));
             return om.writeValueAsString(targetAdapted);
         } catch (JsonProcessingException e) {
@@ -123,7 +132,7 @@ public class JacksonConverter {
     public void newGlobalStudioObject(OutputStream os, Map<String, String> serialized) {
         JsonFactory factory = new JsonFactory();
 
-        if (mojo.isFailOnEmpty() && serialized.values().stream().allMatch(Objects::isNull)) {
+        if (options.isFailOnEmpty() && serialized.values().stream().allMatch(Objects::isNull)) {
             throw new RuntimeException("Nothing to export.");
         }
 

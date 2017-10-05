@@ -105,7 +105,7 @@ public class TestWalker extends AbstractTest {
 
         try (FileSystem jfs = FileSystems.newFileSystem(uri, new HashMap<>())) {
             BundleWalker walker = new BundleWalker(jfs.getPath("/"));
-            assertEquals(2, walker.getComponents().count());
+            assertEquals(3, walker.getComponents().count());
 
             RegistrationInfo ri = walker.getRegistrationInfos().findFirst().orElse(null);
             assertNotNull(ri);

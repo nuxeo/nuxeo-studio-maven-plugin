@@ -32,6 +32,7 @@ import java.net.URI;
 import javax.ws.rs.core.UriBuilder;
 
 import org.nuxeo.maven.ExtractorMojo;
+import org.nuxeo.maven.ExtractorOptions;
 import org.nuxeo.maven.serializer.StudioSerializer;
 
 import com.sun.jersey.api.client.Client;
@@ -45,16 +46,15 @@ public abstract class Publisher {
         this.serializer = serializer;
     }
 
-    public static Publisher instance(ExtractorMojo mojo) {
+    public static Publisher instance(StudioSerializer serializer, ExtractorOptions opts) {
         Publisher publisher = null;
-        if (isNotBlank(mojo.getToken()) && isNotBlank(mojo.getSymbolicName())) {
-            publisher = new Publisher.StudioPublisher(mojo.getSerializer(), mojo.getConnectUrl(),
-                    mojo.getSymbolicName(), mojo.getToken());
+        if (isNotBlank(opts.getToken()) && isNotBlank(opts.getSymbolicName())) {
+            publisher = new Publisher.StudioPublisher(serializer, opts.getConnectUrl(), opts.getSymbolicName(),
+                    opts.getToken());
         }
 
         if (publisher == null) {
-            publisher = new Publisher.FilePublisher(mojo.getSerializer(),
-                    new File(mojo.getBuildDirectory(), mojo.getOutput()));
+            publisher = new Publisher.FilePublisher(serializer, new File(opts.getBuildDirectory(), opts.getOutput()));
         }
         return publisher;
     }

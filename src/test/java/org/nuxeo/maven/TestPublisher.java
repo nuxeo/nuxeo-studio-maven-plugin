@@ -23,9 +23,7 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assume.assumeTrue;
 import static org.mockito.Mockito.doReturn;
-import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.spy;
-import static org.mockito.Mockito.when;
 
 import java.io.File;
 import java.io.IOException;
@@ -33,63 +31,56 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.List;
 import java.util.stream.Stream;
 
-import org.apache.commons.io.FileUtils;
-import org.apache.maven.model.Build;
-import org.apache.maven.project.MavenProject;
 import org.junit.Before;
 import org.junit.Test;
 import org.nuxeo.maven.bundle.BundleWalker;
+import org.nuxeo.maven.bundle.ContributionsHolder;
 import org.nuxeo.maven.publisher.Publisher;
-import org.nuxeo.maven.runtime.MojoRuntime;
+import org.nuxeo.maven.runtime.ExtractorRuntimeContext;
+import org.nuxeo.maven.serializer.StudioSerializer;
 
 import net.sf.json.JSON;
 import net.sf.json.JSONArray;
 import net.sf.json.JSONObject;
 import net.sf.json.JSONSerializer;
 
-public class TestPublisher {
-    ExtractorMojo mojo;
+public class TestPublisher extends AbstractTest {
+
+    protected ContributionsHolder holder;
+
+    protected StudioSerializer serializer;
 
     @Before
     public void setup() throws Exception {
-        mojo = new ExtractorMojo();
-        mojo.output = "test-output.json";
-        mojo.connectUrl = "https://nos-test-connect.nos.nuxeo.com/nuxeo/site";
+        opts.output = "test-output.json";
+        opts.connectUrl = "https://nos-test-connect.nos.nuxeo.com/nuxeo/site";
+        opts.buildDirectory = "target";
 
-        MavenProject mvnProject = mock(MavenProject.class);
-        when(mvnProject.getCollectedProjects()).thenReturn(Collections.emptyList());
-        when(mvnProject.getCompileClasspathElements()).thenReturn(Collections.emptyList());
-        when(mvnProject.getId()).thenReturn("sample:project");
-
-        when(mvnProject.getBuild()).thenReturn(mock(Build.class));
-        when(mvnProject.getBuild().getDirectory()).thenReturn(FileUtils.getTempDirectoryPath());
-        when(mvnProject.getBuild().getOutputDirectory()).thenReturn(FileUtils.getTempDirectoryPath());
-        mojo.project = mvnProject;
-
-        mojo.initialize();
+        holder = new ContributionsHolder();
+        serializer = new StudioSerializer(holder, opts);
     }
 
     @Test
-    public void testPublisherInstanciation() {
-        Publisher instance = Publisher.instance(mojo);
+    public void testPublisherInstantiation() {
+
+        Publisher instance = Publisher.instance(serializer, opts);
         assertTrue(instance instanceof Publisher.FilePublisher);
 
-        mojo.token = "FAKE-TOKEN";
-        instance = Publisher.instance(mojo);
+        opts.token = "FAKE-TOKEN";
+        instance = Publisher.instance(serializer, ExtractorOptions.DEFAULT);
         assertTrue(instance instanceof Publisher.FilePublisher);
 
-        mojo.symbolicName = "symbolicName";
-        instance = Publisher.instance(mojo);
+        opts.symbolicName = "symbolicName";
+        instance = Publisher.instance(serializer, opts);
         assertTrue(instance instanceof Publisher.StudioPublisher);
     }
 
     @Test
     public void testFilePublisher() throws IOException {
-        Publisher instance = Publisher.instance(mojo);
+        Publisher instance = Publisher.instance(serializer, opts);
         assertTrue(instance instanceof Publisher.FilePublisher);
 
         instance.publish(new String[0]);
@@ -102,14 +93,14 @@ public class TestPublisher {
         List<String> targets = Arrays.asList("operations", "doctypes", "schemas", "lifecycles");
         Stream<Path> contributions = Stream.of("operation-contrib.xml", "doctype-contrib.xml", "doctype-nd-contrib.xml",
                 "schema-contrib.xml", "lifecycle-contrib.xml", "chains-contrib.xml")
-                                           .map(c -> MojoRuntime.instance.getLocalResource(c))
+                                           .map(c -> ExtractorRuntimeContext.instance.getLocalResource(c))
                                            .map(c -> Paths.get(c.getPath()));
 
         BundleWalker bundleWalker = spy(new BundleWalker());
         doReturn(contributions).when(bundleWalker).getComponents();
-        bundleWalker.getRegistrationInfos().forEach(mojo.getHolder()::load);
+        bundleWalker.getRegistrationInfos().forEach(holder::load);
 
-        Publisher instance = Publisher.instance(mojo);
+        Publisher instance = Publisher.instance(serializer, opts);
         instance.publish(targets.toArray(new String[0]));
 
         File output = ((Publisher.FilePublisher) instance).getOutput();
@@ -132,10 +123,10 @@ public class TestPublisher {
 
     @Test
     public void testStudioPublisher() throws IOException {
-        mojo.token = System.getenv("STUDIO_TOKEN");
-        mojo.symbolicName = System.getenv("STUDIO_SYM_NAME");
+        opts.token = System.getenv("STUDIO_TOKEN");
+        opts.symbolicName = System.getenv("STUDIO_SYM_NAME");
 
-        Publisher instance = Publisher.instance(mojo);
+        Publisher instance = Publisher.instance(serializer, opts);
         assumeTrue("Studio Credentials not initialized", instance instanceof Publisher.StudioPublisher);
 
         instance.publish(new String[0]);

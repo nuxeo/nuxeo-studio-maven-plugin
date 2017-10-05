@@ -24,7 +24,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 
-import org.nuxeo.maven.runtime.MojoRuntime;
+import org.nuxeo.maven.runtime.ExtractorRuntimeContext;
 import org.nuxeo.runtime.model.Extension;
 
 /**
@@ -87,7 +87,7 @@ public class MappersManager {
                                         .orElse(null);
 
         if (mapper != null) {
-            return mapper.loadAll(MojoRuntime.instance, ext);
+            return mapper.loadAll(ExtractorRuntimeContext.instance, ext);
         } else {
             return new Object[] {};
         }
