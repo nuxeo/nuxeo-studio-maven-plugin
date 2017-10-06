@@ -29,9 +29,11 @@ import org.nuxeo.maven.runtime.ExtractorRuntimeContext;
 import org.xml.sax.SAXException;
 
 public class SchemaAdapter implements SerializerAdapter<SchemaBindingDescriptor, SchemaImpl> {
+    public static SchemaManagerImpl schemaManager = new SchemaManagerImpl();
+
     protected static SchemaImpl loadSchema(SchemaBindingDescriptor descriptor) {
         try {
-            return new CustomXSDLoader(ExtractorRuntimeContext.schemaManager, descriptor).loadSchema();
+            return new CustomXSDLoader(schemaManager, descriptor).loadSchema();
         } catch (SAXException | TypeException e) {
             throw new RuntimeException("Unable to adapt schema binding: " + descriptor.name, e);
         }
@@ -57,7 +59,8 @@ public class SchemaAdapter implements SerializerAdapter<SchemaBindingDescriptor,
         }
 
         public SchemaImpl loadSchema() throws TypeException, SAXException {
-            return (SchemaImpl) loadSchema(sd.name, sd.prefix, ExtractorRuntimeContext.instance.getLocalResource(sd.src));
+            return (SchemaImpl) loadSchema(sd.name, sd.prefix,
+                    ExtractorRuntimeContext.instance.getLocalResource(sd.src));
         }
     }
 }

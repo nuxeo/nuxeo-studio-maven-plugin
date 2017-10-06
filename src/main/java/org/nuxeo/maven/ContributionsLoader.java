@@ -24,55 +24,35 @@ import java.io.IOException;
 import java.net.URI;
 import java.nio.file.FileSystem;
 import java.nio.file.FileSystems;
-import java.nio.file.Paths;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
-import java.util.List;
 
 import org.apache.commons.lang.StringUtils;
-import org.apache.maven.plugin.MojoExecutionException;
-import org.apache.maven.project.MavenProject;
 import org.nuxeo.maven.bundle.BundleWalker;
+import org.nuxeo.maven.bundle.ContributionsHolder;
 import org.nuxeo.maven.runtime.ExtractorRuntimeContext;
 
 /**
  * Load contributions from several sources, depending of Mojo parameters
  */
-public class MojoContributionsLoader {
-    protected final ExtractorMojo mojo;
+public class ContributionsLoader {
+    protected final ExtractorOptions opts;
 
-    public MojoContributionsLoader(ExtractorMojo mojo) {
-        this.mojo = mojo;
+    protected final ContributionsHolder holder;
+
+    public ContributionsLoader(ContributionsHolder holder, ExtractorOptions opts) {
+        this.opts = opts;
+        this.holder = holder;
     }
 
-    protected static String getBuildOutputDirectory(MavenProject project) {
-        // When project is standalone-pom; use the current directory instead of a build one
-        return isStandaloneProject(project) ? Paths.get("").toAbsolutePath().toString()
-                : project.getBuild().getOutputDirectory();
-    }
-
-    protected static boolean isStandaloneProject(MavenProject project) {
-        return project.getId().startsWith("org.apache.maven:standalone-pom:");
-    }
-
-    public void load() throws MojoExecutionException {
-        if (StringUtils.isNotBlank(mojo.getJarFile())) {
+    public void load() {
+        if (StringUtils.isNotBlank(opts.getJarFile())) {
             // Based on external jarFile
-            Arrays.stream(mojo.getJarFile().split(",")).forEach(this::loadFromJarFile);
+            Arrays.stream(opts.getJarFile().split(",")).forEach(this::loadFromJarFile);
         } else {
             // Based on Project (Standalone project, other project)
-            loadFromMavenProjects(getProjects());
+            opts.getSourcesDirectory().forEach(this::loadFromDirectory);
         }
-    }
-
-    protected List<MavenProject> getProjects() {
-        List<MavenProject> projects = new ArrayList<>();
-        projects.add(mojo.getProject());
-        if (!isStandaloneProject(mojo.getProject())) {
-            projects.addAll(mojo.getProject().getCollectedProjects());
-        }
-        return projects;
     }
 
     protected void loadFromJarFile(String jarFile) {
@@ -88,20 +68,16 @@ public class MojoContributionsLoader {
     protected void loadFromURI(URI uri) {
         ExtractorRuntimeContext.instance.addExternalSource(uri);
         try (FileSystem fs = FileSystems.newFileSystem(uri, new HashMap<>())) {
-            new BundleWalker(fs.getPath("/")).getRegistrationInfos().forEach(mojo.holder::load);
+            new BundleWalker(fs.getPath("/")).getRegistrationInfos().forEach(holder::load);
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
     }
 
-    protected void loadFromMavenProjects(List<MavenProject> projects) {
-        projects.forEach(this::loadFromMavenProject);
-    }
-
-    protected void loadFromMavenProject(MavenProject project) {
-        BundleWalker walker = new BundleWalker(getBuildOutputDirectory(project));
+    protected void loadFromDirectory(String directory) {
+        BundleWalker walker = new BundleWalker(directory);
         try {
-            walker.getRegistrationInfos().forEach(mojo.holder::load);
+            walker.getRegistrationInfos().forEach(holder::load);
         } catch (IOException e) {
             throw new RuntimeException(e);
         }

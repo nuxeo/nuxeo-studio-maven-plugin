@@ -19,6 +19,8 @@
 
 package org.nuxeo.maven.runtime;
 
+import static org.nuxeo.common.Environment.NUXEO_HOME;
+
 import java.io.File;
 import java.io.IOException;
 import java.net.MalformedURLException;
@@ -39,8 +41,9 @@ import java.util.Set;
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.nuxeo.ecm.core.schema.SchemaManagerImpl;
+import org.nuxeo.maven.bundle.FakeRuntimeService;
 import org.nuxeo.runtime.RuntimeService;
+import org.nuxeo.runtime.api.Framework;
 import org.nuxeo.runtime.model.ComponentName;
 import org.nuxeo.runtime.model.RegistrationInfo;
 import org.nuxeo.runtime.model.RuntimeContext;
@@ -67,14 +70,21 @@ import com.google.common.collect.Sets;
  * </p>
  */
 public class ExtractorRuntimeContext implements RuntimeContext {
-
     private static final Log log = LogFactory.getLog(ExtractorRuntimeContext.class);
 
     public static ExtractorRuntimeContext instance = new ExtractorRuntimeContext();
 
-    public static SchemaManagerImpl schemaManager = new SchemaManagerImpl();
-
     private static ClassLoader custom;
+
+    static {
+        // Fake Nuxeo Runtime initialization
+        try {
+            System.setProperty(NUXEO_HOME, Files.createTempDirectory("nuxeo").toString());
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+        Framework.initialize(new FakeRuntimeService());
+    }
 
     private Set<URI> extResourcesSources = new HashSet<>();
 
@@ -108,6 +118,14 @@ public class ExtractorRuntimeContext implements RuntimeContext {
         custom = new URLClassLoader(urlElements.toArray(new URL[0]), getClassloader());
     }
 
+    protected static ClassLoader getClassloader() {
+        if (custom != null) {
+            return custom;
+        } else {
+            return Thread.currentThread().getContextClassLoader();
+        }
+    }
+
     public void addExternalSource(URI source) {
         try {
             initCustomClassLoader(Sets.newHashSet(source.toString()));
@@ -115,14 +133,6 @@ public class ExtractorRuntimeContext implements RuntimeContext {
             log.warn(e, e);
         }
         extResourcesSources.add(source);
-    }
-
-    protected static ClassLoader getClassloader() {
-        if (custom != null) {
-            return custom;
-        } else {
-            return Thread.currentThread().getContextClassLoader();
-        }
     }
 
     @Override

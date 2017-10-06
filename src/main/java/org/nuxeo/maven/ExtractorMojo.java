@@ -19,12 +19,11 @@
 
 package org.nuxeo.maven;
 
-import static org.nuxeo.common.Environment.NUXEO_HOME;
-
 import java.io.IOException;
-import java.nio.file.Files;
 import java.nio.file.Paths;
+import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 import org.apache.maven.artifact.DependencyResolutionRequiredException;
@@ -36,12 +35,7 @@ import org.apache.maven.plugins.annotations.Mojo;
 import org.apache.maven.plugins.annotations.Parameter;
 import org.apache.maven.plugins.annotations.ResolutionScope;
 import org.apache.maven.project.MavenProject;
-import org.nuxeo.maven.bundle.ContributionsHolder;
-import org.nuxeo.maven.bundle.FakeRuntimeService;
-import org.nuxeo.maven.publisher.Publisher;
 import org.nuxeo.maven.runtime.ExtractorRuntimeContext;
-import org.nuxeo.maven.serializer.StudioSerializer;
-import org.nuxeo.runtime.api.Framework;
 
 /**
  * Parse each project to load contributions' descriptors from the MANIFEST.MF and map them to studio contributions
@@ -102,9 +96,15 @@ public class ExtractorMojo extends AbstractMojo {
     @Parameter(defaultValue = "https://connect.nuxeo.com/nuxeo", property = "nsmp.connectUrl")
     protected String connectUrl;
 
-    protected StudioSerializer serializer;
+    protected static String getBuildOutputDirectory(MavenProject project) {
+        // When project is standalone-pom; use the current directory instead of a build one
+        return isStandaloneProject(project) ? Paths.get("").toAbsolutePath().toString()
+                : project.getBuild().getOutputDirectory();
+    }
 
-    protected ContributionsHolder holder;
+    protected static boolean isStandaloneProject(MavenProject project) {
+        return project.getId().startsWith("org.apache.maven:standalone-pom:");
+    }
 
     protected ExtractorOptions buildOptions() {
         ExtractorOptions opts = new ExtractorOptions();
@@ -114,15 +114,17 @@ public class ExtractorMojo extends AbstractMojo {
         opts.setOutput(getOutput());
         opts.setSymbolicName(getSymbolicName());
         opts.setToken(getToken());
+        opts.setJarFile(getJarFile());
+        opts.setFailOnEmpty(isFailOnEmpty());
+
+        // Add all project as source directory
+        getProjects().stream().map(ExtractorMojo::getBuildOutputDirectory).forEach(opts::addSourceDirectory);
         return opts;
     }
 
-    protected void initialize() throws MojoExecutionException, IOException {
-        holder = new ContributionsHolder();
-        serializer = new StudioSerializer(holder, buildOptions());
-
+    protected void initializeProjectClassLoader() throws MojoExecutionException, IOException {
         Set<String> compileClasspathElements = new HashSet<>();
-        if (!MojoContributionsLoader.isStandaloneProject(project)) {
+        if (!isStandaloneProject(project)) {
             try {
                 compileClasspathElements.addAll(project.getCompileClasspathElements());
                 for (MavenProject child : project.getCollectedProjects()) {
@@ -137,24 +139,25 @@ public class ExtractorMojo extends AbstractMojo {
     }
 
     public String getBuildDirectory() {
-        return MojoContributionsLoader.isStandaloneProject(project) ? Paths.get("").toAbsolutePath().toString()
+        return isStandaloneProject(project) ? Paths.get("").toAbsolutePath().toString()
                 : project.getBuild().getDirectory();
+    }
+
+    protected List<MavenProject> getProjects() {
+        List<MavenProject> projects = new ArrayList<>();
+        projects.add(this.getProject());
+        if (!isStandaloneProject(this.getProject())) {
+            projects.addAll(this.getProject().getCollectedProjects());
+        }
+        return projects;
     }
 
     @Override
     public void execute() throws MojoExecutionException, MojoFailureException {
         try {
+            initializeProjectClassLoader();
             ExtractorOptions opts = buildOptions();
-
-            initialize();
-
-            // Load contributions from current project and collected (child) ones
-            new MojoContributionsLoader(this).load();
-
-            String[] targets = "*".equals(opts.getExtract()) ? holder.getManager().getRegisteredTargets()
-                    : opts.getExtract().split(",|\\s\\s*");
-
-            Publisher.instance(serializer, opts).publish(targets);
+            new ContributionsExtractor(opts).publish();
         } catch (IOException e) {
             throw new MojoExecutionException("Unable to publish extractions", e);
         }
@@ -190,13 +193,5 @@ public class ExtractorMojo extends AbstractMojo {
 
     public String getJarFile() {
         return jarFile;
-    }
-
-    public StudioSerializer getSerializer() {
-        return serializer;
-    }
-
-    public ContributionsHolder getHolder() {
-        return holder;
     }
 }

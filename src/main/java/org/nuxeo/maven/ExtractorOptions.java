@@ -19,27 +19,11 @@
 
 package org.nuxeo.maven;
 
-import static org.nuxeo.common.Environment.NUXEO_HOME;
-
-import java.io.IOException;
-import java.nio.file.Files;
 import java.nio.file.Paths;
-
-import org.nuxeo.maven.bundle.FakeRuntimeService;
-import org.nuxeo.runtime.api.Framework;
+import java.util.ArrayList;
+import java.util.List;
 
 public class ExtractorOptions {
-    // XXX MUST BE MOVED SOMEWHERE ELSE
-    static {
-        // Fake Nuxeo Runtime initialization
-        try {
-            System.setProperty(NUXEO_HOME, Files.createTempDirectory("nuxeo").toString());
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
-        Framework.initialize(new FakeRuntimeService());
-    }
-
     public static ExtractorOptions DEFAULT = new ExtractorOptions();
 
     protected String token = "";
@@ -52,9 +36,13 @@ public class ExtractorOptions {
 
     protected String output = "";
 
+    protected String extract = "*";
+
+    protected String jarFile = "";
+
     protected boolean failOnEmpty = false;
 
-    private String extract;
+    private List<String> directories = new ArrayList<>();
 
     public String getToken() {
         return token;
@@ -100,6 +88,10 @@ public class ExtractorOptions {
         return failOnEmpty;
     }
 
+    public void setFailOnEmpty(Boolean failOnEmpty) {
+        this.failOnEmpty = failOnEmpty;
+    }
+
     public String getExtract() {
         return extract;
     }
@@ -107,4 +99,21 @@ public class ExtractorOptions {
     public void setExtract(String extract) {
         this.extract = extract;
     }
+
+    public String getJarFile() {
+        return jarFile;
+    }
+
+    public void setJarFile(String jarFile) {
+        this.jarFile = jarFile;
+    }
+
+    public void addSourceDirectory(String directory) {
+        this.directories.add(directory);
+    }
+
+    public List<String> getSourcesDirectory() {
+        return new ArrayList<>(directories);
+    }
+
 }
