@@ -67,6 +67,10 @@ public abstract class SchemaMixin {
 
         /**
          * Original Object headers; kept in case Studio format is following this new one.
+         *
+         * @param schema Schema Object to write
+         * @param jg Destination JsonGenerator
+         * @throws IOException When unable to write field
          */
         protected void writeSchemaObject(Schema schema, JsonGenerator jg) throws IOException {
             jg.writeStringField("name", schema.getName());

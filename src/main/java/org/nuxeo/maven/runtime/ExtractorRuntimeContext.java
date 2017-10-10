@@ -41,7 +41,6 @@ import java.util.Set;
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.nuxeo.maven.bundle.FakeRuntimeService;
 import org.nuxeo.runtime.RuntimeService;
 import org.nuxeo.runtime.api.Framework;
 import org.nuxeo.runtime.model.ComponentName;
@@ -63,7 +62,6 @@ import com.google.common.collect.Sets;
  * <li>{@link ExtractorRuntimeContext#getResource(java.lang.String)}</li>
  * <li>{@link ExtractorRuntimeContext#getLocalResource(java.lang.String)}</li>
  * </ul>
- * </p>
  * <p>
  * Runtime will load types from current class loader if
  * {@link ExtractorRuntimeContext#initCustomClassLoader(java.util.Set)} has never been initialized.
@@ -79,6 +77,7 @@ public class ExtractorRuntimeContext implements RuntimeContext {
     static {
         // Fake Nuxeo Runtime initialization
         try {
+            // Required by {@code org.nuxeo.ecm.core.schema.SchemaManagerImpl()}
             System.setProperty(NUXEO_HOME, Files.createTempDirectory("nuxeo").toString());
         } catch (IOException e) {
             throw new RuntimeException(e);
@@ -96,6 +95,7 @@ public class ExtractorRuntimeContext implements RuntimeContext {
      * classes.
      *
      * @param additionalUrls Additional urls as string to enhance current UrlClassLoader
+     * @throws IOException When unable to reach an url passed as parameter
      */
     public static void initCustomClassLoader(Set<String> additionalUrls) throws IOException {
         List<URL> urlElements = new ArrayList<>();

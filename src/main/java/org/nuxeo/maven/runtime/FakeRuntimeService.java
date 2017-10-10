@@ -17,7 +17,7 @@
  *     Arnaud Kervern
  */
 
-package org.nuxeo.maven.bundle;
+package org.nuxeo.maven.runtime;
 
 import java.io.File;
 import java.io.IOException;
@@ -36,7 +36,7 @@ import org.osgi.framework.Bundle;
 
 /**
  * Fake Runtime in order to expose, and be able to return,
- * {@code org.nuxeo.runtime.services.config.ConfigurationService}
+ * {@code org.nuxeo.runtime.services.config.ConfigurationService}.
  * <p>
  * XXX It could be interesting to map some Maven parameters to ConfigurationService properties
  */

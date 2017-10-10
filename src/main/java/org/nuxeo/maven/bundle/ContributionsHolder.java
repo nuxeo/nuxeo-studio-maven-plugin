@@ -75,6 +75,10 @@ public class ContributionsHolder {
 
     /**
      * Get all contributions based on this descriptor; filtering the ones that target to be deleted or partial.
+     *
+     * @param descriptor gets contributions of the same class
+     * @param <T> Class of the descriptor
+     * @return a list of all contributions or an empty list.
      */
     @SuppressWarnings("unchecked")
     public <T> List<T> getContributions(Class<T> descriptor) {

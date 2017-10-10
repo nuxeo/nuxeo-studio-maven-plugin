@@ -53,7 +53,7 @@ public abstract class ExtensionMapper {
     /**
      * Method used to be overriden in order to detect a disabled contribution
      *
-     * @param contribution
+     * @param contribution Object to check
      * @return false if the contribution is removing another one, true otherwise.
      */
     public boolean isEnabled(Object contribution) {

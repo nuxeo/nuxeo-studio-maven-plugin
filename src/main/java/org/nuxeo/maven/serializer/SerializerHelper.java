@@ -28,6 +28,9 @@ public class SerializerHelper {
     /**
      * Transform a camel case string into a more human readable one. It split by Character Camel case and capitalize the
      * result.
+     * 
+     * @param value String to humanize
+     * @return the String humanized
      */
     public static String humanize(String value) {
         return StringUtils.capitalize(StringUtils.join(StringUtils.splitByCharacterTypeCamelCase(value), " "));
