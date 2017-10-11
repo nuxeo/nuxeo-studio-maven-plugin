@@ -22,13 +22,10 @@ package org.nuxeo.extractor.serializer.mixin;
 import static org.nuxeo.extractor.serializer.SerializerHelper.humanize;
 
 import java.io.IOException;
-import java.lang.reflect.Modifier;
+import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import org.apache.commons.lang3.reflect.FieldUtils;
-import org.nuxeo.ecm.core.api.LifeCycleConstants;
-import org.nuxeo.ecm.core.api.event.DocumentEventTypes;
 import org.nuxeo.extractor.mapper.descriptors.EventListenerDescriptor;
 import org.nuxeo.extractor.serializer.JacksonConverter.StudioJacksonSerializer;
 
@@ -42,25 +39,23 @@ public abstract class EventListenerMixin {
         private static List<String> systemEvents;
 
         static {
-            // Registering Common System events from Nuxeo classes in order to skip them during export if prensent on
-            // Studio
-            // TODO Temporary; we should use a big constant file with all core events...
-            systemEvents = extractField(DocumentEventTypes.class);
-            systemEvents.addAll(extractField(LifeCycleConstants.class));
-        }
-
-        private static List<String> extractField(Class<?> type) {
-            return FieldUtils.getAllFieldsList(type)
-                             .stream()
-                             .filter(s -> Modifier.isStatic(s.getModifiers()))
-                             .map(s -> {
-                                 try {
-                                     return s.get(null).toString();
-                                 } catch (IllegalAccessException e) {
-                                     return null;
-                                 }
-                             })
-                             .collect(Collectors.toList());
+            // Registering Common System events from Nuxeo classes in order to skip them during export as already
+            // present in Studio
+            // XXX Must be tied from an external place... Studio, lib, whatever.
+            // For now extracted from {@code org.nuxeo.ecm.core.api.LifeCycleConstants} and {@code
+            // org.nuxeo.ecm.core.api.event.DocumentEventTypes}
+            systemEvents = Arrays.asList("aboutToCreate", "emptyDocumentModelCreated", "documentCreated",
+                    "aboutToImport", "documentImported", "aboutToRemove", "documentRemoved", "documentRemovalCanceled",
+                    "aboutToRemoveVersion", "versionRemoved", "beforeDocumentModification",
+                    "beforeDocumentSecurityModification", "documentModified", "documentSecurityUpdated",
+                    "documentLocked", "documentUnlocked", "aboutToCopy", "documentCreatedByCopy", "documentDuplicated",
+                    "aboutToMove", "documentMoved", "documentPublished", "documentProxyPublished",
+                    "documentProxyUpdated", "sectionContentPublished", "beforeRestoringDocument", "documentRestored",
+                    "sessionSaved", "childrenOrderChanged", "aboutToCheckout", "documentCheckedOut",
+                    "incrementBeforeUpdate", "aboutToCheckIn", "documentCheckedIn", "subscriptionAssigned",
+                    "emailDocumentSend", "userWorkspaceCreated", "binaryTextUpdated", "documentTagUpdated",
+                    "ACEStatusUpdated", "deleted", "delete", "undelete", "lifecycle_transition_event", "from", "to",
+                    "transition", "documentUndeleted", "initialLifecycleState");
         }
 
         @Override
