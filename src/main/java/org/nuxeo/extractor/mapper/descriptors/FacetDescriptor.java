@@ -35,22 +35,13 @@ public class FacetDescriptor {
     @XNodeList(value = "schema", type = SchemaDescriptor[].class, componentType = SchemaDescriptor.class)
     public SchemaDescriptor[] schemas;
 
-    /* empty constructor needed by XMap */
-    public FacetDescriptor() {
-    }
-
-    public FacetDescriptor(String name, SchemaDescriptor[] schemas) {
-        this.name = name;
-        this.schemas = schemas == null ? new SchemaDescriptor[0] : schemas;
-    }
-
     public String getName() {
         return name;
     }
 
     @Override
     public String toString() {
-        return "Facet(" + name + ',' + SchemaDescriptor.getSchemaNames(schemas) + ')';
+        return "Facet: " + name + " (" + SchemaDescriptor.getSchemaNames(schemas) + ')';
     }
 
 }

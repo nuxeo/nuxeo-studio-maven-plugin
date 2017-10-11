@@ -62,38 +62,8 @@ public class DocumentTypeDescriptor {
     @XNodeList(value = "subtypes-forbidden/type", type = String[].class, componentType = String.class)
     public String[] forbiddenSubtypes = new String[0];
 
-    public DocumentTypeDescriptor() {
-    }
-
-    public DocumentTypeDescriptor(String superTypeName, String name, SchemaDescriptor[] schemas, String[] facets) {
-        this.name = name;
-        this.superTypeName = superTypeName;
-        this.schemas = schemas;
-        this.facets = facets;
-    }
-
-    public DocumentTypeDescriptor(String superTypeName, String name, SchemaDescriptor[] schemas, String[] facets,
-            String[] subtypes, String[] forbiddenSubtypes) {
-        this(superTypeName, name, schemas, facets);
-        this.subtypes = subtypes;
-        this.forbiddenSubtypes = forbiddenSubtypes;
-    }
-
     @Override
     public String toString() {
         return "DocType: " + name;
-    }
-
-    public DocumentTypeDescriptor clone() {
-        DocumentTypeDescriptor clone = new DocumentTypeDescriptor();
-        clone.name = name;
-        clone.schemas = schemas;
-        clone.superTypeName = superTypeName;
-        clone.facets = facets;
-        clone.prefetch = prefetch;
-        clone.append = append;
-        clone.subtypes = subtypes;
-        clone.forbiddenSubtypes = forbiddenSubtypes;
-        return clone;
     }
 }

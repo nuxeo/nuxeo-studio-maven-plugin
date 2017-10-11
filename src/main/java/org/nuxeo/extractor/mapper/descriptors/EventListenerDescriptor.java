@@ -108,4 +108,8 @@ public class EventListenerDescriptor {
         this.retryCount = retryCount;
     }
 
+    @Override
+    public String toString() {
+        return "Event: " + name;
+    }
 }

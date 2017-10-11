@@ -125,4 +125,8 @@ public class LifeCycleDescriptor {
         return computedTransitions;
     }
 
+    @Override
+    public String toString() {
+        return "Lifecycle: " + name;
+    }
 }

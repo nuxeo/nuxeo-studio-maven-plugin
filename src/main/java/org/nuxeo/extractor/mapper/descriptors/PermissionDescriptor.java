@@ -64,34 +64,9 @@ public class PermissionDescriptor implements Serializable {
         return Arrays.asList(aliasPermissions);
     }
 
-    /**
-     * Used to unregistered a PermissionDescriptor out of the list of already registered contributions.
-     */
-    @Override
-    public boolean equals(Object o) {
-        if (o instanceof PermissionDescriptor) {
-            PermissionDescriptor pd = (PermissionDescriptor) o;
-            if (!name.equals(pd.name)) {
-                return false;
-            }
-            if (!getIncludePermissions().equals(pd.getIncludePermissions())) {
-                return false;
-            }
-            if (!getRemovePermissions().equals(pd.getRemovePermissions())) {
-                return false;
-            }
-            if (!getAliasPermissions().equals(pd.getAliasPermissions())) {
-                return false;
-            }
-            // this is an equivalent permission
-            return true;
-        }
-        return false;
-    }
-
     @Override
     public String toString() {
-        return String.format("PermissionDescriptor[%s]", name);
+        return "Permission: " + name;
     }
 
 }
