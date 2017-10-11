@@ -32,7 +32,6 @@ import org.nuxeo.extractor.mapper.impl.EventMapper;
 import org.nuxeo.extractor.mapper.impl.LifeCycleMapper;
 import org.nuxeo.extractor.mapper.impl.PermissionsMapper;
 import org.nuxeo.extractor.mapper.impl.TypeServiceMapper;
-import org.nuxeo.runtime.model.RegistrationInfo;
 
 /**
  * Contributions Holder is aim to map and track all visited contributions.
@@ -66,7 +65,7 @@ public class ContributionsHolder {
     }
 
     public void load(RegistrationInfo ri) {
-        Arrays.stream(ri.getExtensions()).map(manager::load).forEach(a -> Arrays.stream(a).forEach(c -> {
+        ri.getExtensions().stream().map(manager::load).forEach(a -> Arrays.stream(a).forEach(c -> {
             List<Object> sortedContributions = contributions.computeIfAbsent(c.getClass().getName(),
                     s -> new ArrayList<>());
             sortedContributions.add(c);

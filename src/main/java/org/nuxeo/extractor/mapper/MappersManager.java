@@ -24,8 +24,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 
-import org.nuxeo.extractor.runtime.ExtractorRuntimeContext;
-import org.nuxeo.runtime.model.Extension;
+import org.nuxeo.extractor.bundle.Extension;
+import org.nuxeo.extractor.runtime.ExtractorContext;
 
 /**
  * Mappers Manager holding all registered {@link ExtensionMapper} and can load an {@link Extension} to his Descriptor
@@ -87,7 +87,7 @@ public class MappersManager {
                                         .orElse(null);
 
         if (mapper != null) {
-            return mapper.loadAll(ExtractorRuntimeContext.instance, ext);
+            return mapper.loadAll(ExtractorContext.instance, ext);
         } else {
             return new Object[] {};
         }

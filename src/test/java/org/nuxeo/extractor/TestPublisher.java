@@ -39,7 +39,7 @@ import org.junit.Test;
 import org.nuxeo.extractor.bundle.BundleWalker;
 import org.nuxeo.extractor.bundle.ContributionsHolder;
 import org.nuxeo.extractor.publisher.Publisher;
-import org.nuxeo.extractor.runtime.ExtractorRuntimeContext;
+import org.nuxeo.extractor.runtime.ExtractorContext;
 import org.nuxeo.extractor.serializer.StudioSerializer;
 
 import net.sf.json.JSON;
@@ -47,7 +47,7 @@ import net.sf.json.JSONArray;
 import net.sf.json.JSONObject;
 import net.sf.json.JSONSerializer;
 
-public class TestPublisher extends AbstractTest {
+public class TestPublisher extends AbstractExtractorTest {
 
     protected ContributionsHolder holder;
 
@@ -93,10 +93,10 @@ public class TestPublisher extends AbstractTest {
         List<String> targets = Arrays.asList("operations", "doctypes", "schemas", "lifecycles");
         Stream<Path> contributions = Stream.of("operation-contrib.xml", "doctype-contrib.xml", "doctype-nd-contrib.xml",
                 "schema-contrib.xml", "lifecycle-contrib.xml", "chains-contrib.xml")
-                                           .map(c -> ExtractorRuntimeContext.instance.getLocalResource(c))
+                                           .map(c -> ExtractorContext.instance.getResource(c))
                                            .map(c -> Paths.get(c.getPath()));
 
-        BundleWalker bundleWalker = spy(new BundleWalker());
+        BundleWalker bundleWalker = spy(new BundleWalker((Path) null));
         doReturn(contributions).when(bundleWalker).getComponents();
         bundleWalker.getRegistrationInfos().forEach(holder::load);
 

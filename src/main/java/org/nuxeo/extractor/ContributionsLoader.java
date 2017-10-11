@@ -30,7 +30,7 @@ import java.util.HashMap;
 import org.apache.commons.lang.StringUtils;
 import org.nuxeo.extractor.bundle.BundleWalker;
 import org.nuxeo.extractor.bundle.ContributionsHolder;
-import org.nuxeo.extractor.runtime.ExtractorRuntimeContext;
+import org.nuxeo.extractor.runtime.ExtractorContext;
 
 /**
  * Load contributions from several sources, depending of Mojo parameters
@@ -66,7 +66,7 @@ public class ContributionsLoader {
     }
 
     protected void loadFromURI(URI uri) {
-        ExtractorRuntimeContext.instance.addExternalSource(uri);
+        ExtractorContext.instance.addExternalSource(uri);
         try (FileSystem fs = FileSystems.newFileSystem(uri, new HashMap<>())) {
             new BundleWalker(fs.getPath("/")).getRegistrationInfos().forEach(holder::load);
         } catch (IOException e) {

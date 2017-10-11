@@ -23,7 +23,7 @@ import static org.nuxeo.extractor.serializer.SerializerHelper.humanize;
 
 import java.io.IOException;
 
-import org.nuxeo.ecm.core.security.PermissionDescriptor;
+import org.nuxeo.extractor.mapper.descriptors.PermissionDescriptor;
 import org.nuxeo.extractor.serializer.JacksonConverter.StudioJacksonSerializer;
 
 import com.fasterxml.jackson.core.JsonGenerator;

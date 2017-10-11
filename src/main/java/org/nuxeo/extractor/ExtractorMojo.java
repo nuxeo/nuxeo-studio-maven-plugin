@@ -35,7 +35,7 @@ import org.apache.maven.plugins.annotations.Mojo;
 import org.apache.maven.plugins.annotations.Parameter;
 import org.apache.maven.plugins.annotations.ResolutionScope;
 import org.apache.maven.project.MavenProject;
-import org.nuxeo.extractor.runtime.ExtractorRuntimeContext;
+import org.nuxeo.extractor.runtime.ExtractorContext;
 
 /**
  * Parse each project to load contributions' descriptors from the MANIFEST.MF and map them to studio contributions
@@ -135,7 +135,7 @@ public class ExtractorMojo extends AbstractMojo {
             }
         }
 
-        ExtractorRuntimeContext.initCustomClassLoader(compileClasspathElements);
+        ExtractorContext.initCustomClassLoader(compileClasspathElements);
     }
 
     public String getBuildDirectory() {

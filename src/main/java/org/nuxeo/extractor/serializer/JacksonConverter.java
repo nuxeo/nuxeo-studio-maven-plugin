@@ -37,8 +37,8 @@ import org.nuxeo.ecm.core.schema.DocumentTypeDescriptor;
 import org.nuxeo.ecm.core.schema.FacetDescriptor;
 import org.nuxeo.ecm.core.schema.SchemaBindingDescriptor;
 import org.nuxeo.ecm.core.schema.types.SchemaImpl;
-import org.nuxeo.ecm.core.security.PermissionDescriptor;
 import org.nuxeo.extractor.ExtractorOptions;
+import org.nuxeo.extractor.mapper.descriptors.PermissionDescriptor;
 import org.nuxeo.extractor.serializer.adapter.DefaultAdapter;
 import org.nuxeo.extractor.serializer.adapter.OperationAdapter;
 import org.nuxeo.extractor.serializer.adapter.OperationChainAdapter;
@@ -114,7 +114,8 @@ public class JacksonConverter {
             ObjectMapper om = new ObjectMapper();
             Object targetAdapted = adapters.getOrDefault(target.getClass(), defaultAdapter).adapt(target);
 
-            // Mainly occurred with {@code org.nuxeo.extractor.serializer.adapter.SchemaAdapter#adapt} when schema file is
+            // Mainly occurred with {@code org.nuxeo.extractor.serializer.adapter.SchemaAdapter#adapt} when schema file
+            // is
             // missing.
             if (targetAdapted == null) {
                 log.warn("Unable to adapt: \"" + target + "\" (" + target.getClass() + ")");

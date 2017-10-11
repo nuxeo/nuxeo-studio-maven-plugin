@@ -31,33 +31,32 @@ import org.junit.After;
 import org.junit.Before;
 import org.nuxeo.extractor.bundle.BundleWalker;
 import org.nuxeo.extractor.bundle.ContributionsHolder;
-import org.nuxeo.extractor.runtime.ExtractorRuntimeContext;
+import org.nuxeo.extractor.bundle.RegistrationInfo;
+import org.nuxeo.extractor.runtime.ExtractorContext;
 import org.nuxeo.extractor.serializer.StudioSerializer;
-import org.nuxeo.runtime.model.RegistrationInfo;
 
 import junit.framework.AssertionFailedError;
 import net.sf.json.test.JSONAssert;
 
-public class AbstractTest {
+public class AbstractExtractorTest {
     protected BundleWalker walker;
 
     protected ExtractorOptions opts;
 
     @Before
     public void beforeEach() throws IOException {
-        walker = new BundleWalker();
-        walker.setBasePath(new File("src/it/simple-bundle/src/main/resources"));
+        walker = new BundleWalker(new File("src/it/simple-bundle/src/main/resources"));
 
         opts = new ExtractorOptions();
     }
 
     @After
     public void afterEach() {
-        ExtractorRuntimeContext.instance.clearExternalSources();
+        ExtractorContext.instance.clearExternalSources();
     }
 
     protected RegistrationInfo getRegistrationInfo(String resourcePath) throws URISyntaxException {
-        URL resource = getClass().getClassLoader().getResource(resourcePath);
+        URL resource = TestHelper.getResource(resourcePath);
         assertNotNull(resource);
 
         RegistrationInfo ri = walker.read(new File(resource.toURI()).toPath());

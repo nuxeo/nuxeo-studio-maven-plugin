@@ -32,9 +32,6 @@ import java.util.stream.Stream;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.nuxeo.extractor.runtime.ExtractorRuntimeContext;
-import org.nuxeo.runtime.model.RegistrationInfo;
-import org.nuxeo.runtime.model.impl.ComponentDescriptorReader;
 
 public class BundleWalker {
 
@@ -42,23 +39,15 @@ public class BundleWalker {
 
     private Path basePath;
 
-    private ComponentDescriptorReader reader;
-
-    public BundleWalker() {
-        reader = new ComponentDescriptorReader();
-    }
-
     public BundleWalker(String basePath) {
         this(new File(basePath));
     }
 
     public BundleWalker(File basePath) {
-        this();
         setBasePath(basePath);
     }
 
     public BundleWalker(Path basePath) {
-        this();
         this.basePath = basePath;
     }
 
@@ -105,7 +94,7 @@ public class BundleWalker {
 
     public RegistrationInfo read(Path component) {
         try (InputStream is = Files.newInputStream(component)) {
-            return reader.read(ExtractorRuntimeContext.instance, is);
+            return RegistrationInfo.read(is);
         } catch (IOException e) {
             throw new RuntimeException(e);
         }

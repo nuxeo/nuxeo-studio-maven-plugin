@@ -41,36 +41,23 @@ import java.util.Set;
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.nuxeo.runtime.RuntimeService;
+import org.nuxeo.common.xmap.Context;
 import org.nuxeo.runtime.api.Framework;
-import org.nuxeo.runtime.model.ComponentName;
-import org.nuxeo.runtime.model.RegistrationInfo;
-import org.nuxeo.runtime.model.RuntimeContext;
-import org.nuxeo.runtime.model.StreamRef;
-import org.osgi.framework.Bundle;
 
 import com.google.common.collect.Sets;
 
 /**
- * Simple Fake {@link RuntimeContext} that loads all child's class path (Maven compile resolution scope) elements to a
- * custom {@link ClassLoader}. It is required, in order to be able to resolve external Type from plugin. For instance,
- * it is needed by {@link org.nuxeo.ecm.automation.core.OperationContribution}.
+ * Simple Fake {@link Context} that loads all child's class path (Maven compile resolution scope) elements to a custom
+ * {@link ClassLoader}. It is required, in order to be able to resolve external Type from dependencies.
  * <p>
- * The implemented methods are:
- * <ul>
- * <li>{@link ExtractorRuntimeContext#loadClass(java.lang.String)}</li>
- * <li>{@link ExtractorRuntimeContext#getResource(java.lang.String)}</li>
- * <li>{@link ExtractorRuntimeContext#getLocalResource(java.lang.String)}</li>
- * </ul>
- * <p>
- * Runtime will load types from current class loader if
- * {@link ExtractorRuntimeContext#initCustomClassLoader(java.util.Set)} has never been initialized.
+ * Runtime will load types from current class loader if {@link ExtractorContext#initCustomClassLoader(java.util.Set)}
+ * has never been initialized.
  * </p>
  */
-public class ExtractorRuntimeContext implements RuntimeContext {
-    private static final Log log = LogFactory.getLog(ExtractorRuntimeContext.class);
+public class ExtractorContext extends Context {
+    private static final Log log = LogFactory.getLog(ExtractorContext.class);
 
-    public static ExtractorRuntimeContext instance = new ExtractorRuntimeContext();
+    public static ExtractorContext instance = new ExtractorContext();
 
     private static ClassLoader custom;
 
@@ -87,7 +74,7 @@ public class ExtractorRuntimeContext implements RuntimeContext {
 
     private Set<URI> extResourcesSources = new HashSet<>();
 
-    private ExtractorRuntimeContext() {
+    private ExtractorContext() {
     }
 
     /**
@@ -136,32 +123,12 @@ public class ExtractorRuntimeContext implements RuntimeContext {
     }
 
     @Override
-    public Class<?> loadClass(String s) throws ClassNotFoundException {
-        return getClassloader().loadClass(s);
-    }
-
-    @Override
-    public RuntimeService getRuntime() {
-        throw new UnsupportedOperationException();
-    }
-
-    @Override
-    public Bundle getBundle() {
-        throw new UnsupportedOperationException();
-    }
-
-    @Override
-    public ComponentName[] getComponents() {
-        return new ComponentName[0];
+    public Class<?> loadClass(String className) throws ClassNotFoundException {
+        return getClassloader().loadClass(className);
     }
 
     @Override
     public URL getResource(String name) {
-        return getLocalResource(name);
-    }
-
-    @Override
-    public URL getLocalResource(String name) {
         URL loadedResource = getClassloader().getResource(name);
         if (loadedResource != null) {
             return loadedResource;
@@ -197,56 +164,6 @@ public class ExtractorRuntimeContext implements RuntimeContext {
         }
 
         return null;
-    }
-
-    @Override
-    public RegistrationInfo deploy(URL url) throws IOException {
-        throw new UnsupportedOperationException();
-    }
-
-    @Override
-    public RegistrationInfo deploy(StreamRef streamRef) throws IOException {
-        throw new UnsupportedOperationException();
-    }
-
-    @Override
-    public void undeploy(URL url) throws IOException {
-        throw new UnsupportedOperationException();
-    }
-
-    @Override
-    public void undeploy(StreamRef streamRef) throws IOException {
-        throw new UnsupportedOperationException();
-    }
-
-    @Override
-    public boolean isDeployed(URL url) {
-        throw new UnsupportedOperationException();
-    }
-
-    @Override
-    public boolean isDeployed(StreamRef streamRef) {
-        throw new UnsupportedOperationException();
-    }
-
-    @Override
-    public RegistrationInfo deploy(String s) {
-        throw new UnsupportedOperationException();
-    }
-
-    @Override
-    public void undeploy(String s) {
-        throw new UnsupportedOperationException();
-    }
-
-    @Override
-    public boolean isDeployed(String s) {
-        throw new UnsupportedOperationException();
-    }
-
-    @Override
-    public void destroy() {
-
     }
 
     public void clearExternalSources() {

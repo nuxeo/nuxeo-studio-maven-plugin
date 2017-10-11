@@ -19,16 +19,16 @@
 
 package org.nuxeo.extractor.mapper;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import org.nuxeo.common.xmap.Context;
 import org.nuxeo.common.xmap.XMap;
-import org.nuxeo.runtime.model.Extension;
-import org.nuxeo.runtime.model.RuntimeContext;
-import org.nuxeo.runtime.model.impl.XMapContext;
+import org.nuxeo.extractor.bundle.Extension;
 
 public abstract class ExtensionMapper {
 
@@ -47,7 +47,7 @@ public abstract class ExtensionMapper {
     }
 
     public boolean accept(Extension ext) {
-        return accept(ext.getTargetComponent().getName(), ext.getExtensionPoint());
+        return accept(ext.getTargetComponent(), ext.getExtensionPoint());
     }
 
     /**
@@ -69,10 +69,14 @@ public abstract class ExtensionMapper {
         return false;
     }
 
-    public Object[] loadAll(RuntimeContext ctx, Extension extension) {
+    public Object[] loadAll(Context ctx, Extension extension) {
         XMap xmap = new XMap();
         getDescriptors().forEach(xmap::register);
-        return xmap.loadAll(new XMapContext(ctx), extension.getElement());
+        try {
+            return xmap.loadAll(ctx, extension.getInputStream());
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
     }
 
     public List<Class<?>> getDescriptors() {

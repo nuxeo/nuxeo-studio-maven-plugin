@@ -17,20 +17,12 @@
  *     Arnaud Kervern
  */
 
-package org.nuxeo.extractor.mapper.impl;
+package org.nuxeo.extractor;
 
-import org.nuxeo.extractor.mapper.ExtensionMapper;
-import org.nuxeo.extractor.mapper.descriptors.PermissionDescriptor;
+import java.net.URL;
 
-public class PermissionsMapper extends ExtensionMapper {
-
-    @Override
-    public void registerDescriptors() {
-        registerDescriptor("permissions", PermissionDescriptor.class);
-    }
-
-    @Override
-    protected boolean accept(String target, String point) {
-        return "org.nuxeo.ecm.core.security.SecurityService".equals(target) && "permissions".equals(point);
+public class TestHelper {
+    public static URL getResource(String resource) {
+        return TestHelper.class.getClassLoader().getResource(resource);
     }
 }

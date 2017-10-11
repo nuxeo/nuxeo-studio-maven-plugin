@@ -30,7 +30,6 @@ import java.net.URL;
 import java.nio.file.FileSystem;
 import java.nio.file.FileSystems;
 import java.nio.file.Path;
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -40,23 +39,23 @@ import org.nuxeo.ecm.core.schema.DocumentTypeDescriptor;
 import org.nuxeo.ecm.core.schema.SchemaBindingDescriptor;
 import org.nuxeo.extractor.bundle.BundleWalker;
 import org.nuxeo.extractor.bundle.ContributionsHolder;
+import org.nuxeo.extractor.bundle.Extension;
+import org.nuxeo.extractor.bundle.RegistrationInfo;
 import org.nuxeo.extractor.mapper.MappersManager;
 import org.nuxeo.extractor.mapper.impl.TypeServiceMapper;
-import org.nuxeo.runtime.model.Extension;
-import org.nuxeo.runtime.model.RegistrationInfo;
 
-public class TestWalker extends AbstractTest {
+public class TestWalker extends AbstractExtractorTest {
 
     @Test
     public void readComponent() throws URISyntaxException {
         RegistrationInfo ri = getRegistrationInfo("component-contrib.xml");
 
-        assertEquals("org.nuxeo.ecm.platform.picture.coreTypes", ri.getName().getName());
-        assertEquals(3, ri.getExtensions().length);
-        Extension extension = ri.getExtensions()[0];
+        assertEquals("org.nuxeo.ecm.platform.picture.coreTypes", ri.getName());
+        assertEquals(3, ri.getExtensions().size());
+        Extension extension = ri.getExtensions().get(0);
 
         assertEquals("schema", extension.getExtensionPoint());
-        assertEquals("org.nuxeo.ecm.core.schema.TypeService", extension.getTargetComponent().getName());
+        assertEquals("org.nuxeo.ecm.core.schema.TypeService", extension.getTargetComponent());
     }
 
     @Test
@@ -69,7 +68,7 @@ public class TestWalker extends AbstractTest {
         assertEquals(DocumentTypeDescriptor.class, descriptors.get(0));
 
         RegistrationInfo ri = getRegistrationInfo("component-contrib.xml");
-        assertTrue(Arrays.stream(ri.getExtensions()).anyMatch(manager::accept));
+        assertTrue(ri.getExtensions().stream().anyMatch(manager::accept));
     }
 
     @Test
@@ -105,7 +104,7 @@ public class TestWalker extends AbstractTest {
 
             RegistrationInfo ri = walker.getRegistrationInfos().findFirst().orElse(null);
             assertNotNull(ri);
-            assertEquals("service:org.nuxeo.platform.audit.lifecycle.contrib", ri.getName().getRawName());
+            assertEquals("org.nuxeo.platform.audit.lifecycle.contrib", ri.getName());
         }
     }
 }

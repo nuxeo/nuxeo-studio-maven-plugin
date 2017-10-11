@@ -25,13 +25,12 @@ import java.net.URISyntaxException;
 
 import org.junit.Test;
 import org.nuxeo.ecm.core.schema.DocumentTypeDescriptor;
-import org.nuxeo.extractor.AbstractTest;
+import org.nuxeo.extractor.AbstractExtractorTest;
 import org.nuxeo.extractor.mapper.MappersManager;
 import org.nuxeo.extractor.mapper.impl.AutomationMapper;
 import org.nuxeo.extractor.mapper.impl.TypeServiceMapper;
-import org.nuxeo.runtime.model.RegistrationInfo;
 
-public class TestHolder extends AbstractTest {
+public class TestHolder extends AbstractExtractorTest {
 
     @Test
     public void testSkippedPartialContribution() throws URISyntaxException {

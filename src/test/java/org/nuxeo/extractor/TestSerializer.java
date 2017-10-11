@@ -33,7 +33,6 @@ import java.net.URISyntaxException;
 import java.net.URL;
 import java.nio.file.FileSystem;
 import java.nio.file.FileSystems;
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 
@@ -45,13 +44,13 @@ import org.nuxeo.ecm.core.lifecycle.extensions.LifeCycleDescriptor;
 import org.nuxeo.ecm.core.schema.DocumentTypeDescriptor;
 import org.nuxeo.ecm.core.schema.FacetDescriptor;
 import org.nuxeo.ecm.core.schema.SchemaBindingDescriptor;
-import org.nuxeo.ecm.core.security.PermissionDescriptor;
 import org.nuxeo.extractor.bundle.BundleWalker;
 import org.nuxeo.extractor.bundle.ContributionsHolder;
+import org.nuxeo.extractor.bundle.RegistrationInfo;
+import org.nuxeo.extractor.mapper.descriptors.PermissionDescriptor;
 import org.nuxeo.extractor.mapper.impl.TypeServiceMapper;
-import org.nuxeo.extractor.runtime.ExtractorRuntimeContext;
+import org.nuxeo.extractor.runtime.ExtractorContext;
 import org.nuxeo.extractor.serializer.StudioSerializer;
-import org.nuxeo.runtime.model.RegistrationInfo;
 import org.xml.sax.SAXException;
 
 import com.sun.xml.xsom.XSSchemaSet;
@@ -59,7 +58,7 @@ import com.sun.xml.xsom.parser.XSOMParser;
 
 import net.sf.json.test.JSONAssert;
 
-public class TestSerializer extends AbstractTest {
+public class TestSerializer extends AbstractExtractorTest {
 
     public static final String EXPECTED_JSON_OPERATIONS = "[{\"id\":\"Document.MyOperation\",\"aliases\":[],\"signature\":[\"document\",\"document\"],\"category\":\"Others\",\"label\":\"Document.MyOperation\",\"requires\":null,\"since\":\"\",\"description\":\"\",\"params\":[{\"name\":\"dummy\",\"description\":\"\",\"type\":\"string\",\"widget\":null,\"values\":[],\"order\":0,\"required\":true}],\"widgetDefinitions\":null}]";
 
@@ -82,7 +81,7 @@ public class TestSerializer extends AbstractTest {
         RegistrationInfo ri = getRegistrationInfo("component-contrib.xml");
 
         TypeServiceMapper dte = new TypeServiceMapper();
-        assertTrue(Arrays.stream(ri.getExtensions()).anyMatch(dte::accept));
+        assertTrue(ri.getExtensions().stream().anyMatch(dte::accept));
     }
 
     @Test
@@ -191,7 +190,7 @@ public class TestSerializer extends AbstractTest {
     @Test
     public void jarFileSerialization() throws IOException {
         URI uri = getJarURI();
-        ExtractorRuntimeContext.instance.addExternalSource(uri);
+        ExtractorContext.instance.addExternalSource(uri);
 
         ContributionsHolder holder = new ContributionsHolder();
 
@@ -211,10 +210,10 @@ public class TestSerializer extends AbstractTest {
     @Test
     public void loadSchemaForDependency() throws IOException, SAXException {
         URI uri = getJarURI();
-        URL file = ExtractorRuntimeContext.instance.getResourceFromFile(uri, "blalba");
+        URL file = ExtractorContext.instance.getResourceFromFile(uri, "blalba");
         assertNull(file);
 
-        file = ExtractorRuntimeContext.instance.getResourceFromFile(uri, "schemas/aceinfo.xsd");
+        file = ExtractorContext.instance.getResourceFromFile(uri, "schemas/aceinfo.xsd");
         assertNotNull(file);
 
         XSOMParser parser = new XSOMParser();

@@ -19,13 +19,14 @@
 
 package org.nuxeo.extractor.serializer.adapter;
 
+import org.apache.commons.lang3.NotImplementedException;
 import org.nuxeo.ecm.core.schema.SchemaBindingDescriptor;
 import org.nuxeo.ecm.core.schema.SchemaManagerImpl;
 import org.nuxeo.ecm.core.schema.XSDLoader;
 import org.nuxeo.ecm.core.schema.types.SchemaImpl;
 import org.nuxeo.ecm.core.schema.types.TypeException;
 import org.nuxeo.ecm.core.schema.types.resolver.ObjectResolverService;
-import org.nuxeo.extractor.runtime.ExtractorRuntimeContext;
+import org.nuxeo.extractor.runtime.ExtractorContext;
 import org.xml.sax.SAXException;
 
 public class SchemaAdapter implements SerializerAdapter<SchemaBindingDescriptor, SchemaImpl> {
@@ -50,7 +51,8 @@ public class SchemaAdapter implements SerializerAdapter<SchemaBindingDescriptor,
     public static class CustomXSDLoader extends XSDLoader {
         public CustomXSDLoader(SchemaManagerImpl schemaManager, SchemaBindingDescriptor sd) {
             super(schemaManager, sd);
-            sd.context = ExtractorRuntimeContext.instance;
+            throw new NotImplementedException("refacto dude.");
+            // sd.context = ExtractorContext.instance;
         }
 
         @Override
@@ -59,8 +61,7 @@ public class SchemaAdapter implements SerializerAdapter<SchemaBindingDescriptor,
         }
 
         public SchemaImpl loadSchema() throws TypeException, SAXException {
-            return (SchemaImpl) loadSchema(sd.name, sd.prefix,
-                    ExtractorRuntimeContext.instance.getLocalResource(sd.src));
+            return (SchemaImpl) loadSchema(sd.name, sd.prefix, ExtractorContext.instance.getResource(sd.src));
         }
     }
 }
