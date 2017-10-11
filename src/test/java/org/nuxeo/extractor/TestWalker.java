@@ -35,13 +35,13 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import org.junit.Test;
-import org.nuxeo.ecm.core.schema.DocumentTypeDescriptor;
 import org.nuxeo.ecm.core.schema.SchemaBindingDescriptor;
 import org.nuxeo.extractor.bundle.BundleWalker;
 import org.nuxeo.extractor.bundle.ContributionsHolder;
 import org.nuxeo.extractor.bundle.Extension;
 import org.nuxeo.extractor.bundle.RegistrationInfo;
 import org.nuxeo.extractor.mapper.MappersManager;
+import org.nuxeo.extractor.mapper.descriptors.DocumentTypeDescriptor;
 import org.nuxeo.extractor.mapper.impl.TypeServiceMapper;
 
 public class TestWalker extends AbstractExtractorTest {

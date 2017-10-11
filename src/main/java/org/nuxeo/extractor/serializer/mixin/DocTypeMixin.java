@@ -26,7 +26,7 @@ import java.util.Map;
 import java.util.stream.Collectors;
 
 import org.apache.commons.lang3.StringUtils;
-import org.nuxeo.ecm.core.schema.DocumentTypeDescriptor;
+import org.nuxeo.extractor.mapper.descriptors.DocumentTypeDescriptor;
 import org.nuxeo.extractor.serializer.JacksonConverter;
 
 import com.fasterxml.jackson.core.JsonGenerator;

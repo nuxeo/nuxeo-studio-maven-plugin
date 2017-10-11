@@ -24,9 +24,9 @@ import static org.junit.Assert.assertEquals;
 import java.net.URISyntaxException;
 
 import org.junit.Test;
-import org.nuxeo.ecm.core.schema.DocumentTypeDescriptor;
 import org.nuxeo.extractor.AbstractExtractorTest;
 import org.nuxeo.extractor.mapper.MappersManager;
+import org.nuxeo.extractor.mapper.descriptors.DocumentTypeDescriptor;
 import org.nuxeo.extractor.mapper.impl.AutomationMapper;
 import org.nuxeo.extractor.mapper.impl.TypeServiceMapper;
 
