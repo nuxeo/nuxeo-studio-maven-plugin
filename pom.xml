@@ -71,17 +71,7 @@
     </dependency>
     <dependency>
       <groupId>org.nuxeo.ecm.core</groupId>
-      <artifactId>nuxeo-core</artifactId>
-      <version>${nuxeo.version}</version>
-    </dependency>
-    <dependency>
-      <groupId>org.nuxeo.ecm.core</groupId>
       <artifactId>nuxeo-core-schema</artifactId>
-      <version>${nuxeo.version}</version>
-    </dependency>
-    <dependency>
-      <groupId>org.nuxeo.ecm.core</groupId>
-      <artifactId>nuxeo-core-event</artifactId>
       <version>${nuxeo.version}</version>
     </dependency>
     <dependency>

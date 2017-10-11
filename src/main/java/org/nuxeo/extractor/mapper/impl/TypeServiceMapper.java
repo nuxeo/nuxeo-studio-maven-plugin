@@ -23,9 +23,9 @@ import java.util.Arrays;
 import java.util.List;
 
 import org.nuxeo.ecm.core.schema.DocumentTypeDescriptor;
-import org.nuxeo.ecm.core.schema.FacetDescriptor;
 import org.nuxeo.ecm.core.schema.SchemaBindingDescriptor;
 import org.nuxeo.extractor.mapper.ExtensionMapper;
+import org.nuxeo.extractor.mapper.descriptors.FacetDescriptor;
 
 /**
  * Can contain: - doctype - schemas - facets

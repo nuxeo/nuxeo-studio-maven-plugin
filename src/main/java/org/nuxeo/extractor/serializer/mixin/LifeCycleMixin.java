@@ -23,11 +23,8 @@ import java.io.IOException;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.stream.Collectors;
 
-import org.nuxeo.ecm.core.lifecycle.LifeCycleState;
-import org.nuxeo.ecm.core.lifecycle.LifeCycleTransition;
-import org.nuxeo.ecm.core.lifecycle.extensions.LifeCycleDescriptor;
+import org.nuxeo.extractor.mapper.descriptors.LifeCycleDescriptor;
 import org.nuxeo.extractor.serializer.JacksonConverter.StudioJacksonSerializer;
 
 import com.fasterxml.jackson.core.JsonGenerator;
@@ -40,13 +37,9 @@ public abstract class LifeCycleMixin {
         @Override
         public void serialize(LifeCycleDescriptor value, JsonGenerator gen, SerializerProvider provider)
                 throws IOException {
-            List<String> states = value.getStates().stream().map(LifeCycleState::getName).collect(Collectors.toList());
-            List<String> transitions = value.getTransitions().stream().map(LifeCycleTransition::getName).collect(
-                    Collectors.toList());
-
             Map<String, List> lifecycle = new HashMap<>();
-            lifecycle.put("states", states);
-            lifecycle.put("transitions", transitions);
+            lifecycle.put("states", value.getStates());
+            lifecycle.put("transitions", value.getTransitions());
 
             gen.writeFieldName(value.getName());
             gen.writeRawValue(":");

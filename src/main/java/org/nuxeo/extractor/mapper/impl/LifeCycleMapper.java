@@ -19,8 +19,8 @@
 
 package org.nuxeo.extractor.mapper.impl;
 
-import org.nuxeo.ecm.core.lifecycle.extensions.LifeCycleDescriptor;
 import org.nuxeo.extractor.mapper.ExtensionMapper;
+import org.nuxeo.extractor.mapper.descriptors.LifeCycleDescriptor;
 
 public class LifeCycleMapper extends ExtensionMapper {
     @Override

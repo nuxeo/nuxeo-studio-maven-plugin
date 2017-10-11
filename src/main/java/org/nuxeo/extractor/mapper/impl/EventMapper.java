@@ -19,8 +19,8 @@
 
 package org.nuxeo.extractor.mapper.impl;
 
-import org.nuxeo.ecm.core.event.impl.EventListenerDescriptor;
 import org.nuxeo.extractor.mapper.ExtensionMapper;
+import org.nuxeo.extractor.mapper.descriptors.EventListenerDescriptor;
 
 public class EventMapper extends ExtensionMapper {
     @Override

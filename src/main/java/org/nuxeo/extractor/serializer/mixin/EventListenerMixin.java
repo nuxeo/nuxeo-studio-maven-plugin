@@ -29,7 +29,7 @@ import java.util.stream.Collectors;
 import org.apache.commons.lang3.reflect.FieldUtils;
 import org.nuxeo.ecm.core.api.LifeCycleConstants;
 import org.nuxeo.ecm.core.api.event.DocumentEventTypes;
-import org.nuxeo.ecm.core.event.impl.EventListenerDescriptor;
+import org.nuxeo.extractor.mapper.descriptors.EventListenerDescriptor;
 import org.nuxeo.extractor.serializer.JacksonConverter.StudioJacksonSerializer;
 
 import com.fasterxml.jackson.core.JsonGenerator;
