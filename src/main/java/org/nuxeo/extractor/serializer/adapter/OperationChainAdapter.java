@@ -20,8 +20,8 @@
 package org.nuxeo.extractor.serializer.adapter;
 
 import org.apache.commons.lang3.NotImplementedException;
-import org.nuxeo.ecm.automation.OperationDocumentation;
 import org.nuxeo.extractor.mapper.descriptors.OperationChainDescriptor;
+import org.nuxeo.extractor.serializer.adapter.automation.OperationDocumentation;
 
 public class OperationChainAdapter implements SerializerAdapter<OperationChainDescriptor, OperationDocumentation> {
     @Override

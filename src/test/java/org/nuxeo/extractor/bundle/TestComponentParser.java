@@ -20,28 +20,37 @@
 package org.nuxeo.extractor.bundle;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.nuxeo.extractor.serializer.adapter.automation.OperationImpl.OPERATION_ANNOTATION_TYPE;
+import static org.nuxeo.extractor.serializer.adapter.automation.OperationImpl.PARAM_ANNOTATION_TYPE;
+import static org.nuxeo.extractor.serializer.adapter.automation.OperationReflectionHelper.findAnnotation;
+import static org.nuxeo.extractor.serializer.adapter.automation.OperationReflectionHelper.invokeMethod;
 
-import java.util.List;
+import java.lang.annotation.Annotation;
+import java.lang.reflect.Field;
 
-import org.dom4j.Document;
 import org.dom4j.DocumentException;
-import org.dom4j.Node;
-import org.dom4j.io.SAXReader;
 import org.junit.Test;
-import org.nuxeo.extractor.TestHelper;
+import org.nuxeo.operation.MyOperation;
 
 public class TestComponentParser {
     @Test
-    public void parseComponent() throws DocumentException {
-        SAXReader reader = new SAXReader();
-        Document component = reader.read(TestHelper.getResource("component-contrib.xml"));
-        List<Node> list = component.getRootElement().selectNodes("//extension");
-
-        assertEquals(3, list.size());
-        list.forEach(s -> System.out.print(s.getNodeTypeName()));
-
-        Node node = list.get(0);
-        node.getName();
+    public void testReadAnnotationWithoutImport()
+            throws DocumentException, IllegalAccessException, InstantiationException {
+        Class<?> type = MyOperation.class;
+        initFields(type);
     }
 
+    public void initFields(Class<?> type) {
+        assertNotNull(findAnnotation(type, OPERATION_ANNOTATION_TYPE));
+
+        for (Field field : type.getDeclaredFields()) {
+            Annotation param = findAnnotation(field, PARAM_ANNOTATION_TYPE);
+            if (param == null) {
+                continue;
+            }
+
+            assertEquals("dummy", invokeMethod(param, "name", String.class));
+        }
+    }
 }

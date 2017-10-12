@@ -18,16 +18,17 @@
  */
 package org.nuxeo.extractor.mapper.descriptors;
 
-import static org.nuxeo.ecm.automation.core.Constants.T_BOOLEAN;
-import static org.nuxeo.ecm.automation.core.Constants.T_DATE;
-import static org.nuxeo.ecm.automation.core.Constants.T_DOCUMENT;
-import static org.nuxeo.ecm.automation.core.Constants.T_DOCUMENTS;
-import static org.nuxeo.ecm.automation.core.Constants.T_FLOAT;
-import static org.nuxeo.ecm.automation.core.Constants.T_INTEGER;
-import static org.nuxeo.ecm.automation.core.Constants.T_LONG;
-import static org.nuxeo.ecm.automation.core.Constants.T_PROPERTIES;
-import static org.nuxeo.ecm.automation.core.Constants.T_RESOURCE;
-import static org.nuxeo.ecm.automation.core.Constants.T_STRING;
+import static org.nuxeo.extractor.serializer.adapter.automation.Constants.CAT_CHAIN;
+import static org.nuxeo.extractor.serializer.adapter.automation.Constants.T_BOOLEAN;
+import static org.nuxeo.extractor.serializer.adapter.automation.Constants.T_DATE;
+import static org.nuxeo.extractor.serializer.adapter.automation.Constants.T_DOCUMENT;
+import static org.nuxeo.extractor.serializer.adapter.automation.Constants.T_DOCUMENTS;
+import static org.nuxeo.extractor.serializer.adapter.automation.Constants.T_FLOAT;
+import static org.nuxeo.extractor.serializer.adapter.automation.Constants.T_INTEGER;
+import static org.nuxeo.extractor.serializer.adapter.automation.Constants.T_LONG;
+import static org.nuxeo.extractor.serializer.adapter.automation.Constants.T_PROPERTIES;
+import static org.nuxeo.extractor.serializer.adapter.automation.Constants.T_RESOURCE;
+import static org.nuxeo.extractor.serializer.adapter.automation.Constants.T_STRING;
 
 import java.io.IOException;
 import java.net.MalformedURLException;
@@ -45,15 +46,14 @@ import org.nuxeo.common.xmap.annotation.XNodeList;
 import org.nuxeo.common.xmap.annotation.XNodeMap;
 import org.nuxeo.common.xmap.annotation.XObject;
 import org.nuxeo.ecm.automation.OperationChain;
-import org.nuxeo.ecm.automation.OperationDocumentation;
 import org.nuxeo.ecm.automation.OperationException;
 import org.nuxeo.ecm.automation.OperationParameters;
-import org.nuxeo.ecm.automation.core.Constants;
 import org.nuxeo.ecm.automation.core.impl.adapters.helper.TypeAdapterHelper;
 import org.nuxeo.ecm.automation.core.scripting.Scripting;
 import org.nuxeo.ecm.automation.core.util.Properties;
 import org.nuxeo.ecm.core.api.impl.DocumentRefListImpl;
 import org.nuxeo.ecm.core.schema.utils.DateParser;
+import org.nuxeo.extractor.serializer.adapter.automation.OperationDocumentation;
 import org.osgi.framework.Bundle;
 
 /**
@@ -259,7 +259,7 @@ public class OperationChainDescriptor {
     }
 
     public String getCategory() {
-        return Constants.CAT_CHAIN;
+        return CAT_CHAIN;
     }
 
     public String getSince() {

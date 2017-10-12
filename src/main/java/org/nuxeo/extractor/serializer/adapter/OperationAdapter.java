@@ -19,15 +19,14 @@
 
 package org.nuxeo.extractor.serializer.adapter;
 
-import org.nuxeo.ecm.automation.OperationDocumentation;
-import org.nuxeo.ecm.automation.core.impl.OperationTypeImpl;
 import org.nuxeo.extractor.mapper.descriptors.OperationDescriptor;
+import org.nuxeo.extractor.serializer.adapter.automation.OperationDocumentation;
+import org.nuxeo.extractor.serializer.adapter.automation.OperationImpl;
 
 public class OperationAdapter implements SerializerAdapter<OperationDescriptor, OperationDocumentation> {
 
     @Override
     public OperationDocumentation adapt(OperationDescriptor src) {
-        OperationTypeImpl operationType = new OperationTypeImpl(null, src.type, src.toString());
-        return operationType.getDocumentation();
+        return new OperationImpl(src.type).getDocumentation();
     }
 }

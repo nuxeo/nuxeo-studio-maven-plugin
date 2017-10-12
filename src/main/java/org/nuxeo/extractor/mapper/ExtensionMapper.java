@@ -63,6 +63,7 @@ public abstract class ExtensionMapper {
     /**
      * Method used to be overriden in order to detect a partial contribution
      *
+     * @param contribution Object to check
      * @return true if the contribution is partial, false otherwise.
      */
     public boolean isPartial(Object contribution) {
