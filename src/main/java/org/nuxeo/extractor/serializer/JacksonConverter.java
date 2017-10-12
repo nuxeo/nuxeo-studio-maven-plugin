@@ -37,13 +37,15 @@ import org.nuxeo.extractor.mapper.descriptors.FacetDescriptor;
 import org.nuxeo.extractor.mapper.descriptors.LifeCycleDescriptor;
 import org.nuxeo.extractor.mapper.descriptors.OperationChainDescriptor;
 import org.nuxeo.extractor.mapper.descriptors.OperationDescriptor;
+import org.nuxeo.extractor.mapper.descriptors.OperationScriptingDescriptor;
 import org.nuxeo.extractor.mapper.descriptors.PermissionDescriptor;
 import org.nuxeo.extractor.serializer.adapter.DefaultAdapter;
 import org.nuxeo.extractor.serializer.adapter.OperationAdapter;
 import org.nuxeo.extractor.serializer.adapter.OperationChainAdapter;
-import org.nuxeo.extractor.serializer.adapter.automation.OperationDocumentation;
+import org.nuxeo.extractor.serializer.adapter.OperationScriptingAdapter;
 import org.nuxeo.extractor.serializer.adapter.SchemaAdapter;
 import org.nuxeo.extractor.serializer.adapter.SerializerAdapter;
+import org.nuxeo.extractor.serializer.adapter.automation.OperationDocumentation;
 import org.nuxeo.extractor.serializer.mixin.DocTypeMixin;
 import org.nuxeo.extractor.serializer.mixin.EventListenerMixin;
 import org.nuxeo.extractor.serializer.mixin.FacetMixin;
@@ -78,6 +80,7 @@ public class JacksonConverter {
         registerAdapter(OperationDescriptor.class, OperationAdapter.class);
         registerAdapter(SchemaBindingDescriptor.class, SchemaAdapter.class);
         registerAdapter(OperationChainDescriptor.class, OperationChainAdapter.class);
+        registerAdapter(OperationScriptingDescriptor.class, OperationScriptingAdapter.class);
 
         // Mixins allow to define the way the serialization is done
         registerMixin(FacetDescriptor.class, FacetMixin.class);

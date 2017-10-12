@@ -1,0 +1,18 @@
+<component name="org.nuxeo.extractor.foo.scripting" version="1.0">
+  <extension target="org.nuxeo.automation.scripting.internals.AutomationScriptingComponent" point="operation">
+    <scriptedOperation id="Scripting.HelloWorld">
+      <inputType>string</inputType>
+      <outputType>string</outputType>
+      <param name="lang" type="string"/>
+      <script>
+        function run(input, params) {
+        if (params.lang === "fr") {
+        return "Bonjour " + input;
+        } else {
+        return "Hello " + input;
+        }
+        }
+      </script>
+    </scriptedOperation>
+  </extension>
+</component>

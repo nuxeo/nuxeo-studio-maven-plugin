@@ -47,6 +47,7 @@ import org.nuxeo.extractor.mapper.descriptors.FacetDescriptor;
 import org.nuxeo.extractor.mapper.descriptors.LifeCycleDescriptor;
 import org.nuxeo.extractor.mapper.descriptors.OperationChainDescriptor;
 import org.nuxeo.extractor.mapper.descriptors.OperationDescriptor;
+import org.nuxeo.extractor.mapper.descriptors.OperationScriptingDescriptor;
 import org.nuxeo.extractor.mapper.descriptors.PermissionDescriptor;
 import org.nuxeo.extractor.mapper.impl.TypeServiceMapper;
 import org.nuxeo.extractor.runtime.ExtractorContext;
@@ -74,7 +75,9 @@ public class TestSerializer extends AbstractExtractorTest {
 
     public static final String EXPECTED_JSON_DOCTYPE = "{\"File\": {\"parent\":\"Document\",\"schemas\":[\"common\",\"file\",\"dublincore\",\"uid\"],\"facets\":[\"Downloadable\",\"Versionable\"]}}";
 
-    public static final String EXPECTED_JSON_CHAIN = "[{\"id\":\"HelloWorldOperationChain\",\"aliases\":[],\"signature\":[\"documents\",\"documents\",\"documents\",\"document\",\"documents\",\"blob\",\"documents\",\"bloblist\",\"documents\",\"void\",\"document\",\"documents\",\"document\",\"document\",\"document\",\"blob\",\"document\",\"bloblist\",\"document\",\"void\",\"blob\",\"documents\",\"blob\",\"document\",\"blob\",\"blob\",\"blob\",\"bloblist\",\"blob\",\"void\",\"bloblist\",\"documents\",\"bloblist\",\"document\",\"bloblist\",\"blob\",\"bloblist\",\"bloblist\",\"bloblist\",\"void\",\"void\",\"documents\",\"void\",\"document\",\"void\",\"blob\",\"void\",\"bloblist\",\"void\",\"void\"],\"category\":\"Chain\",\"label\":\"HelloWorldOperationChain\",\"requires\":null,\"since\":\"\",\"description\":null,\"params\":[],\"widgetDefinitions\":null},{\"id\":\"dummyMail\",\"aliases\":[],\"signature\":[\"documents\",\"documents\",\"documents\",\"document\",\"documents\",\"blob\",\"documents\",\"bloblist\",\"documents\",\"void\",\"document\",\"documents\",\"document\",\"document\",\"document\",\"blob\",\"document\",\"bloblist\",\"document\",\"void\",\"blob\",\"documents\",\"blob\",\"document\",\"blob\",\"blob\",\"blob\",\"bloblist\",\"blob\",\"void\",\"bloblist\",\"documents\",\"bloblist\",\"document\",\"bloblist\",\"blob\",\"bloblist\",\"bloblist\",\"bloblist\",\"void\",\"void\",\"documents\",\"void\",\"document\",\"void\",\"blob\",\"void\",\"bloblist\",\"void\",\"void\"],\"category\":\"Chain\",\"label\":\"dummyMail\",\"requires\":null,\"since\":\"\",\"description\":null,\"params\":[],\"widgetDefinitions\":null}]";
+    public static final String EXPECTED_JSON_CHAIN = "[{\"id\":\"HelloWorldOperationChain\",\"aliases\":[],\"signature\":[\"documents\",\"documents\",\"documents\",\"document\",\"documents\",\"blob\",\"documents\",\"bloblist\",\"documents\",\"void\",\"document\",\"documents\",\"document\",\"document\",\"document\",\"blob\",\"document\",\"bloblist\",\"document\",\"void\",\"blob\",\"documents\",\"blob\",\"document\",\"blob\",\"blob\",\"blob\",\"bloblist\",\"blob\",\"void\",\"bloblist\",\"documents\",\"bloblist\",\"document\",\"bloblist\",\"blob\",\"bloblist\",\"bloblist\",\"bloblist\",\"void\",\"void\",\"documents\",\"void\",\"document\",\"void\",\"blob\",\"void\",\"bloblist\",\"void\",\"void\"],\"category\":\"Chain\",\"label\":\"HelloWorldOperationChain\",\"requires\":null,\"since\":\"\",\"description\":null,\"params\":[]},{\"id\":\"dummyMail\",\"aliases\":[],\"signature\":[\"documents\",\"documents\",\"documents\",\"document\",\"documents\",\"blob\",\"documents\",\"bloblist\",\"documents\",\"void\",\"document\",\"documents\",\"document\",\"document\",\"document\",\"blob\",\"document\",\"bloblist\",\"document\",\"void\",\"blob\",\"documents\",\"blob\",\"document\",\"blob\",\"blob\",\"blob\",\"bloblist\",\"blob\",\"void\",\"bloblist\",\"documents\",\"bloblist\",\"document\",\"bloblist\",\"blob\",\"bloblist\",\"bloblist\",\"bloblist\",\"void\",\"void\",\"documents\",\"void\",\"document\",\"void\",\"blob\",\"void\",\"bloblist\",\"void\",\"void\"],\"category\":\"Chain\",\"label\":\"dummyMail\",\"requires\":null,\"since\":\"\",\"description\":null,\"params\":[]}]";
+
+    public static final String EXPECTED_JSON_SCRIPTING = "[{\"id\":\"Scripting.HelloWorld\",\"aliases\":[],\"signature\":[\"string\",\"string\"],\"category\":null,\"label\":\"Scripting.HelloWorld\",\"requires\":null,\"since\":null,\"description\":null,\"params\":[{\"name\":\"lang\",\"description\":null,\"type\":\"string\",\"widget\":null,\"values\":[],\"order\":0,\"required\":false}]}]";
 
     @Test
     public void testDoctypeMapper() throws URISyntaxException {
@@ -117,6 +120,11 @@ public class TestSerializer extends AbstractExtractorTest {
     @Test
     public void testOperationChainSerializer() throws URISyntaxException {
         assertSerialization("chains-contrib.xml", OperationChainDescriptor.class, 2, EXPECTED_JSON_CHAIN);
+    }
+
+    @Test
+    public void testOperationScriptingSerializer() throws URISyntaxException {
+        assertSerialization("scripting-contrib.xml", OperationScriptingDescriptor.class, 1, EXPECTED_JSON_SCRIPTING);
     }
 
     @Test

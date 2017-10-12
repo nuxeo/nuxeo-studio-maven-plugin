@@ -25,6 +25,7 @@ import java.util.List;
 import org.nuxeo.extractor.mapper.ExtensionMapper;
 import org.nuxeo.extractor.mapper.descriptors.OperationChainDescriptor;
 import org.nuxeo.extractor.mapper.descriptors.OperationDescriptor;
+import org.nuxeo.extractor.mapper.descriptors.OperationScriptingDescriptor;
 
 public class AutomationMapper extends ExtensionMapper {
 
@@ -34,10 +35,13 @@ public class AutomationMapper extends ExtensionMapper {
     public void registerDescriptors() {
         registerDescriptor("operations", OperationChainDescriptor.class);
         registerDescriptor("operations", OperationDescriptor.class);
+        registerDescriptor("operations", OperationScriptingDescriptor.class);
     }
 
     @Override
     protected boolean accept(String target, String point) {
-        return target.equals("org.nuxeo.ecm.core.operation.OperationServiceComponent") && EXTENSIONS.contains(point);
+        return target.equals("org.nuxeo.ecm.core.operation.OperationServiceComponent") && EXTENSIONS.contains(point)
+                || target.equals("org.nuxeo.automation.scripting.internals.AutomationScriptingComponent")
+                        && "operation".equals(point);
     }
 }
