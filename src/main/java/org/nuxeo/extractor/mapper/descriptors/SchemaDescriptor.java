@@ -16,31 +16,40 @@
  * Contributors:
  *     Arnaud Kervern
  */
+
 package org.nuxeo.extractor.mapper.descriptors;
 
+import java.util.LinkedHashSet;
+import java.util.Set;
+
 import org.nuxeo.common.xmap.annotation.XNode;
-import org.nuxeo.common.xmap.annotation.XNodeList;
 import org.nuxeo.common.xmap.annotation.XObject;
 
 /**
- * Facet Descriptor.
+ * Descriptor for a reference to a schema from a document type or a facet.
  */
-@XObject("facet")
-public class FacetDescriptor {
+@XObject("schema")
+public class SchemaDescriptor {
 
     @XNode("@name")
     public String name;
 
-    @XNodeList(value = "schema", type = SchemaDescriptor[].class, componentType = SchemaDescriptor.class)
-    public SchemaDescriptor[] schemas;
+    @XNode("@lazy")
+    public boolean isLazy = true;
 
-    public String getName() {
-        return name;
+    public SchemaDescriptor() {
     }
 
-    @Override
-    public String toString() {
-        return "Facet: " + name + " (" + SchemaDescriptor.getSchemaNames(schemas) + ')';
+    public SchemaDescriptor(String name) {
+        this.name = name;
+    }
+
+    public static Set<String> getSchemaNames(SchemaDescriptor[] sds) {
+        Set<String> set = new LinkedHashSet<String>();
+        for (SchemaDescriptor sd : sds) {
+            set.add(sd.name);
+        }
+        return set;
     }
 
 }

@@ -22,10 +22,10 @@ package org.nuxeo.extractor.mapper.impl;
 import java.util.Arrays;
 import java.util.List;
 
-import org.nuxeo.ecm.core.schema.SchemaBindingDescriptor;
 import org.nuxeo.extractor.mapper.ExtensionMapper;
 import org.nuxeo.extractor.mapper.descriptors.DocumentTypeDescriptor;
 import org.nuxeo.extractor.mapper.descriptors.FacetDescriptor;
+import org.nuxeo.extractor.mapper.descriptors.SchemaBindingDescriptor;
 
 /**
  * Can contain: - doctype - schemas - facets

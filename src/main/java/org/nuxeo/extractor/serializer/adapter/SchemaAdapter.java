@@ -20,12 +20,12 @@
 package org.nuxeo.extractor.serializer.adapter;
 
 import org.apache.commons.lang3.NotImplementedException;
-import org.nuxeo.ecm.core.schema.SchemaBindingDescriptor;
 import org.nuxeo.ecm.core.schema.SchemaManagerImpl;
 import org.nuxeo.ecm.core.schema.XSDLoader;
 import org.nuxeo.ecm.core.schema.types.SchemaImpl;
 import org.nuxeo.ecm.core.schema.types.TypeException;
 import org.nuxeo.ecm.core.schema.types.resolver.ObjectResolverService;
+import org.nuxeo.extractor.mapper.descriptors.SchemaBindingDescriptor;
 import org.nuxeo.extractor.runtime.ExtractorContext;
 import org.xml.sax.SAXException;
 

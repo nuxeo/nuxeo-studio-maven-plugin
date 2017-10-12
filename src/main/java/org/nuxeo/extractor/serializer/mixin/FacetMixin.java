@@ -22,7 +22,7 @@ package org.nuxeo.extractor.serializer.mixin;
 import java.io.IOException;
 import java.util.Arrays;
 
-import org.nuxeo.ecm.core.schema.SchemaDescriptor;
+import org.nuxeo.extractor.mapper.descriptors.SchemaDescriptor;
 import org.nuxeo.extractor.serializer.JacksonConverter.StudioJacksonSerializer;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;

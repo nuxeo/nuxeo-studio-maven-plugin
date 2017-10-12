@@ -22,7 +22,6 @@ package org.nuxeo.extractor.mapper.descriptors;
 import org.nuxeo.common.xmap.annotation.XNode;
 import org.nuxeo.common.xmap.annotation.XNodeList;
 import org.nuxeo.common.xmap.annotation.XObject;
-import org.nuxeo.ecm.core.schema.SchemaDescriptor;
 
 /**
  * Document Type Descriptor.

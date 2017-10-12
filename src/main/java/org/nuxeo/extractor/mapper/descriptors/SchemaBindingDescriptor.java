@@ -16,31 +16,40 @@
  * Contributors:
  *     Arnaud Kervern
  */
+
 package org.nuxeo.extractor.mapper.descriptors;
 
+import java.io.File;
+
 import org.nuxeo.common.xmap.annotation.XNode;
-import org.nuxeo.common.xmap.annotation.XNodeList;
 import org.nuxeo.common.xmap.annotation.XObject;
 
-/**
- * Facet Descriptor.
- */
-@XObject("facet")
-public class FacetDescriptor {
+@XObject("schema")
+public class SchemaBindingDescriptor {
 
     @XNode("@name")
     public String name;
 
-    @XNodeList(value = "schema", type = SchemaDescriptor[].class, componentType = SchemaDescriptor.class)
-    public SchemaDescriptor[] schemas;
+    @XNode("@src")
+    public String src;
 
-    public String getName() {
-        return name;
-    }
+    public File file;
+
+    @XNode("@prefix")
+    public String prefix = "";
+
+    @XNode("@override")
+    public boolean override = false;
+
+    @XNode("@isVersionWritable")
+    public boolean isVersionWritable = false;
+
+    @XNode("@xsdRootElement")
+    public String xsdRootElement;
 
     @Override
     public String toString() {
-        return "Facet: " + name + " (" + SchemaDescriptor.getSchemaNames(schemas) + ')';
+        return "Schema: " + name;
     }
 
 }
