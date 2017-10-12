@@ -79,11 +79,6 @@
       <artifactId>nuxeo-core-api</artifactId>
       <version>${nuxeo.version}</version>
     </dependency>
-    <dependency>
-      <groupId>org.nuxeo.ecm.automation</groupId>
-      <artifactId>nuxeo-automation-core</artifactId>
-      <version>${nuxeo.version}</version>
-    </dependency>
     <!-- Third libs dependencies -->
     <dependency>
       <groupId>org.nuxeo.common</groupId>
@@ -161,6 +156,12 @@
     </dependency>
 
     <!-- Tests Dependencies -->
+    <dependency>
+      <groupId>org.nuxeo.ecm.automation</groupId>
+      <artifactId>nuxeo-automation-core</artifactId>
+      <scope>test</scope>
+      <version>${nuxeo.version}</version>
+    </dependency>
     <dependency>
       <groupId>junit</groupId>
       <artifactId>junit</artifactId>

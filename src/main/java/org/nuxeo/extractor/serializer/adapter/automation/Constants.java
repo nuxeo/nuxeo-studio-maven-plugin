@@ -70,6 +70,8 @@ public class Constants {
 
     public static final String T_BLOBS = "bloblist";
 
+    public static final String T_VOID = "void";
+
     // inline MVEL injectable script as Script
     public static final String T_SCRIPT = "script";
 

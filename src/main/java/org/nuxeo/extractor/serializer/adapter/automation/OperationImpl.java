@@ -26,9 +26,7 @@ import static org.nuxeo.extractor.serializer.adapter.automation.OperationReflect
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
-import java.net.URL;
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.LinkedList;
@@ -86,18 +84,6 @@ public class OperationImpl {
         initFields();
     }
 
-    public String getId() {
-        return id;
-    }
-
-    public String[] getAliases() {
-        return aliases;
-    }
-
-    public Class<?> getType() {
-        return type;
-    }
-
     protected void initMethods() {
         for (Method method : type.getMethods()) {
             Annotation anno = findAnnotation(method, METHOD_ANNOTATION_TYPE);
@@ -111,7 +97,8 @@ public class OperationImpl {
                     "org.nuxeo.ecm.automation.OutputCollector");
 
             methods.add(String.format("%s:%s", //
-                    getParamDocumentationType(consume, isIterable), getParamDocumentationType(produce)));
+                    OperationReflectionHelper.getParamDocumentationType(consume, isIterable),
+                    OperationReflectionHelper.getParamDocumentationType(produce)));
         }
 
         // method order depends on the JDK, make it deterministic
@@ -155,7 +142,7 @@ public class OperationImpl {
             OperationDocumentation.Param param = new OperationDocumentation.Param();
             param.name = invokeMethod(annotation, "name", String.class);
             param.description = invokeMethod(annotation, "description", String.class);
-            param.type = getParamDocumentationType(field.getType());
+            param.type = OperationReflectionHelper.getParamDocumentationType(field.getType());
             param.widget = invokeMethod(annotation, "widget", String.class);
             if (param.widget.length() == 0) {
                 param.widget = null;
@@ -178,40 +165,4 @@ public class OperationImpl {
         doc.signature = result.toArray(new String[result.size()]);
         return doc;
     }
-
-    protected String getParamDocumentationType(Class<?> type, boolean isIterable) {
-        String paramType;
-
-        try {
-            if (Class.forName("org.nuxeo.ecm.core.api.DocumentModel").isAssignableFrom(type)
-                    || Class.forName("org.nuxeo.ecm.core.api.DocumentRef").isAssignableFrom(type)) {
-                paramType = isIterable ? Constants.T_DOCUMENTS : Constants.T_DOCUMENT;
-            } else if (Class.forName("org.nuxeo.ecm.core.api.DocumentModelList").isAssignableFrom(type)
-                    || Class.forName("org.nuxeo.ecm.core.api.DocumentRefList").isAssignableFrom(type)) {
-                paramType = Constants.T_DOCUMENTS;
-            } else if (Class.forName("org.nuxeo.ecm.automation.core.util.BlobList").isAssignableFrom(type)) {
-                paramType = Constants.T_BLOBS;
-            } else if (Class.forName("org.nuxeo.ecm.core.api.Blob").isAssignableFrom(type)) {
-                paramType = isIterable ? Constants.T_BLOBS : Constants.T_BLOB;
-            } else if (URL.class.isAssignableFrom(type)) {
-                paramType = Constants.T_RESOURCE;
-            } else if (Calendar.class.isAssignableFrom(type)) {
-                paramType = Constants.T_DATE;
-            } else {
-                paramType = type.getSimpleName().toLowerCase();
-            }
-            return paramType;
-        } catch (ClassNotFoundException e) {
-            throw new RuntimeException(e);
-        }
-    }
-
-    protected String getParamDocumentationType(Class<?> type) {
-        return getParamDocumentationType(type, false);
-    }
-
-    public String toString() {
-        return "OperationImpl [id=" + id + ", type=" + type + ", params=" + params + "]";
-    }
-
 }
