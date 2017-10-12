@@ -16,18 +16,26 @@
  * Contributors:
  *     Arnaud Kervern
  */
+package org.nuxeo.extractor.mapper.descriptors;
 
-package org.nuxeo.extractor.serializer.adapter;
+import org.nuxeo.common.xmap.annotation.XNode;
+import org.nuxeo.common.xmap.annotation.XObject;
 
-import org.nuxeo.ecm.automation.OperationDocumentation;
-import org.nuxeo.ecm.automation.core.impl.OperationTypeImpl;
-import org.nuxeo.extractor.mapper.descriptors.OperationDescriptor;
+@XObject("operation")
+public class OperationDescriptor {
 
-public class OperationAdapter implements SerializerAdapter<OperationDescriptor, OperationDocumentation> {
+    /**
+     * The operation class that must be annotated using {@link org.nuxeo.ecm.automation.core.annotations.Operation}
+     * annotation.
+     */
+    @XNode("@class")
+    public Class<?> type;
 
-    @Override
-    public OperationDocumentation adapt(OperationDescriptor src) {
-        OperationTypeImpl operationType = new OperationTypeImpl(null, src.type, src.toString());
-        return operationType.getDocumentation();
-    }
+    /**
+     * Put it to true to override an existing contribution having the same ID. By default overriding is not permitted
+     * and an exception is thrown when this flag is on false.
+     */
+    @XNode("@replace")
+    public boolean replace;
+
 }

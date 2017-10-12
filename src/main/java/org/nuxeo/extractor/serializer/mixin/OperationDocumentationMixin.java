@@ -19,7 +19,7 @@
 
 package org.nuxeo.extractor.serializer.mixin;
 
-import org.nuxeo.ecm.automation.core.OperationChainContribution;
+import org.nuxeo.extractor.mapper.descriptors.OperationChainDescriptor;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
@@ -40,5 +40,5 @@ public abstract class OperationDocumentationMixin {
     public abstract boolean isChain();
 
     @JsonIgnore
-    public abstract OperationChainContribution.Operation[] getOperations();
+    public abstract OperationChainDescriptor.Operation[] getOperations();
 }

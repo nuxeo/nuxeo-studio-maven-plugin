@@ -37,8 +37,6 @@ import java.util.HashMap;
 import java.util.List;
 
 import org.junit.Test;
-import org.nuxeo.ecm.automation.core.OperationChainContribution;
-import org.nuxeo.ecm.automation.core.OperationContribution;
 import org.nuxeo.ecm.core.schema.SchemaBindingDescriptor;
 import org.nuxeo.extractor.bundle.BundleWalker;
 import org.nuxeo.extractor.bundle.ContributionsHolder;
@@ -47,6 +45,8 @@ import org.nuxeo.extractor.mapper.descriptors.DocumentTypeDescriptor;
 import org.nuxeo.extractor.mapper.descriptors.EventListenerDescriptor;
 import org.nuxeo.extractor.mapper.descriptors.FacetDescriptor;
 import org.nuxeo.extractor.mapper.descriptors.LifeCycleDescriptor;
+import org.nuxeo.extractor.mapper.descriptors.OperationChainDescriptor;
+import org.nuxeo.extractor.mapper.descriptors.OperationDescriptor;
 import org.nuxeo.extractor.mapper.descriptors.PermissionDescriptor;
 import org.nuxeo.extractor.mapper.impl.TypeServiceMapper;
 import org.nuxeo.extractor.runtime.ExtractorContext;
@@ -96,7 +96,7 @@ public class TestSerializer extends AbstractExtractorTest {
 
     @Test
     public void testOperationSerializer() throws URISyntaxException {
-        assertSerialization("operation-contrib.xml", OperationContribution.class, 1, EXPECTED_JSON_OPERATIONS);
+        assertSerialization("operation-contrib.xml", OperationDescriptor.class, 1, EXPECTED_JSON_OPERATIONS);
     }
 
     @Test
@@ -116,7 +116,7 @@ public class TestSerializer extends AbstractExtractorTest {
 
     @Test
     public void testOperationChainSerializer() throws URISyntaxException {
-        assertSerialization("chains-contrib.xml", OperationChainContribution.class, 2, EXPECTED_JSON_CHAIN);
+        assertSerialization("chains-contrib.xml", OperationChainDescriptor.class, 2, EXPECTED_JSON_CHAIN);
     }
 
     @Test

@@ -19,54 +19,13 @@
 
 package org.nuxeo.extractor.serializer.adapter;
 
-import static org.nuxeo.ecm.automation.core.Constants.T_BLOB;
-import static org.nuxeo.ecm.automation.core.Constants.T_BLOBS;
-import static org.nuxeo.ecm.automation.core.Constants.T_DOCUMENT;
-import static org.nuxeo.ecm.automation.core.Constants.T_DOCUMENTS;
-
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-
-import org.nuxeo.ecm.automation.OperationChain;
+import org.apache.commons.lang3.NotImplementedException;
 import org.nuxeo.ecm.automation.OperationDocumentation;
-import org.nuxeo.ecm.automation.OperationException;
-import org.nuxeo.ecm.automation.core.OperationChainContribution;
-import org.nuxeo.ecm.automation.core.impl.ChainTypeImpl;
+import org.nuxeo.extractor.mapper.descriptors.OperationChainDescriptor;
 
-public class OperationChainAdapter implements SerializerAdapter<OperationChainContribution, OperationDocumentation> {
+public class OperationChainAdapter implements SerializerAdapter<OperationChainDescriptor, OperationDocumentation> {
     @Override
-    public OperationDocumentation adapt(OperationChainContribution src) {
-        try {
-            ChainTypeImpl impl = new CustomChainTypeImpl(src.toOperationChain(null), src);
-            return impl.getDocumentation();
-        } catch (OperationException e) {
-            throw new RuntimeException(e);
-        }
-    }
-
-    public static class CustomChainTypeImpl extends ChainTypeImpl {
-        private static final List<String> DEFAULT_SIGNATURE;
-
-        static {
-            DEFAULT_SIGNATURE = new ArrayList<>();
-            List<String> possibleValues = Arrays.asList(T_DOCUMENTS, T_DOCUMENT, T_BLOB, T_BLOBS, "void");
-            possibleValues.forEach(inputType -> possibleValues.forEach(outputType -> {
-                DEFAULT_SIGNATURE.add(inputType);
-                DEFAULT_SIGNATURE.add(outputType);
-            }));
-        }
-
-        public CustomChainTypeImpl(OperationChain chain, OperationChainContribution contribution) {
-            super(null, chain, contribution);
-        }
-
-        @Override
-        protected ArrayList<String> getSignature(OperationChainContribution.Operation[] operations)
-                throws OperationException {
-            // XXX Operation Signature requires to have access to the class; as signature is computed by introspection.
-            // For now, assuming all possible signatures. *sik*
-            return new ArrayList<>(DEFAULT_SIGNATURE);
-        }
+    public OperationDocumentation adapt(OperationChainDescriptor src) {
+        throw new NotImplementedException("bah ouais dude");
     }
 }

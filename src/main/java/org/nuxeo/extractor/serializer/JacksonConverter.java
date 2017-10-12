@@ -29,8 +29,6 @@ import org.apache.commons.lang.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.nuxeo.ecm.automation.OperationDocumentation;
-import org.nuxeo.ecm.automation.core.OperationChainContribution;
-import org.nuxeo.ecm.automation.core.OperationContribution;
 import org.nuxeo.ecm.core.schema.SchemaBindingDescriptor;
 import org.nuxeo.ecm.core.schema.types.SchemaImpl;
 import org.nuxeo.extractor.ExtractorOptions;
@@ -38,6 +36,8 @@ import org.nuxeo.extractor.mapper.descriptors.DocumentTypeDescriptor;
 import org.nuxeo.extractor.mapper.descriptors.EventListenerDescriptor;
 import org.nuxeo.extractor.mapper.descriptors.FacetDescriptor;
 import org.nuxeo.extractor.mapper.descriptors.LifeCycleDescriptor;
+import org.nuxeo.extractor.mapper.descriptors.OperationChainDescriptor;
+import org.nuxeo.extractor.mapper.descriptors.OperationDescriptor;
 import org.nuxeo.extractor.mapper.descriptors.PermissionDescriptor;
 import org.nuxeo.extractor.serializer.adapter.DefaultAdapter;
 import org.nuxeo.extractor.serializer.adapter.OperationAdapter;
@@ -75,9 +75,9 @@ public class JacksonConverter {
         this.options = options;
 
         // Adapters aim to adapt descriptor to a more specific object
-        registerAdapter(OperationContribution.class, OperationAdapter.class);
+        registerAdapter(OperationDescriptor.class, OperationAdapter.class);
         registerAdapter(SchemaBindingDescriptor.class, SchemaAdapter.class);
-        registerAdapter(OperationChainContribution.class, OperationChainAdapter.class);
+        registerAdapter(OperationChainDescriptor.class, OperationChainAdapter.class);
 
         // Mixins allow to define the way the serialization is done
         registerMixin(FacetDescriptor.class, FacetMixin.class);

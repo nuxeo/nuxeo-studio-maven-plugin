@@ -22,9 +22,9 @@ package org.nuxeo.extractor.mapper.impl;
 import java.util.Arrays;
 import java.util.List;
 
-import org.nuxeo.ecm.automation.core.OperationChainContribution;
-import org.nuxeo.ecm.automation.core.OperationContribution;
 import org.nuxeo.extractor.mapper.ExtensionMapper;
+import org.nuxeo.extractor.mapper.descriptors.OperationChainDescriptor;
+import org.nuxeo.extractor.mapper.descriptors.OperationDescriptor;
 
 public class AutomationMapper extends ExtensionMapper {
 
@@ -32,8 +32,8 @@ public class AutomationMapper extends ExtensionMapper {
 
     @Override
     public void registerDescriptors() {
-        registerDescriptor("operations", OperationChainContribution.class);
-        registerDescriptor("operations", OperationContribution.class);
+        registerDescriptor("operations", OperationChainDescriptor.class);
+        registerDescriptor("operations", OperationDescriptor.class);
     }
 
     @Override
