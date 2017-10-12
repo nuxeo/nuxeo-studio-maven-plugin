@@ -21,6 +21,7 @@ package org.nuxeo.extractor.serializer;
 
 import java.io.IOException;
 import java.io.OutputStream;
+import java.lang.reflect.ParameterizedType;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
@@ -34,11 +35,7 @@ import org.nuxeo.extractor.mapper.descriptors.DocumentTypeDescriptor;
 import org.nuxeo.extractor.mapper.descriptors.EventListenerDescriptor;
 import org.nuxeo.extractor.mapper.descriptors.FacetDescriptor;
 import org.nuxeo.extractor.mapper.descriptors.LifeCycleDescriptor;
-import org.nuxeo.extractor.mapper.descriptors.OperationChainDescriptor;
-import org.nuxeo.extractor.mapper.descriptors.OperationDescriptor;
-import org.nuxeo.extractor.mapper.descriptors.OperationScriptingDescriptor;
 import org.nuxeo.extractor.mapper.descriptors.PermissionDescriptor;
-import org.nuxeo.extractor.mapper.descriptors.SchemaBindingDescriptor;
 import org.nuxeo.extractor.serializer.adapter.DefaultAdapter;
 import org.nuxeo.extractor.serializer.adapter.OperationAdapter;
 import org.nuxeo.extractor.serializer.adapter.OperationChainAdapter;
@@ -77,10 +74,10 @@ public class JacksonConverter {
         this.options = options;
 
         // Adapters aim to adapt descriptor to a more specific object
-        registerAdapter(OperationDescriptor.class, OperationAdapter.class);
-        registerAdapter(SchemaBindingDescriptor.class, SchemaAdapter.class);
-        registerAdapter(OperationChainDescriptor.class, OperationChainAdapter.class);
-        registerAdapter(OperationScriptingDescriptor.class, OperationScriptingAdapter.class);
+        registerAdapter(OperationAdapter.class);
+        registerAdapter(SchemaAdapter.class);
+        registerAdapter(OperationChainAdapter.class);
+        registerAdapter(OperationScriptingAdapter.class);
 
         // Mixins allow to define the way the serialization is done
         registerMixin(FacetDescriptor.class, FacetMixin.class);
@@ -104,9 +101,10 @@ public class JacksonConverter {
         mixins.put(target, mixin);
     }
 
-    protected void registerAdapter(Class<?> target, Class<? extends SerializerAdapter> serializer) {
+    protected void registerAdapter(Class<? extends SerializerAdapter> serializer) {
         try {
-            adapters.put(target, serializer.newInstance());
+            Class type = (Class) ((ParameterizedType) serializer.getGenericInterfaces()[0]).getActualTypeArguments()[0];
+            adapters.put(type, serializer.newInstance());
         } catch (InstantiationException | IllegalAccessException e) {
             throw new RuntimeException(e);
         }

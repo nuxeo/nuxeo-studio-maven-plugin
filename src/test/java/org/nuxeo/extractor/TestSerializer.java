@@ -37,7 +37,6 @@ import java.util.HashMap;
 import java.util.List;
 
 import org.junit.Test;
-import org.nuxeo.ecm.core.schema.SchemaBindingDescriptor;
 import org.nuxeo.extractor.bundle.BundleWalker;
 import org.nuxeo.extractor.bundle.ContributionsHolder;
 import org.nuxeo.extractor.bundle.RegistrationInfo;
@@ -49,6 +48,7 @@ import org.nuxeo.extractor.mapper.descriptors.OperationChainDescriptor;
 import org.nuxeo.extractor.mapper.descriptors.OperationDescriptor;
 import org.nuxeo.extractor.mapper.descriptors.OperationScriptingDescriptor;
 import org.nuxeo.extractor.mapper.descriptors.PermissionDescriptor;
+import org.nuxeo.extractor.mapper.descriptors.SchemaBindingDescriptor;
 import org.nuxeo.extractor.mapper.impl.TypeServiceMapper;
 import org.nuxeo.extractor.runtime.ExtractorContext;
 import org.nuxeo.extractor.serializer.StudioSerializer;

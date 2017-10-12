@@ -21,23 +21,14 @@ package org.nuxeo.extractor.serializer.adapter;
 
 import org.apache.commons.lang3.NotImplementedException;
 import org.nuxeo.ecm.core.schema.SchemaManagerImpl;
-import org.nuxeo.ecm.core.schema.XSDLoader;
 import org.nuxeo.ecm.core.schema.types.SchemaImpl;
-import org.nuxeo.ecm.core.schema.types.TypeException;
-import org.nuxeo.ecm.core.schema.types.resolver.ObjectResolverService;
 import org.nuxeo.extractor.mapper.descriptors.SchemaBindingDescriptor;
-import org.nuxeo.extractor.runtime.ExtractorContext;
-import org.xml.sax.SAXException;
 
 public class SchemaAdapter implements SerializerAdapter<SchemaBindingDescriptor, SchemaImpl> {
     public static SchemaManagerImpl schemaManager = new SchemaManagerImpl();
 
     protected static SchemaImpl loadSchema(SchemaBindingDescriptor descriptor) {
-        try {
-            return new CustomXSDLoader(schemaManager, descriptor).loadSchema();
-        } catch (SAXException | TypeException e) {
-            throw new RuntimeException("Unable to adapt schema binding: " + descriptor.name, e);
-        }
+        throw new NotImplementedException("not ready dude");
     }
 
     @Override
@@ -45,23 +36,4 @@ public class SchemaAdapter implements SerializerAdapter<SchemaBindingDescriptor,
         return loadSchema(descriptor);
     }
 
-    /**
-     * Custom XSD Loader that do not depends on Nuxeo Framework
-     */
-    public static class CustomXSDLoader extends XSDLoader {
-        public CustomXSDLoader(SchemaManagerImpl schemaManager, SchemaBindingDescriptor sd) {
-            super(schemaManager, sd);
-            throw new NotImplementedException("refacto dude.");
-            // sd.context = ExtractorContext.instance;
-        }
-
-        @Override
-        protected ObjectResolverService getObjectResolverService() {
-            return (s, map) -> null;
-        }
-
-        public SchemaImpl loadSchema() throws TypeException, SAXException {
-            return (SchemaImpl) loadSchema(sd.name, sd.prefix, ExtractorContext.instance.getResource(sd.src));
-        }
-    }
 }
