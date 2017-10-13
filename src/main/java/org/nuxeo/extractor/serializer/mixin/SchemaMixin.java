@@ -22,15 +22,12 @@ package org.nuxeo.extractor.serializer.mixin;
 import java.io.IOException;
 
 import org.apache.commons.lang3.StringUtils;
-import org.nuxeo.ecm.core.schema.types.ComplexType;
-import org.nuxeo.ecm.core.schema.types.Field;
-import org.nuxeo.ecm.core.schema.types.ListType;
-import org.nuxeo.ecm.core.schema.types.PrimitiveType;
-import org.nuxeo.ecm.core.schema.types.Schema;
-import org.nuxeo.ecm.core.schema.types.Type;
 import org.nuxeo.extractor.serializer.JacksonConverter.StudioJacksonSerializer;
+import org.nuxeo.extractor.serializer.adapter.schema.ComplexField;
+import org.nuxeo.extractor.serializer.adapter.schema.Field;
+import org.nuxeo.extractor.serializer.adapter.schema.Schema;
+import org.nuxeo.extractor.serializer.adapter.schema.SimpleField;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.core.JsonGenerator;
 import com.fasterxml.jackson.databind.SerializerProvider;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
@@ -38,13 +35,6 @@ import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 @JsonSerialize(using = SchemaMixin.SchemaSerializer.class)
 public abstract class SchemaMixin {
 
-    @JsonIgnore
-    public Schema schema;
-
-    /**
-     * Following Serializer is copied/pasted from {@code org.nuxeo.ecm.core.io.marshallers.json.types.SchemaJsonWriter}
-     * and adapted to use {@code com.fasterxml.jackson} instead of {@code org.codehaus.jackson}.
-     */
     public static class SchemaSerializer extends StudioJacksonSerializer<Schema> {
         @Override
         public void serialize(Schema value, JsonGenerator gen, SerializerProvider provider) throws IOException {
@@ -54,7 +44,7 @@ public abstract class SchemaMixin {
             gen.writeStartObject();
 
             // Add prefix
-            String prefix = value.getNamespace().prefix;
+            String prefix = value.getPrefix();
             if (StringUtils.isNotBlank(prefix)) {
                 gen.writeStringField("@prefix", prefix);
             }
@@ -65,86 +55,43 @@ public abstract class SchemaMixin {
             gen.writeEndObject();
         }
 
-        /**
-         * Original Object headers; kept in case Studio format is following this new one.
-         *
-         * @param schema Schema Object to write
-         * @param jg Destination JsonGenerator
-         * @throws IOException When unable to write field
-         */
-        protected void writeSchemaObject(Schema schema, JsonGenerator jg) throws IOException {
-            jg.writeStringField("name", schema.getName());
-            String prefix = schema.getNamespace().prefix;
-            if (StringUtils.isNotBlank(prefix)) {
-                jg.writeStringField("prefix", prefix);
-                // backward compat for old schema writers
-                jg.writeStringField("@prefix", prefix);
-            }
-            jg.writeObjectFieldStart("fields");
-            for (Field field : schema.getFields()) {
-                writeField(jg, field);
-            }
-            jg.writeEndObject();
-        }
-
-        protected void writeField(JsonGenerator jg, Field field) throws IOException {
-            if (!field.getType().isComplexType()) {
-                if (field.getType().isListType()) {
-                    ListType lt = (ListType) field.getType();
-                    if (lt.getFieldType().isComplexType()) {
-                        if (lt.getFieldType().getName().equals("content")) {
-                            jg.writeStringField(field.getName().getLocalName(), "blob[]");
-                        } else {
-                            jg.writeObjectFieldStart(field.getName().getLocalName());
-                            jg.writeStringField("type", "complex[]");
-                            jg.writeObjectFieldStart("fields");
-                            ComplexType cplXType = (ComplexType) lt.getField().getType();
-                            for (Field subField : cplXType.getFields()) {
-                                writeField(jg, subField);
-                            }
-                            jg.writeEndObject();
-                            jg.writeEndObject();
-                        }
-                    } else {
-                        doWriteField(jg, field);
-                    }
-                } else {
-                    doWriteField(jg, field);
-                }
+        protected void writeField(JsonGenerator gen, Field field) throws IOException {
+            if (field.isComplex()) {
+                writeComplex(gen, (ComplexField) field);
             } else {
-                if (field.getType().getName().equals("content")) {
-                    jg.writeStringField(field.getName().getLocalName(), "blob");
-                } else {
-                    jg.writeObjectFieldStart(field.getName().getLocalName());
-                    ComplexType cplXType = (ComplexType) field.getType();
-                    jg.writeObjectFieldStart("fields");
-                    for (Field subField : cplXType.getFields()) {
-                        writeField(jg, subField);
-                    }
-                    jg.writeEndObject();
-                    jg.writeStringField("type", "complex");
-                    jg.writeEndObject();
-                }
+                writeSimple(gen, (SimpleField) field);
             }
         }
 
-        protected void doWriteField(JsonGenerator jg, Field field) throws IOException {
-            String typeValue;
-            if (field.getType().isListType()) {
-                ListType lt = (ListType) field.getType();
-                Type type = lt.getFieldType();
-                while (!(type instanceof PrimitiveType)) {
-                    type = type.getSuperType();
-                }
-                typeValue = type.getName() + "[]";
-            } else {
-                Type type = field.getType();
-                while (!(type instanceof PrimitiveType)) {
-                    type = type.getSuperType();
-                }
-                typeValue = type.getName();
+        protected void writeComplex(JsonGenerator gen, ComplexField field) throws IOException {
+
+            gen.writeFieldName(field.getName());
+            gen.writeStartObject();
+            gen.writeObjectField("type", "complex" + (field.isArray() ? "[]" : ""));
+
+            gen.writeFieldName("fields");
+            gen.writeStartObject();
+            for (Field f : field.getFields()) {
+                writeField(gen, f);
             }
-            jg.writeStringField(field.getName().getLocalName(), typeValue);
+            gen.writeEndObject();
+            gen.writeEndObject();
+        }
+
+        protected void writeSimple(JsonGenerator gen, SimpleField field) throws IOException {
+            gen.writeObjectField(field.getName(), transformType(field.getTypeJson()));
+        }
+
+        protected String transformType(String type) {
+            if (type.startsWith("content")) {
+                return type.replace("content", "blob");
+            }
+
+            if (type.startsWith("base64Binary")) {
+                return type.replace("base64Binary", "binary");
+            }
+
+            return type;
         }
     }
 }

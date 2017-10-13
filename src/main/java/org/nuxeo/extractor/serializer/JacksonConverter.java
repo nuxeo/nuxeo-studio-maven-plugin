@@ -29,7 +29,6 @@ import java.util.Objects;
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.nuxeo.ecm.core.schema.types.SchemaImpl;
 import org.nuxeo.extractor.ExtractorOptions;
 import org.nuxeo.extractor.mapper.descriptors.DocumentTypeDescriptor;
 import org.nuxeo.extractor.mapper.descriptors.EventListenerDescriptor;
@@ -43,6 +42,7 @@ import org.nuxeo.extractor.serializer.adapter.OperationScriptingAdapter;
 import org.nuxeo.extractor.serializer.adapter.SchemaAdapter;
 import org.nuxeo.extractor.serializer.adapter.SerializerAdapter;
 import org.nuxeo.extractor.serializer.adapter.automation.OperationDocumentation;
+import org.nuxeo.extractor.serializer.adapter.schema.Schema;
 import org.nuxeo.extractor.serializer.mixin.DocTypeMixin;
 import org.nuxeo.extractor.serializer.mixin.EventListenerMixin;
 import org.nuxeo.extractor.serializer.mixin.FacetMixin;
@@ -85,7 +85,7 @@ public class JacksonConverter {
         registerMixin(OperationDocumentation.class, OperationDocumentationMixin.class);
         registerMixin(LifeCycleDescriptor.class, LifeCycleMixin.class);
         registerMixin(EventListenerDescriptor.class, EventListenerMixin.class);
-        registerMixin(SchemaImpl.class, SchemaMixin.class);
+        registerMixin(Schema.class, SchemaMixin.class);
         registerMixin(DocumentTypeDescriptor.class, DocTypeMixin.class);
     }
 

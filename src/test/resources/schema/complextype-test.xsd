@@ -1,0 +1,50 @@
+<?xml version="1.0"?>
+<xs:schema targetNamespace="http://www.nuxeo.org/ecm/schemas/complextest/"
+           xmlns:xs="http://www.w3.org/2001/XMLSchema"
+           xmlns:nxs="http://www.nuxeo.org/ecm/schemas/complextest/"
+           xmlns:ref="http://www.nuxeo.org/ecm/schemas/core/external-references/">
+
+  <xs:complexType name="custom">
+    <xs:sequence>
+      <xs:element name="encoding" type="xs:string"/>
+      <xs:element name="mime-type" type="xs:string"/>
+      <xs:element name="name" type="xs:string"/>
+      <xs:element name="length" type="xs:long"/>
+      <xs:element name="digest" type="xs:string"/>
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:complexType name="withRestriction">
+    <xs:sequence>
+      <xs:element name="coverage">
+        <xs:simpleType>
+          <xs:restriction base="xs:string" ref:resolver="directoryResolver" ref:directory="l10ncoverage"/>
+        </xs:simpleType>
+      </xs:element>
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:complexType name="withSequence">
+    <xs:sequence>
+      <xs:element name="attachments">
+        <xs:complexType>
+          <xs:sequence>
+            <xs:element name="attachment" type="xs:string" minOccurs="0" maxOccurs="unbounded"/>
+          </xs:sequence>
+        </xs:complexType>
+      </xs:element>
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:element name="customElement" type="nxs:custom"/>
+
+  <xs:element name="ensureNotGettingChildComplexType">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element name="attachment" type="xs:string" minOccurs="0" maxOccurs="unbounded"/>
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+</xs:schema>
+
+

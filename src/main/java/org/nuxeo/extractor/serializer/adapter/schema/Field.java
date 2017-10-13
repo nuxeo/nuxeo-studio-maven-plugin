@@ -17,22 +17,15 @@
  *     Arnaud Kervern
  */
 
-package org.nuxeo.extractor.serializer.adapter;
+package org.nuxeo.extractor.serializer.adapter.schema;
 
-import org.nuxeo.extractor.mapper.descriptors.SchemaBindingDescriptor;
-import org.nuxeo.extractor.serializer.adapter.schema.Schema;
-import org.nuxeo.extractor.serializer.adapter.schema.SimpleSchemaReader;
+public interface Field {
 
-public class SchemaAdapter implements SerializerAdapter<SchemaBindingDescriptor, Schema> {
+    String getName();
 
-    @Override
-    public Schema adapt(SchemaBindingDescriptor descriptor) {
-        Schema schema = new Schema(descriptor.name, descriptor.prefix);
-        SimpleSchemaReader reader = new SimpleSchemaReader(descriptor.src);
-        reader.load();
+    boolean isArray();
 
-        schema.addFields(reader.getFields());
-        return schema;
-    }
+    boolean isComplex();
 
+    Field copy(String name, Boolean isArray);
 }

@@ -19,8 +19,6 @@
 
 package org.nuxeo.extractor.runtime;
 
-import static org.nuxeo.common.Environment.NUXEO_HOME;
-
 import java.io.File;
 import java.io.IOException;
 import java.net.MalformedURLException;
@@ -42,7 +40,6 @@ import org.apache.commons.lang.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.nuxeo.common.xmap.Context;
-import org.nuxeo.runtime.api.Framework;
 
 import com.google.common.collect.Sets;
 
@@ -60,17 +57,6 @@ public class ExtractorContext extends Context {
     public static ExtractorContext instance = new ExtractorContext();
 
     private static ClassLoader custom;
-
-    static {
-        // Fake Nuxeo Runtime initialization
-        try {
-            // Required by {@code org.nuxeo.ecm.core.schema.SchemaManagerImpl()}
-            System.setProperty(NUXEO_HOME, Files.createTempDirectory("nuxeo").toString());
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
-        Framework.initialize(new FakeRuntimeService());
-    }
 
     private Set<URI> extResourcesSources = new HashSet<>();
 
