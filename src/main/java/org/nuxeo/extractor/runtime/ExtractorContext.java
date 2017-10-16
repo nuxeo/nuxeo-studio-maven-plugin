@@ -91,7 +91,7 @@ public class ExtractorContext extends Context {
         custom = new URLClassLoader(urlElements.toArray(new URL[0]), getClassloader());
     }
 
-    protected static ClassLoader getClassloader() {
+    public static ClassLoader getClassloader() {
         if (custom != null) {
             return custom;
         } else {

@@ -21,12 +21,22 @@ package org.nuxeo.extractor.serializer.adapter;
 
 import org.nuxeo.extractor.mapper.descriptors.OperationDescriptor;
 import org.nuxeo.extractor.serializer.adapter.automation.OperationDocumentation;
-import org.nuxeo.extractor.serializer.adapter.automation.OperationImpl;
+import org.nuxeo.extractor.serializer.adapter.automation.OperationReader;
 
 public class OperationAdapter implements SerializerAdapter<OperationDescriptor, OperationDocumentation> {
 
     @Override
     public OperationDocumentation adapt(OperationDescriptor src) {
-        return new OperationImpl(src.type).getDocumentation();
+        OperationReader or = OperationReader.read(src.type.getName());
+        OperationDocumentation doc = new OperationDocumentation(or.getId());
+        doc.aliases = or.getAliases();
+        doc.category = or.getCategory();
+        doc.label = or.getLabel();
+        doc.requires = or.getRequires();
+        doc.signature = or.getSplittedSignatures();
+        doc.since = or.getSince();
+        doc.description = or.getDescription();
+        doc.params = or.getParameters().toArray(new OperationDocumentation.Param[0]);
+        return doc;
     }
 }

@@ -34,9 +34,6 @@ public class OperationDocumentation implements Comparable<OperationDocumentation
 
     public String[] aliases;
 
-    /**
-     * an array of size multiple of 2. Each pair in the array is the input and output type of a method.
-     */
     public String[] signature;
 
     public String category;
@@ -47,12 +44,6 @@ public class OperationDocumentation implements Comparable<OperationDocumentation
 
     public String since;
 
-    public String deprecatedSince;
-
-    public boolean addToStudio;
-
-    public String implementationClass;
-
     public String description;
 
     public Param[] params;
@@ -62,14 +53,8 @@ public class OperationDocumentation implements Comparable<OperationDocumentation
      */
     public OperationChainDescriptor.Operation[] operations;
 
-    // optional URL indicating the relative path (relative to the automation
-    // service home)
-    // of the page where the operation is exposed
-    public String url;
-
     public OperationDocumentation(String id) {
         this.id = id;
-        url = id;
     }
 
     @XObject("param")
@@ -166,36 +151,12 @@ public class OperationDocumentation implements Comparable<OperationDocumentation
         return since;
     }
 
-    public String getDeprecatedSince() {
-        return deprecatedSince;
-    }
-
-    public boolean isAddToStudio() {
-        return addToStudio;
-    }
-
-    public String getImplementationClass() {
-        return implementationClass;
-    }
-
-    public boolean isChain() {
-        return (id != null && id.startsWith(Constants.CHAIN_ID_PREFIX)) || Constants.CAT_CHAIN.equals(category);
-    }
-
-    public String[] getSignature() {
-        return signature;
-    }
-
     public String getCategory() {
         return category;
     }
 
     public String getId() {
         return id;
-    }
-
-    public String getUrl() {
-        return url;
     }
 
     public String getLabel() {

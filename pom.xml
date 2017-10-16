@@ -54,6 +54,7 @@
     <jsonlib.version>2.4</jsonlib.version>
     <xmlapis.version>1.4.01</xmlapis.version>
     <osgi.version>4.2.0</osgi.version>
+    <javassist.version>3.20.0-GA</javassist.version>
   </properties>
 
   <scm>
@@ -104,6 +105,12 @@
       <artifactId>jersey-client</artifactId>
       <version>${jersey.version}</version>
     </dependency>
+    <dependency>
+      <groupId>org.javassist</groupId>
+      <artifactId>javassist</artifactId>
+      <version>${javassist.version}</version>
+    </dependency>
+
 
     <!-- default maven-plugin dependencies -->
     <dependency>

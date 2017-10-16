@@ -19,13 +19,31 @@
 
 package org.nuxeo.extractor.serializer.adapter.automation;
 
+import static javassist.bytecode.AnnotationsAttribute.invisibleTag;
+import static javassist.bytecode.AnnotationsAttribute.visibleTag;
+
 import java.lang.annotation.Annotation;
 import java.lang.reflect.AnnotatedElement;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
-import java.net.URL;
 import java.util.Arrays;
-import java.util.Calendar;
+import java.util.Set;
+import java.util.stream.Collectors;
+
+import javassist.CtClass;
+import javassist.CtField;
+import javassist.CtMethod;
+import javassist.bytecode.AnnotationsAttribute;
+import javassist.bytecode.BadBytecode;
+import javassist.bytecode.ClassFile;
+import javassist.bytecode.FieldInfo;
+import javassist.bytecode.MethodInfo;
+import javassist.bytecode.SignatureAttribute;
+import javassist.bytecode.annotation.ArrayMemberValue;
+import javassist.bytecode.annotation.BooleanMemberValue;
+import javassist.bytecode.annotation.ClassMemberValue;
+import javassist.bytecode.annotation.IntegerMemberValue;
+import javassist.bytecode.annotation.StringMemberValue;
 
 public class OperationReflectionHelper {
 
@@ -62,34 +80,178 @@ public class OperationReflectionHelper {
         return p.length == 0 ? Void.TYPE : p[0];
     }
 
-    public static String getParamDocumentationType(Class<?> type, boolean isIterable) {
-        String paramType;
-
+    public static String getOperationMethodTypes(String signature, boolean isIterable) {
+        SignatureAttribute.MethodSignature methodSignature;
         try {
-            if (Class.forName("org.nuxeo.ecm.core.api.DocumentModel").isAssignableFrom(type)
-                    || Class.forName("org.nuxeo.ecm.core.api.DocumentRef").isAssignableFrom(type)) {
-                paramType = isIterable ? Constants.T_DOCUMENTS : Constants.T_DOCUMENT;
-            } else if (Class.forName("org.nuxeo.ecm.core.api.DocumentModelList").isAssignableFrom(type)
-                    || Class.forName("org.nuxeo.ecm.core.api.DocumentRefList").isAssignableFrom(type)) {
-                paramType = Constants.T_DOCUMENTS;
-            } else if (Class.forName("org.nuxeo.ecm.automation.core.util.BlobList").isAssignableFrom(type)) {
-                paramType = Constants.T_BLOBS;
-            } else if (Class.forName("org.nuxeo.ecm.core.api.Blob").isAssignableFrom(type)) {
-                paramType = isIterable ? Constants.T_BLOBS : Constants.T_BLOB;
-            } else if (URL.class.isAssignableFrom(type)) {
-                paramType = Constants.T_RESOURCE;
-            } else if (Calendar.class.isAssignableFrom(type)) {
-                paramType = Constants.T_DATE;
-            } else {
-                paramType = type.getSimpleName().toLowerCase();
-            }
-            return paramType;
-        } catch (ClassNotFoundException e) {
+            methodSignature = SignatureAttribute.toMethodSignature(signature);
+        } catch (BadBytecode e) {
             throw new RuntimeException(e);
         }
+
+        String consume;
+        if (methodSignature.getParameterTypes().length > 0) {
+            consume = convertJvmType(methodSignature.getParameterTypes()[0].jvmTypeName(), isIterable);
+        } else {
+            consume = Void.TYPE.getSimpleName();
+        }
+
+        String produce = convertJvmType(methodSignature.getReturnType().jvmTypeName(), false);
+
+        return String.format("%s:%s", consume, produce);
     }
 
-    public static String getParamDocumentationType(Class<?> type) {
-        return getParamDocumentationType(type, false);
+    public static String getParamDocumentationType(String signature, boolean isIterable) {
+        SignatureAttribute.ObjectType sign;
+        try {
+            sign = SignatureAttribute.toFieldSignature(signature);
+        } catch (BadBytecode e) {
+            throw new RuntimeException(e);
+        }
+        return convertJvmType(sign.jvmTypeName(), isIterable);
+    }
+
+    protected static String convertJvmType(String signature, boolean isIterable) {
+        String paramType;
+        if ("org.nuxeo.ecm.core.api.DocumentModel".equals(signature)
+                || "org.nuxeo.ecm.core.api.DocumentRef".equals(signature)
+                || "org.nuxeo.ecm.core.api.PathRef".equals(signature)
+                || "org.nuxeo.ecm.core.api.IdRef".equals(signature)) {
+            paramType = isIterable ? Constants.T_DOCUMENTS : Constants.T_DOCUMENT;
+        } else if ("org.nuxeo.ecm.core.api.DocumentModelList".equals(signature)
+                || "org.nuxeo.ecm.core.api.DocumentRefList".equals(signature)) {
+            paramType = Constants.T_DOCUMENTS;
+        } else if ("org.nuxeo.ecm.automation.core.util.BlobList".equals(signature)) {
+            paramType = Constants.T_BLOBS;
+        } else if ("org.nuxeo.ecm.core.api.Blob".equals(signature)) {
+            paramType = isIterable ? Constants.T_BLOBS : Constants.T_BLOB;
+        } else if ("java.net.URL".equals(signature)) {
+            paramType = Constants.T_RESOURCE;
+        } else if ("java.util.Calendar".equals(signature)) {
+            paramType = Constants.T_DATE;
+        } else {
+            paramType = signature.substring(signature.lastIndexOf(".") + 1).toLowerCase();
+        }
+        return paramType;
+    }
+
+    public static String getParamDocumentationType(String signature) {
+        return getParamDocumentationType(signature, false);
+    }
+
+    public static String readAnnoMemberString(javassist.bytecode.annotation.Annotation anno, String name) {
+        if (!contains(anno, name)) {
+            return null;
+        }
+        return ((StringMemberValue) anno.getMemberValue(name)).getValue();
+    }
+
+    public static Boolean readAnnoMemberBoolean(javassist.bytecode.annotation.Annotation anno, String name) {
+        if (!contains(anno, name)) {
+            return null;
+        }
+        return ((BooleanMemberValue) anno.getMemberValue(name)).getValue();
+    }
+
+    public static Integer readAnnoMemberInteger(javassist.bytecode.annotation.Annotation anno, String name) {
+        if (!contains(anno, name)) {
+            return null;
+        }
+        return ((IntegerMemberValue) anno.getMemberValue(name)).getValue();
+    }
+
+    public static String readAnnoMemberClass(javassist.bytecode.annotation.Annotation anno, String name) {
+        if (!contains(anno, name)) {
+            return null;
+        }
+
+        return ((ClassMemberValue) anno.getMemberValue(name)).getValue();
+    }
+
+    public static String[] readAnnoMemberStringArray(javassist.bytecode.annotation.Annotation anno, String name) {
+        if (!contains(anno, name)) {
+            return null;
+        }
+        return Arrays.stream(((ArrayMemberValue) anno.getMemberValue(name)).getValue())
+                     .map(s -> ((StringMemberValue) s).getValue())
+                     .collect(Collectors.toList())
+                     .toArray(new String[0]);
+    }
+
+    protected static boolean contains(javassist.bytecode.annotation.Annotation anno, String name) {
+        Set names = anno.getMemberNames();
+        return names == null ? false : names.contains(name);
+    }
+
+    public static javassist.bytecode.annotation.Annotation findAnnotation(CtClass ctClass, String name) {
+        // First lookup on visible annotations
+        ClassFile classFile = ctClass.getClassFile();
+        AnnotationsAttribute annoAttr = (AnnotationsAttribute) classFile.getAttribute(visibleTag);
+        if (annoAttr != null) {
+            javassist.bytecode.annotation.Annotation anno = annoAttr.getAnnotation(name);
+            if (anno != null) {
+                return anno;
+            }
+        }
+
+        // Second lookup on in-visible annotations
+        annoAttr = (AnnotationsAttribute) classFile.getAttribute(invisibleTag);
+        if (annoAttr != null) {
+            javassist.bytecode.annotation.Annotation anno = annoAttr.getAnnotation(name);
+            if (anno != null) {
+                return anno;
+            }
+        }
+
+        return null;
+    }
+
+    public static javassist.bytecode.annotation.Annotation findAnnotation(CtField field, String name) {
+        FieldInfo fi = field.getFieldInfo();
+        // First lookup on visible annotations
+        AnnotationsAttribute annoAttr = (AnnotationsAttribute) fi.getAttribute(visibleTag);
+        if (annoAttr != null) {
+            javassist.bytecode.annotation.Annotation anno = annoAttr.getAnnotation(name);
+            if (anno != null) {
+                return anno;
+            }
+        }
+
+        // Second lookup on in-visible annotations
+        annoAttr = (AnnotationsAttribute) fi.getAttribute(invisibleTag);
+        if (annoAttr != null) {
+            javassist.bytecode.annotation.Annotation anno = annoAttr.getAnnotation(name);
+            if (anno != null) {
+                return anno;
+            }
+        }
+
+        return null;
+    }
+
+    public static javassist.bytecode.annotation.Annotation findAnnotation(CtMethod method, String name) {
+        MethodInfo fi = method.getMethodInfo();
+        // First lookup on visible annotations
+        AnnotationsAttribute annoAttr = (AnnotationsAttribute) fi.getAttribute(visibleTag);
+        if (annoAttr != null) {
+            javassist.bytecode.annotation.Annotation anno = annoAttr.getAnnotation(name);
+            if (anno != null) {
+                return anno;
+            }
+        }
+
+        // Second lookup on in-visible annotations
+        annoAttr = (AnnotationsAttribute) fi.getAttribute(invisibleTag);
+        if (annoAttr != null) {
+            javassist.bytecode.annotation.Annotation anno = annoAttr.getAnnotation(name);
+            if (anno != null) {
+                return anno;
+            }
+        }
+
+        return null;
+    }
+
+    public static <T> T valueOrDefault(T value, T defaultValue) {
+        return value == null ? defaultValue : value;
     }
 }
