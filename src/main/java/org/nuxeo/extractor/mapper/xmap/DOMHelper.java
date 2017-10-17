@@ -52,6 +52,8 @@ public final class DOMHelper {
      * <p>
      * For element nodes the value is the text content and for the attributes node the attribute value.
      *
+     * @param base Element base
+     * @param path Given path relative to the base element
      * @return the node value or null if no such node was found
      */
     public static String getNodeValue(Element base, Path path) {
@@ -67,9 +69,6 @@ public final class DOMHelper {
         return null;
     }
 
-    /**
-     * Visits the nodes selected by the given path using the given visitor.
-     */
     public static void visitNodes(Context ctx, XAnnotatedList xam, Element base, Path path, NodeVisitor visitor,
             Collection<Object> result) {
         Node el = base;
@@ -174,6 +173,10 @@ public final class DOMHelper {
 
     /**
      * Gets the first child element node having the given name.
+     *
+     * @param base base node
+     * @param name exepected node name
+     * @return first child Element node
      */
     public static Node getElementNode(Node base, String name) {
         Node node = base.getFirstChild();
@@ -214,6 +217,9 @@ public final class DOMHelper {
 
     /**
      * Parses a string containing XML and returns a DocumentFragment containing the nodes of the parsed XML.
+     *
+     * @param el Node to be parsed
+     * @param fragment parsed XML
      */
     public static void loadFragment(Element el, String fragment) {
         // Wrap the fragment in an arbitrary element

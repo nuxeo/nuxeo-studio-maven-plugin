@@ -25,11 +25,12 @@ import java.util.Map;
 import java.util.Objects;
 
 import org.nuxeo.extractor.bundle.Extension;
+import org.nuxeo.extractor.mapper.xmap.XMap;
 import org.nuxeo.extractor.runtime.ExtractorContext;
 
 /**
  * Mappers Manager holding all registered {@link ExtensionMapper} and can load an {@link Extension} to his Descriptor
- * class using {@link org.nuxeo.common.xmap.XMap} loader.
+ * class using {@link XMap} loader.
  */
 public class MappersManager {
     private List<ExtensionMapper> mappers;

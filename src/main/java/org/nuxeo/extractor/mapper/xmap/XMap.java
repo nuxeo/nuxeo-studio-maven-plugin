@@ -198,6 +198,7 @@ public class XMap {
      *
      * @param url the XML file url
      * @return the first registered top level object that is found in the file, or null if no objects are found.
+     * @throws IOException When unable to open url's stream
      */
     public Object load(URL url) throws IOException {
         return load(new Context(), url.openStream());
@@ -209,6 +210,7 @@ public class XMap {
      * @param ctx the context to use
      * @param url the XML file url
      * @return the first registered top level object that is found in the file.
+     * @throws IOException When unable to open url's stream
      */
     public Object load(Context ctx, URL url) throws IOException {
         return load(ctx, url.openStream());
@@ -219,6 +221,7 @@ public class XMap {
      *
      * @param in the XML input source
      * @return the first registered top level object that is found in the file.
+     * @throws IOException When unable to read stream
      */
     public Object load(InputStream in) throws IOException {
         return load(new Context(), in);
@@ -230,6 +233,7 @@ public class XMap {
      * @param ctx the context to use
      * @param in the input stream
      * @return the first registered top level object that is found in the file.
+     * @throws IOException When unable to read stream
      */
     public Object load(Context ctx, InputStream in) throws IOException {
         try {
@@ -260,6 +264,7 @@ public class XMap {
      * @param ctx the context to use
      * @param in the XML input stream
      * @return a list with all registered top level objects that are found in the file
+     * @throws IOException When unable to read stream
      */
     public Object[] loadAll(Context ctx, InputStream in) throws IOException {
         try {

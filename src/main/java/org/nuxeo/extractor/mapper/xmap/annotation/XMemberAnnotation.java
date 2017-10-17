@@ -47,9 +47,6 @@ public @interface XMemberAnnotation {
 
     int CONTEXT = 6;
 
-    /**
-     * The type of the annotation.
-     */
     int value();
 
 }
