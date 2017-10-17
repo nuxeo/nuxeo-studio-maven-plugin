@@ -40,6 +40,7 @@
   <properties>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     <nuxeo.version>9.2</nuxeo.version>
+    <nuxeo.studio.components.version>0.1-SNAPSHOT</nuxeo.studio.components.version>
     <debugITs>false</debugITs>
     <skipITs>false</skipITs>
     <jackson.version>2.7.4</jackson.version>
@@ -72,6 +73,11 @@
       <groupId>org.dom4j</groupId>
       <artifactId>dom4j</artifactId>
       <version>${dom4j.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>com.nuxeo.studio</groupId>
+      <artifactId>nuxeo-studio-components-common</artifactId>
+      <version>${nuxeo.studio.components.version}</version>
     </dependency>
     <dependency>
       <groupId>org.apache.commons</groupId>
