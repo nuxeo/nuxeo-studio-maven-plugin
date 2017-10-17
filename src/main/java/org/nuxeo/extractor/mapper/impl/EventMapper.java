@@ -32,4 +32,9 @@ public class EventMapper extends ExtensionMapper {
     protected boolean accept(String target, String point) {
         return "org.nuxeo.ecm.core.event.EventServiceComponent".equalsIgnoreCase(target) && "listener".equals(point);
     }
+
+    @Override
+    public boolean isEnabled(Object contribution) {
+        return ((EventListenerDescriptor)contribution).isEnabled();
+    }
 }

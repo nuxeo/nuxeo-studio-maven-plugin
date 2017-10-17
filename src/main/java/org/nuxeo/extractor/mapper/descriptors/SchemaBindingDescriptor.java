@@ -44,9 +44,6 @@ public class SchemaBindingDescriptor {
     @XNode("@isVersionWritable")
     public boolean isVersionWritable = false;
 
-    @XNode("@xsdRootElement")
-    public String xsdRootElement;
-
     @Override
     public String toString() {
         return "Schema: " + name;

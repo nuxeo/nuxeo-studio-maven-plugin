@@ -49,9 +49,6 @@ public class DocumentTypeDescriptor {
     @XNodeList(value = "facet@name", type = String[].class, componentType = String.class)
     public String[] facets;
 
-    @XNode("prefetch")
-    public String prefetch;
-
     @XNode("@append")
     public boolean append = false;
 

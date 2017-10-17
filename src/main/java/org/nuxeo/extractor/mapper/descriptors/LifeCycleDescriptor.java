@@ -31,11 +31,6 @@ import org.w3c.dom.NodeList;
 
 /**
  * Descriptor for a life cycle extension.
- *
- * @see org.nuxeo.ecm.core.lifecycle.impl.LifeCycleServiceImpl
- * @see org.nuxeo.ecm.core.lifecycle.LifeCycle
- * @author Julien Anguenot
- * @author Florent Guillaume
  */
 @XObject(value = "lifecycle", order = { "@name" })
 public class LifeCycleDescriptor {

@@ -27,10 +27,6 @@ import org.nuxeo.common.xmap.annotation.XNode;
 import org.nuxeo.common.xmap.annotation.XNodeList;
 import org.nuxeo.common.xmap.annotation.XObject;
 
-/**
- * Copied from
- * https://github.com/nuxeo/nuxeo/blob/master/nuxeo-core/nuxeo-core/src/main/java/org/nuxeo/ecm/core/security/PermissionDescriptor.java
- */
 @XObject("permission")
 public class PermissionDescriptor implements Serializable {
 

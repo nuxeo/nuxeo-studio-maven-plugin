@@ -37,13 +37,6 @@ public class SchemaDescriptor {
     @XNode("@lazy")
     public boolean isLazy = true;
 
-    public SchemaDescriptor() {
-    }
-
-    public SchemaDescriptor(String name) {
-        this.name = name;
-    }
-
     public static Set<String> getSchemaNames(SchemaDescriptor[] sds) {
         Set<String> set = new LinkedHashSet<String>();
         for (SchemaDescriptor sd : sds) {
