@@ -16,15 +16,20 @@
  * Contributors:
  *     Arnaud Kervern
  */
-package org.nuxeo.extractor.mapper.descriptors;
 
-import org.nuxeo.extractor.mapper.xmap.annotation.XNode;
-import org.nuxeo.extractor.mapper.xmap.annotation.XObject;
+package org.nuxeo.extractor.mapper.xmap.annotation;
 
-@XObject("operation")
-public class OperationDescriptor {
+import java.lang.annotation.ElementType;
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
+import java.lang.annotation.Target;
 
-    @XNode("@class")
-    public Class<?> type;
+/**
+ * @author <a href="mailto:bs@nuxeo.com">Bogdan Stefanescu</a>
+ */
+@XMemberAnnotation(XMemberAnnotation.PARENT)
+@Target({ ElementType.FIELD, ElementType.METHOD })
+@Retention(RetentionPolicy.RUNTIME)
+public @interface XParent {
 
 }

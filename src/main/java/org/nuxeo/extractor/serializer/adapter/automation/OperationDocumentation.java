@@ -21,10 +21,10 @@ package org.nuxeo.extractor.serializer.adapter.automation;
 import java.io.Serializable;
 import java.util.Arrays;
 
-import org.nuxeo.common.xmap.annotation.XNode;
-import org.nuxeo.common.xmap.annotation.XNodeList;
-import org.nuxeo.common.xmap.annotation.XObject;
 import org.nuxeo.extractor.mapper.descriptors.OperationChainDescriptor;
+import org.nuxeo.extractor.mapper.xmap.annotation.XNode;
+import org.nuxeo.extractor.mapper.xmap.annotation.XNodeList;
+import org.nuxeo.extractor.mapper.xmap.annotation.XObject;
 
 public class OperationDocumentation implements Comparable<OperationDocumentation>, Serializable {
 

@@ -26,9 +26,9 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import org.nuxeo.common.xmap.Context;
-import org.nuxeo.common.xmap.XMap;
 import org.nuxeo.extractor.bundle.Extension;
+import org.nuxeo.extractor.mapper.xmap.Context;
+import org.nuxeo.extractor.mapper.xmap.XMap;
 
 public abstract class ExtensionMapper {
 

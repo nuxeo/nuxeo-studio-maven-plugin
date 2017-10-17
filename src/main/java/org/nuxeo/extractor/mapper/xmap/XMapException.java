@@ -16,15 +16,30 @@
  * Contributors:
  *     Arnaud Kervern
  */
-package org.nuxeo.extractor.mapper.descriptors;
+package org.nuxeo.extractor.mapper.xmap;
 
-import org.nuxeo.extractor.mapper.xmap.annotation.XNode;
-import org.nuxeo.extractor.mapper.xmap.annotation.XObject;
+/**
+ * Exception during XMap processing.
+ *
+ * @since 9.3
+ */
+public class XMapException extends RuntimeException {
 
-@XObject("operation")
-public class OperationDescriptor {
+    private static final long serialVersionUID = 1L;
 
-    @XNode("@class")
-    public Class<?> type;
+    public XMapException() {
+    }
+
+    public XMapException(String message) {
+        super(message);
+    }
+
+    public XMapException(String message, Throwable cause) {
+        super(message, cause);
+    }
+
+    public XMapException(Throwable cause) {
+        super(cause);
+    }
 
 }

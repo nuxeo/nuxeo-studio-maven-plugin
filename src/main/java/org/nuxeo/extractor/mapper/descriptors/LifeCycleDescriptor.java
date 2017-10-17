@@ -24,8 +24,8 @@ import java.util.List;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.nuxeo.common.xmap.annotation.XNode;
-import org.nuxeo.common.xmap.annotation.XObject;
+import org.nuxeo.extractor.mapper.xmap.annotation.XNode;
+import org.nuxeo.extractor.mapper.xmap.annotation.XObject;
 import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
 

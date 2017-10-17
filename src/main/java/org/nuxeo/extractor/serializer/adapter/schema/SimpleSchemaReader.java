@@ -25,7 +25,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.dom4j.Document;
 import org.dom4j.DocumentException;
 import org.dom4j.Node;
@@ -74,7 +74,7 @@ public class SimpleSchemaReader {
     protected void loadExternalTypes() {
         doc.selectNodes("/xs:schema/xs:include").forEach(n -> {
             String location = n.valueOf("@schemaLocation");
-//            types.putAll(new SimpleSchemaReader(location).getTypeFields());
+            // types.putAll(new SimpleSchemaReader(location).getTypeFields());
         });
     }
 

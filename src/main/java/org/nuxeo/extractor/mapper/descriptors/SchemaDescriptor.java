@@ -19,11 +19,11 @@
 
 package org.nuxeo.extractor.mapper.descriptors;
 
+import org.nuxeo.extractor.mapper.xmap.annotation.XNode;
+import org.nuxeo.extractor.mapper.xmap.annotation.XObject;
+
 import java.util.LinkedHashSet;
 import java.util.Set;
-
-import org.nuxeo.common.xmap.annotation.XNode;
-import org.nuxeo.common.xmap.annotation.XObject;
 
 /**
  * Descriptor for a reference to a schema from a document type or a facet.

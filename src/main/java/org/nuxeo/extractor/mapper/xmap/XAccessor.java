@@ -16,15 +16,29 @@
  * Contributors:
  *     Arnaud Kervern
  */
-package org.nuxeo.extractor.mapper.descriptors;
 
-import org.nuxeo.extractor.mapper.xmap.annotation.XNode;
-import org.nuxeo.extractor.mapper.xmap.annotation.XObject;
+package org.nuxeo.extractor.mapper.xmap;
 
-@XObject("operation")
-public class OperationDescriptor {
+/**
+ * @author <a href="mailto:bs@nuxeo.com">Bogdan Stefanescu</a>
+ */
+public interface XAccessor {
 
-    @XNode("@class")
-    public Class<?> type;
+    /**
+     * Gets the type of the object to be set by this setter.
+     *
+     * @return the setter object type
+     */
+    Class getType();
+
+    /**
+     * Sets the value of the underlying member.
+     *
+     * @param instance the instance of the object that owns this field
+     * @param value the value to set
+     */
+    void setValue(Object instance, Object value);
+
+    Object getValue(Object instance);
 
 }

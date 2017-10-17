@@ -16,15 +16,25 @@
  * Contributors:
  *     Arnaud Kervern
  */
-package org.nuxeo.extractor.mapper.descriptors;
 
-import org.nuxeo.extractor.mapper.xmap.annotation.XNode;
-import org.nuxeo.extractor.mapper.xmap.annotation.XObject;
+package org.nuxeo.extractor.mapper.xmap;
 
-@XObject("operation")
-public class OperationDescriptor {
+import org.nuxeo.extractor.mapper.xmap.annotation.XContext;
+import org.w3c.dom.Element;
 
-    @XNode("@class")
-    public Class<?> type;
+/**
+ * @author <a href="mailto:bs@nuxeo.com">Bogdan Stefanescu</a>
+ */
+public class XAnnotatedContext extends XAnnotatedMember {
+
+    protected XAnnotatedContext(XMap xmap, XAccessor accessor, XContext anno) {
+        super(xmap, accessor);
+        path = new Path(anno.value());
+    }
+
+    @Override
+    protected Object getValue(Context ctx, Element base) {
+        return ctx.getProperty(path.path);
+    }
 
 }

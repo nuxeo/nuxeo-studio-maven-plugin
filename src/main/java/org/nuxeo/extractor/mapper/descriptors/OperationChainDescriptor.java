@@ -25,11 +25,11 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.nuxeo.common.xmap.annotation.XContent;
-import org.nuxeo.common.xmap.annotation.XNode;
-import org.nuxeo.common.xmap.annotation.XNodeList;
-import org.nuxeo.common.xmap.annotation.XNodeMap;
-import org.nuxeo.common.xmap.annotation.XObject;
+import org.nuxeo.extractor.mapper.xmap.annotation.XContent;
+import org.nuxeo.extractor.mapper.xmap.annotation.XNode;
+import org.nuxeo.extractor.mapper.xmap.annotation.XNodeList;
+import org.nuxeo.extractor.mapper.xmap.annotation.XNodeMap;
+import org.nuxeo.extractor.mapper.xmap.annotation.XObject;
 import org.nuxeo.extractor.serializer.adapter.automation.OperationDocumentation;
 
 /**

@@ -23,9 +23,9 @@ import java.io.Serializable;
 import java.util.Arrays;
 import java.util.List;
 
-import org.nuxeo.common.xmap.annotation.XNode;
-import org.nuxeo.common.xmap.annotation.XNodeList;
-import org.nuxeo.common.xmap.annotation.XObject;
+import org.nuxeo.extractor.mapper.xmap.annotation.XNode;
+import org.nuxeo.extractor.mapper.xmap.annotation.XNodeList;
+import org.nuxeo.extractor.mapper.xmap.annotation.XObject;
 
 @XObject("permission")
 public class PermissionDescriptor implements Serializable {

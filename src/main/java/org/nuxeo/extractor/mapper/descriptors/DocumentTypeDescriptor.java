@@ -19,9 +19,9 @@
 
 package org.nuxeo.extractor.mapper.descriptors;
 
-import org.nuxeo.common.xmap.annotation.XNode;
-import org.nuxeo.common.xmap.annotation.XNodeList;
-import org.nuxeo.common.xmap.annotation.XObject;
+import org.nuxeo.extractor.mapper.xmap.annotation.XNode;
+import org.nuxeo.extractor.mapper.xmap.annotation.XNodeList;
+import org.nuxeo.extractor.mapper.xmap.annotation.XObject;
 
 /**
  * Document Type Descriptor.
