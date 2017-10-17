@@ -55,6 +55,9 @@
     <xmlapis.version>1.4.01</xmlapis.version>
     <osgi.version>4.2.0</osgi.version>
     <javassist.version>3.20.0-GA</javassist.version>
+    <dom4j.version>2.1.0</dom4j.version>
+    <xerces.version>2.11.0</xerces.version>
+    <logging.version>1.2</logging.version>
   </properties>
 
   <scm>
@@ -68,7 +71,7 @@
     <dependency>
       <groupId>org.dom4j</groupId>
       <artifactId>dom4j</artifactId>
-      <version>2.1.0</version>
+      <version>${dom4j.version}</version>
     </dependency>
     <dependency>
       <groupId>org.apache.commons</groupId>
@@ -78,12 +81,12 @@
     <dependency>
       <groupId>commons-logging</groupId>
       <artifactId>commons-logging</artifactId>
-      <version>1.2</version>
+      <version>${logging.version}</version>
     </dependency>
     <dependency>
       <groupId>xerces</groupId>
       <artifactId>xercesImpl</artifactId>
-      <version>2.11.0</version>
+      <version>${xerces.version}</version>
     </dependency>
     <dependency>
       <groupId>com.fasterxml.jackson.core</groupId>
@@ -115,7 +118,6 @@
       <artifactId>javassist</artifactId>
       <version>${javassist.version}</version>
     </dependency>
-
 
     <!-- default maven-plugin dependencies -->
     <dependency>
@@ -150,8 +152,26 @@
     <dependency>
       <groupId>org.nuxeo.ecm.automation</groupId>
       <artifactId>nuxeo-automation-core</artifactId>
-      <scope>test</scope>
       <version>${nuxeo.version}</version>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.nuxeo.ecm.core</groupId>
+      <artifactId>nuxeo-core-schema</artifactId>
+      <version>${nuxeo.version}</version>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.nuxeo.ecm.core</groupId>
+      <artifactId>nuxeo-core-event</artifactId>
+      <version>${nuxeo.version}</version>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.nuxeo.ecm.core</groupId>
+      <artifactId>nuxeo-core-api</artifactId>
+      <version>${nuxeo.version}</version>
+      <scope>test</scope>
     </dependency>
     <dependency>
       <groupId>org.nuxeo.ecm.core</groupId>

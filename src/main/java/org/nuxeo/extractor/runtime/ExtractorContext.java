@@ -30,6 +30,7 @@ import java.nio.file.FileSystems;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -40,8 +41,6 @@ import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.nuxeo.extractor.mapper.xmap.Context;
-
-import com.google.common.collect.Sets;
 
 /**
  * Simple Fake {@link Context} that loads all child's class path (Maven compile resolution scope) elements to a custom
@@ -101,7 +100,7 @@ public class ExtractorContext extends Context {
 
     public void addExternalSource(URI source) {
         try {
-            initCustomClassLoader(Sets.newHashSet(source.toString()));
+            initCustomClassLoader(Collections.singleton(source.toString()));
         } catch (IOException e) {
             log.warn(e, e);
         }

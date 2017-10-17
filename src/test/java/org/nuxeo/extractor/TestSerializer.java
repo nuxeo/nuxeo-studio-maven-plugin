@@ -36,6 +36,7 @@ import java.nio.file.FileSystems;
 import java.util.HashMap;
 import java.util.List;
 
+import org.dom4j.DocumentException;
 import org.junit.Test;
 import org.nuxeo.extractor.bundle.BundleWalker;
 import org.nuxeo.extractor.bundle.ContributionsHolder;
@@ -52,10 +53,8 @@ import org.nuxeo.extractor.mapper.descriptors.SchemaBindingDescriptor;
 import org.nuxeo.extractor.mapper.impl.TypeServiceMapper;
 import org.nuxeo.extractor.runtime.ExtractorContext;
 import org.nuxeo.extractor.serializer.StudioSerializer;
+import org.nuxeo.extractor.serializer.adapter.schema.SimpleSchemaReader;
 import org.xml.sax.SAXException;
-
-import com.sun.xml.xsom.XSSchemaSet;
-import com.sun.xml.xsom.parser.XSOMParser;
 
 import net.sf.json.test.JSONAssert;
 
@@ -216,18 +215,16 @@ public class TestSerializer extends AbstractExtractorTest {
     }
 
     @Test
-    public void loadSchemaForDependency() throws IOException, SAXException {
+    public void loadSchemaForDependency() throws IOException, SAXException, DocumentException {
         URI uri = getJarURI();
-        URL file = ExtractorContext.instance.getResourceFromFile(uri, "blalba");
+        URL file = ExtractorContext.instance.getResourceFromFile(uri, "foobar");
         assertNull(file);
 
         file = ExtractorContext.instance.getResourceFromFile(uri, "schemas/aceinfo.xsd");
         assertNotNull(file);
 
-        XSOMParser parser = new XSOMParser();
-        parser.parse(file);
-        XSSchemaSet xsSchemas = parser.getResult();
-        assertNotNull(xsSchemas);
-        assertEquals(2, xsSchemas.getSchemaSize());
+        SimpleSchemaReader ssr = new SimpleSchemaReader(file);
+        ssr.load();
+        assertEquals(7, ssr.getFields().size());
     }
 }
