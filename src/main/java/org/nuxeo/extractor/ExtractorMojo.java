@@ -35,10 +35,9 @@ import org.apache.maven.plugins.annotations.Mojo;
 import org.apache.maven.plugins.annotations.Parameter;
 import org.apache.maven.plugins.annotations.ResolutionScope;
 import org.apache.maven.project.MavenProject;
-
-import com.nuxeo.studio.components.common.ContributionsExtractor;
-import com.nuxeo.studio.components.common.ExtractorOptions;
-import com.nuxeo.studio.components.common.runtime.ExtractorContext;
+import org.nuxeo.studio.components.common.ContributionsExtractor;
+import org.nuxeo.studio.components.common.ExtractorOptions;
+import org.nuxeo.studio.components.common.runtime.ExtractorContext;
 
 /**
  * Parse each project to load contributions' descriptors from the MANIFEST.MF and map them to studio contributions
