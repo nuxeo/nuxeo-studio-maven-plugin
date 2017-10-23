@@ -39,7 +39,7 @@
 
   <properties>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-    <nuxeo.version>9.2</nuxeo.version>
+    <nuxeo.tests.version>9.2</nuxeo.tests.version>
     <nuxeo.studio.components.version>0.1-SNAPSHOT</nuxeo.studio.components.version>
     <debugITs>false</debugITs>
     <skipITs>false</skipITs>
@@ -59,7 +59,7 @@
   <dependencies>
     <!-- Third libs dependencies -->
     <dependency>
-      <groupId>com.nuxeo.studio</groupId>
+      <groupId>org.nuxeo.studio</groupId>
       <artifactId>nuxeo-studio-components-common</artifactId>
       <version>${nuxeo.studio.components.version}</version>
     </dependency>
