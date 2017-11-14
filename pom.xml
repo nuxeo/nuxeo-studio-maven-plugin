@@ -4,7 +4,7 @@
 
   <groupId>org.nuxeo.tools</groupId>
   <artifactId>nuxeo-studio-maven-plugin</artifactId>
-  <version>1.1.1-SNAPSHOT</version>
+  <version>1.1.1</version>
   <packaging>maven-plugin</packaging>
 
   <name>Nuxeo Studio Maven Plugin</name>
@@ -40,7 +40,7 @@
   <properties>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     <nuxeo.tests.version>9.2</nuxeo.tests.version>
-    <nuxeo.studio.components.version>0.1.1-SNAPSHOT</nuxeo.studio.components.version>
+    <nuxeo.studio.components.version>0.1</nuxeo.studio.components.version>
     <debugITs>false</debugITs>
     <skipITs>false</skipITs>
     <maven.version>3.5.0</maven.version>
