@@ -19,12 +19,14 @@
 
 package org.nuxeo.extractor;
 
+import java.io.File;
 import java.io.IOException;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 import org.apache.maven.artifact.DependencyResolutionRequiredException;
 import org.apache.maven.plugin.AbstractMojo;
@@ -129,6 +131,7 @@ public class ExtractorMojo extends AbstractMojo {
         if (!isStandaloneProject(project)) {
             try {
                 compileClasspathElements.addAll(project.getCompileClasspathElements());
+
                 for (MavenProject child : project.getCollectedProjects()) {
                     compileClasspathElements.addAll(child.getCompileClasspathElements());
                 }
@@ -137,7 +140,8 @@ public class ExtractorMojo extends AbstractMojo {
             }
         }
 
-        ExtractorContext.initCustomClassLoader(compileClasspathElements);
+        ExtractorContext.initCustomClassLoader(
+                compileClasspathElements.stream().map(s -> new File(s).toURI()).collect(Collectors.toSet()));
     }
 
     public String getBuildDirectory() {
