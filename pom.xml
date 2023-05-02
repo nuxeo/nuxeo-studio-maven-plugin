@@ -39,7 +39,7 @@
   <properties>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     <nuxeo.tests.version>9.2</nuxeo.tests.version>
-    <nuxeo.studio.components.version>0.1.3-SNAPSHOT</nuxeo.studio.components.version>
+    <nuxeo.studio.components.version>0.1.13-SNAPSHOT</nuxeo.studio.components.version>
     <debugITs>false</debugITs>
     <skipITs>false</skipITs>
     <maven.version>3.5.0</maven.version>
