@@ -42,7 +42,7 @@
     <nuxeo.studio.components.version>0.1.13</nuxeo.studio.components.version>
     <debugITs>false</debugITs>
     <skipITs>false</skipITs>
-    <maven.version>3.5.0</maven.version>
+    <maven.version>3.8.1</maven.version>
     <maven.tools.version>3.5</maven.tools.version>
     <maven.invoker.version>3.0.1</maven.invoker.version>
     <surefire.version>2.19.1</surefire.version>
